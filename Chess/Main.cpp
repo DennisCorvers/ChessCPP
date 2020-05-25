@@ -5,8 +5,12 @@
 #include <sstream>
 #include <iomanip>
 #include <Windows.h>
-
 #include "Utilities.h"
+
+#include "Mechanics.h"
+
+
+using namespace Mechanics;
 
 sf::Font font;
 
@@ -30,9 +34,9 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
 	window.setVerticalSyncEnabled(true);
-	
+
 	//if (!font.loadFromFile(Utils::GetWorkingDirectory("Assets\\Fonts\\OpenSans-Regular.ttf"))) {
-		if (!font.loadFromFile("Assets\\Fonts\\OpenSans-Regular.ttf")) {
+	if (!font.loadFromFile("Assets\\Fonts\\OpenSans-Regular.ttf")) {
 		std::cout << "Unable to load font file" << std::endl;
 		system("pause");
 	}

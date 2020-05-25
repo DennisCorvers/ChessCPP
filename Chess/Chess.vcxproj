@@ -141,9 +141,20 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChessBoard.cpp" />
+    <ClCompile Include="ChessMove.cpp" />
+    <ClCompile Include="ChessPiece.cpp" />
+    <ClCompile Include="ChessPosition.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChessBoard.h" />
+    <ClInclude Include="ChessMove.h" />
+    <ClInclude Include="ChessPiece.h" />
+    <ClInclude Include="ChessPosition.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Mechanics.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
