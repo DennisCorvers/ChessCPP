@@ -7,6 +7,7 @@ namespace Mechanics {
 		m_positionFrom = posFrom;
 		m_positionTo = posTo;
 	}
+
 	ChessPosition ChessMove::getPositionFrom() const
 	{
 		return m_positionFrom;
@@ -16,10 +17,17 @@ namespace Mechanics {
 		return m_positionTo;
 	}
 
+	ChessPosition ChessMove::distance() const
+	{
+		return ChessPosition::distance(m_positionFrom, m_positionTo);
+	}
+
 	std::ostream& operator<<(std::ostream& output, const ChessMove& cp)
 	{
 		return output << cp.getPositionFrom() << " -> " << cp.getPositionTo();
 	}
+
+
 }
 
 

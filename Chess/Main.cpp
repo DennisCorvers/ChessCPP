@@ -32,10 +32,13 @@ sf::Text createText(sf::String& string, unsigned int fontSize) {
 
 int main()
 {
+	ChessPiece* piece = ChessPiece::createPiece(PieceColour::Black, PieceType::Knight);
+	auto colour = piece->colour();
+	auto type = piece->type();
+
 	sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
 	window.setVerticalSyncEnabled(true);
 
-	//if (!font.loadFromFile(Utils::GetWorkingDirectory("Assets\\Fonts\\OpenSans-Regular.ttf"))) {
 	if (!font.loadFromFile("Assets\\Fonts\\OpenSans-Regular.ttf")) {
 		std::cout << "Unable to load font file" << std::endl;
 		system("pause");

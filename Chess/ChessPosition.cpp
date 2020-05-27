@@ -15,24 +15,31 @@ namespace Mechanics {
 		if (x > 7) throw std::invalid_argument("x must be within the range [0, 7]");
 		if (y > 7) throw std::invalid_argument("y must be within the range [0, 7]");
 
-		m_position = y << 4;
-		m_position = m_position || x;
+		m_position = x << 4;
+		m_position = m_position | y;
 	}
 
-	unsigned char ChessPosition::getXPosition() const
+	unsigned char ChessPosition::X() const
 	{
-		return m_position & 0b00001111;
+		return m_position >> 4;
 	}
 
-	unsigned char ChessPosition::getYPosition() const
+	unsigned char ChessPosition::Y() const
 	{
-		return m_position & 0b11110000;
+		return m_position & 0x0F;
+	}
+
+	ChessPosition ChessPosition::distance(const ChessPosition & from, const ChessPosition & to)
+	{
+		const char x = from.X() - to.X();
+		const char y = from.Y() - to.Y();
+		return ChessPosition(abs(x), abs(y));
 	}
 
 	std::ostream& operator<<(std::ostream& output, const ChessPosition& cp)
 	{
-		char x = cp.getXPosition() + 65;
-		int y = cp.getYPosition() + 1;
+		char x = cp.X() + 65;
+		int y = cp.Y() + 1;
 
 		return output << x << y;
 	}

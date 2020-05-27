@@ -13,6 +13,7 @@ namespace Mechanics {
 
 		ChessPosition getPositionFrom() const;
 		ChessPosition getPositionTo() const;
+		ChessPosition distance() const;
 
 		friend std::ostream& operator<<(std::ostream& output, const ChessMove& cp);
 	};
