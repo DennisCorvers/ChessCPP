@@ -9,6 +9,8 @@ namespace Utils {
 
 #include <windows.h>
 #include <Shlwapi.h>
+
+
 	inline std::string GetWorkingDirectory() {
 		HMODULE hModule = GetModuleHandle(nullptr);
 		if (hModule) {
@@ -38,4 +40,37 @@ namespace Utils {
 		return GetWorkingDirectory() + filename;
 	}
 #endif
+}
+
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics.hpp>
+
+namespace Graphics {
+
+	class ResourceLoader {
+	public:
+
+		static sf::Font* loadFont(const std::string& path) {
+
+			sf::Font* font = new sf::Font();
+			if (!font->loadFromFile(path))
+			{
+				delete font;
+				font = nullptr;
+				std::cerr << "! Failed to load font: " << path << std::endl;
+			}
+			return font;
+		}
+		static sf::Texture* loadTexture(const std::string& path) {
+
+			sf::Texture* texture = new sf::Texture();
+			if (!texture->loadFromFile(path))
+			{
+				delete texture;
+				texture = nullptr;
+				std::cerr << "! Failed to load texture: " << path << std::endl;
+			}
+			return texture;
+		}
+	};
 }

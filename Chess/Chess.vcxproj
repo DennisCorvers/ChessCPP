@@ -146,8 +146,12 @@
     <ClCompile Include="ChessMove.cpp" />
     <ClCompile Include="ChessPiece.cpp" />
     <ClCompile Include="ChessPosition.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Session.cpp" />
+    <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessAction.h" />
@@ -155,9 +159,13 @@
     <ClInclude Include="ChessMove.h" />
     <ClInclude Include="ChessPiece.h" />
     <ClInclude Include="ChessPosition.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Mechanics.h" />
+    <ClInclude Include="Session.h" />
+    <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

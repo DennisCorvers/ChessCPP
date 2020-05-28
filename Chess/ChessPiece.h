@@ -20,22 +20,36 @@ namespace Mechanics {
 		King = 6
 	};
 
-
-
 	class ChessPiece {
 
 	public:
+		ChessPiece();
 		ChessPiece(const PieceColour colour, const PieceType type);
-		virtual bool canMove(const ChessMove move) = 0;
-		const PieceColour colour() const;
-		const PieceType type() const;
+		ChessPiece(const char pieceData);
 
-		static ChessPiece* createPiece(PieceColour pieceColour, PieceType pieceType);
+		bool canMove(const ChessMove move) const;
+		PieceColour getColour() const;
+		PieceType getType() const;
 
 		static std::string toString(const PieceType pieceType) {
-
+			switch (pieceType)
+			{
+			case PieceType::Pawn:
+				return "Pawn";
+			case PieceType::Rook:
+				return "Rook";
+			case PieceType::Knight:
+				return "Knight";
+			case PieceType::Bishop:
+				return "Bishop";
+			case PieceType::Queen:
+				return "Queen";
+			case PieceType::King:
+				return "King";
+			case PieceType::None:
+				return "Empty";
+			}
 		}
-
 		static std::string toString(const PieceColour pieceColour) {
 			switch (pieceColour)
 			{
@@ -47,49 +61,43 @@ namespace Mechanics {
 		}
 
 	protected:
-		char m_type;
+		char m_pieceData;
 	};
 
-	class Pawn : public ChessPiece {
+	class Pawn {
 
 	public:
-		Pawn(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 
-	class Knight : public ChessPiece {
+	class Knight {
 
 	public:
-		Knight(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 
-	class Bishop : public ChessPiece {
+	class Bishop {
 
 	public:
-		Bishop(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 
-	class Rook : public ChessPiece {
+	class Rook {
 
 	public:
-		Rook(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 
-	class Queen : public ChessPiece {
+	class Queen {
 
 	public:
-		Queen(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 
-	class King : public ChessPiece {
+	class King {
 
 	public:
-		King(const PieceColour colour, const PieceType type) : ChessPiece(colour, type) { }
-		bool canMove(const ChessMove move) override;
+		static bool canMove(const ChessMove move);
 	};
 }
 

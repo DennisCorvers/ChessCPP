@@ -1,53 +1,55 @@
 #include "ChessPiece.h"
 
 namespace Mechanics {
-
-
+	ChessPiece::ChessPiece()
+	{
+	}
 	ChessPiece::ChessPiece(const PieceColour colour, const PieceType type)
 	{
-		m_type = (char)type;
+		m_pieceData = (char)type;
 		if (colour == PieceColour::Black) {
-			m_type *= -1;
+			m_pieceData *= -1;
 		}
 	}
 
-	const PieceColour ChessPiece::colour() const
-	{
-		if (m_type < 0) { return PieceColour::Black; }
-		return PieceColour::White;
+	ChessPiece::ChessPiece(const char pieceData) {
+		if (pieceData < -8 || pieceData > 8) {
+			throw std::invalid_argument("x must be within the range [-8, 8]");
+		}
+		m_pieceData = pieceData;
 	}
 
-	const PieceType ChessPiece::type() const
+	bool ChessPiece::canMove(const ChessMove move) const
 	{
-		return PieceType(std::abs(m_type));
-	}
-
-	ChessPiece* ChessPiece::createPiece(PieceColour pieceColour, PieceType pieceType)
-	{
-		switch (pieceType)
+		switch (getType())
 		{
 		case Mechanics::PieceType::None:
-			return NULL;
-			break;
+			return false;
 		case Mechanics::PieceType::Pawn:
-			return new Pawn(pieceColour, pieceType);
-			break;
+			return Pawn::canMove(move);
 		case Mechanics::PieceType::Rook:
-			return new Rook(pieceColour, pieceType);
-			break;
+			return Rook::canMove(move);
 		case Mechanics::PieceType::Knight:
-			return new Knight(pieceColour, pieceType);
-			break;
+			return Knight::canMove(move);
 		case Mechanics::PieceType::Bishop:
-			return new Bishop(pieceColour, pieceType);
-			break;
+			return Bishop::canMove(move);
 		case Mechanics::PieceType::Queen:
-			return new Queen(pieceColour, pieceType);
-			break;
+			return Queen::canMove(move);
 		case Mechanics::PieceType::King:
-			return new King(pieceColour, pieceType);
-			break;
+			return King::canMove(move);
 		}
+
+		return false;
+	}
+
+	PieceColour ChessPiece::getColour() const
+	{
+		if (m_pieceData < 0) { return PieceColour::Black; }
+		return PieceColour::White;
+	}
+	PieceType ChessPiece::getType() const
+	{
+		return PieceType(std::abs(m_pieceData));
 	}
 
 

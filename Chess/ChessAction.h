@@ -4,7 +4,8 @@
 namespace Mechanics {
 
 	enum struct ActionType : char {
-		Normal,
+		None = -1,
+		Normal = 0,
 		Check = 1,
 		Checkmate = 2,
 		Take = 3,
