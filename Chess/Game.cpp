@@ -46,11 +46,9 @@ void Game::update() {
 			break;
 
 		case sf::Event::MouseButtonPressed:
-
 			break;
 
 		case sf::Event::MouseButtonReleased:
-
 			break;
 
 		default:

@@ -13,12 +13,14 @@ namespace Mechanics {
 	private:
 		static const char m_defaultBoard[8][8];
 		ChessPiece m_board[8][8];
+		bool m_isDirty;
 
 	public:
 		ChessBoard();
 
 		void resetBoard();
-		const ChessPiece* Board() const;
+		const ChessPiece* getBoard() const;
+		bool tryMovePiece(ChessMove move);
 
 		~ChessBoard();
 	};

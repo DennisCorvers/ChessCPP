@@ -2,12 +2,13 @@
 
 #include "ChessBoard.h";
 
-using Mechanics::ChessBoard;
+using namespace Mechanics;
 
 enum struct SessionState :char {
 	None = 0,
 	Playing = 1,
-	Finished = 2
+	Finished = 2,
+	Waiting = 3
 };
 
 class Session
@@ -20,12 +21,13 @@ public:
 	const ChessBoard& Board() const;
 
 	void startSession();
-	void inputMove();
+	void inputMove(ChessMove move);
 
 private:
 	ChessBoard* m_board;
 	SessionState m_state;
-	//List of past moves...
+	std::vector<int> m_chessMoves;
+
 	//Network (Client) information...
 };
 

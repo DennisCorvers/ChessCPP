@@ -22,9 +22,11 @@ const ChessBoard& Session::Board() const
 void Session::startSession()
 {
 	m_board->resetBoard();
-	m_state = SessionState::Playing;
+	m_state = SessionState::Waiting;
 }
 
-void Session::inputMove()
+void Session::inputMove(ChessMove move)
 {
+
 }
+

@@ -28,7 +28,9 @@ namespace Graphics {
 		~SpriteManager();
 
 		void loadPiecesSprites(const ChessBoard& board);
-		void drawSprites(Window& window);
+		void drawSprites(Window& window) const;
 		void flipBoard(bool isWhiteOrientation);
+		void dragPiece(int posX, int posY);
+		sf::Vector2i toBoardCoords(int posX, int posY);
 	};
 }

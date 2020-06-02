@@ -25,7 +25,7 @@ namespace Graphics {
 		int k = 0;
 		for (char x = 0; x < 8;x++) {
 			for (char y = 0; y < 8;y++) {
-				ChessPiece piece = board.Board()[x * 8 + y];
+				ChessPiece piece = board.getBoard()[x * 8 + y];
 				if (piece.getType() == PieceType::None) continue;
 				char type = (char)piece.getType();
 
@@ -40,7 +40,7 @@ namespace Graphics {
 		}
 	}
 
-	void SpriteManager::drawSprites(Window& window)
+	void SpriteManager::drawSprites(Window& window) const
 	{
 		window.draw(m_boardSprite);
 		for (int i = 0; i < m_spriteMapSize; i++)
@@ -52,5 +52,20 @@ namespace Graphics {
 	void SpriteManager::flipBoard(bool isWhiteOrientation)
 	{
 
+	}
+
+	void SpriteManager::dragPiece(int posX, int posY) {
+
+		for (int i = 0; i < m_spriteMapSize; i++)
+		{
+			if (m_spriteMap[i].getGlobalBounds().contains(posX, posY))
+			{
+
+			}
+		}
+	}
+
+	sf::Vector2i SpriteManager::toBoardCoords(int posX, int posY) {
+		return sf::Vector2i(1, 1);
 	}
 }

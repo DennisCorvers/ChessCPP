@@ -14,7 +14,17 @@ namespace Mechanics {
 	};
 
 	ChessBoard::ChessBoard()
-	{	}
+	{
+		m_isDirty = false;
+	}
+
+	ChessBoard::~ChessBoard()
+	{
+	}
+
+	const ChessPiece* ChessBoard::getBoard() const {
+		return *m_board;
+	}
 
 	void ChessBoard::resetBoard()
 	{
@@ -28,11 +38,16 @@ namespace Mechanics {
 		}
 	}
 
-	const ChessPiece* ChessBoard::Board() const {
-		return *m_board;
-	}
-
-	ChessBoard::~ChessBoard()
+	bool ChessBoard::tryMovePiece(ChessMove move)
 	{
+		ChessPosition moveFrom = move.getPositionFrom();
+		ChessPiece piece = m_board[moveFrom.X()][moveFrom.Y()];
+
+		if (piece.canMove(move, this))
+		{
+			m_isDirty = true;
+
+		}
+		return false;
 	}
 }

@@ -1,4 +1,5 @@
 #include "ChessPiece.h"
+#include "ChessBoard.h"
 
 namespace Mechanics {
 	ChessPiece::ChessPiece()
@@ -19,7 +20,7 @@ namespace Mechanics {
 		m_pieceData = pieceData;
 	}
 
-	bool ChessPiece::canMove(const ChessMove move) const
+	bool ChessPiece::canMove(const ChessMove move, ChessBoard* const board) const
 	{
 		switch (getType())
 		{

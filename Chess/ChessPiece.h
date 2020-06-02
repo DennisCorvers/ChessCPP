@@ -20,6 +20,7 @@ namespace Mechanics {
 		King = 6
 	};
 
+	class ChessBoard;
 	class ChessPiece {
 
 	public:
@@ -27,7 +28,7 @@ namespace Mechanics {
 		ChessPiece(const PieceColour colour, const PieceType type);
 		ChessPiece(const char pieceData);
 
-		bool canMove(const ChessMove move) const;
+		bool canMove(const ChessMove move, ChessBoard* const board) const;
 		PieceColour getColour() const;
 		PieceType getType() const;
 
