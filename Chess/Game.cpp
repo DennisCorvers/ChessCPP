@@ -10,8 +10,9 @@ Game::Game()
 {
 	initVariables();
 	initWindow();
+	initStateDate();
 
-	m_state = new GameState();
+	m_state = new GameState(&m_stateData);
 }
 
 Game::~Game() {
@@ -28,12 +29,17 @@ void Game::initVariables()
 void Game::initWindow()
 {
 	m_window = new sf::RenderWindow(
-		sf::VideoMode(1024, 576, 32),
+		sf::VideoMode(windowWidth, windowHeight, 32),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close);
 
 	m_window->setFramerateLimit(60);
 	m_window->setVerticalSyncEnabled(true);
+}
+
+void Game::initStateDate()
+{
+	m_stateData.window = m_window;
 }
 
 void Game::update() {

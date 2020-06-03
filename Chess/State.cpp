@@ -2,8 +2,10 @@
 #include "SFML/Graphics.hpp"
 
 
-State::State()
+State::State(StateData* data)
 {
+	stateData = data;
+	window = data->window;
 }
 
 

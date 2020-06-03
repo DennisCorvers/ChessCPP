@@ -22,12 +22,21 @@ void GameState::initGame()
 	m_board = new ChessBoard(sf::Vector2f(28, 27), textures);
 }
 
-GameState::GameState()
+void GameState::initView()
+{
+	view.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+	//view.setCenter(sf::Vector2f(window->getSize().x / 2.f, window->getSize().y / 2.f));
+	view.setCenter(m_board->getCenter()); //Focus on the centre of the board.
+}
+
+GameState::GameState(StateData* data)
+	: State(data)
 {
 	initTextures();
 	initFonts();
 
 	initGame();
+	initView();
 }
 
 
@@ -40,16 +49,19 @@ void GameState::initKeybinds()
 {
 }
 
+void GameState::updateView(const float & deltaTime)
+{	}
+
 void GameState::updateInput(const float & deltaTime)
-{
-}
+{	}
 
 void GameState::update(const float & deltaTime)
-{
-}
+{	}
 
 void GameState::render(sf::RenderTarget * target)
 {
 	if (m_board->isEnabled)
 		m_board->render(target);
+
+	target->setView(view);
 }
