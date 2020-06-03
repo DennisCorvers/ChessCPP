@@ -1,87 +1,56 @@
 #include "ChessPiece.h"
 #include "ChessBoard.h"
+#include "Enums.h"
 
-namespace Mechanics {
-	ChessPiece::ChessPiece()
-	{
-	}
-	ChessPiece::ChessPiece(const PieceColour colour, const PieceType type)
-	{
-		m_pieceData = (char)type;
-		if (colour == PieceColour::Black) {
-			m_pieceData *= -1;
-		}
-	}
 
-	ChessPiece::ChessPiece(const char pieceData) {
-		if (pieceData < -8 || pieceData > 8) {
-			throw std::invalid_argument("x must be within the range [-8, 8]");
-		}
-		m_pieceData = pieceData;
-	}
 
-	bool ChessPiece::canMove(const ChessMove move, ChessBoard* const board) const
-	{
-		switch (getType())
-		{
-		case Mechanics::PieceType::None:
-			return false;
-		case Mechanics::PieceType::Pawn:
-			return Pawn::canMove(move);
-		case Mechanics::PieceType::Rook:
-			return Rook::canMove(move);
-		case Mechanics::PieceType::Knight:
-			return Knight::canMove(move);
-		case Mechanics::PieceType::Bishop:
-			return Bishop::canMove(move);
-		case Mechanics::PieceType::Queen:
-			return Queen::canMove(move);
-		case Mechanics::PieceType::King:
-			return King::canMove(move);
-		}
+ChessPiece::ChessPiece(const PieceColour colour, const PieceType type, sf::Texture& textureSheet)
+{
+	m_sprite.setTexture(textureSheet);
 
-		return false;
+	transform(colour, type);
+}
+
+ChessPiece::~ChessPiece()
+{
+}
+
+void ChessPiece::transform(const PieceColour colour, const PieceType type)
+{
+	m_pieceData = (char)type;
+	if (colour == PieceColour::Black) {
+		m_pieceData *= -1;
 	}
 
-	PieceColour ChessPiece::getColour() const
-	{
-		if (m_pieceData < 0) { return PieceColour::Black; }
-		return PieceColour::White;
-	}
-	PieceType ChessPiece::getType() const
-	{
-		return PieceType(std::abs(m_pieceData));
-	}
+	int size = 56;
+	int yPos = colour == PieceColour::White ? 1 : 0;
+	int xPos = 0;
 
-
-	bool Pawn::canMove(const ChessMove move)
-	{
-		return false;
-	}
-
-	bool Knight::canMove(const ChessMove move)
-	{
-		return false;
+	switch (type) {
+	case PieceType::Pawn:
+		xPos = 5; break;
+	case PieceType::Rook:
+		xPos = 0; break;
+	case PieceType::Knight:
+		xPos = 1; break;
+	case PieceType::Bishop:
+		xPos = 2; break;
+	case PieceType::Queen:
+		xPos = 3; break;
+	case PieceType::King:
+		xPos = 4; break;
 	}
 
-	bool Bishop::canMove(const ChessMove move)
-	{
-		return false;
-	}
+	m_sprite.setTextureRect(sf::IntRect(size * xPos, size * yPos, size, size));
+}
 
-	bool Rook::canMove(const ChessMove move)
-	{
-		return false;
-	}
+PieceColour ChessPiece::getColour() const
+{
+	if (m_pieceData < 0) { return PieceColour::Black; }
+	return PieceColour::White;
+}
 
-	bool Queen::canMove(const ChessMove move)
-	{
-		return false;
-	}
-
-	bool King::canMove(const ChessMove move)
-	{
-		return false;
-	}
-
+PieceType ChessPiece::getType() const
+{
+	return PieceType(std::abs(m_pieceData));
 }

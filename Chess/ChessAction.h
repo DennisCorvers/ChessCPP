@@ -1,17 +1,8 @@
 #pragma once
 #include "ChessPiece.h"
+#include "Enums.h"
 
 namespace Mechanics {
-
-	enum struct ActionType : char {
-		None = -1,
-		Normal = 0,
-		Check = 1,
-		Checkmate = 2,
-		Take = 3,
-		EnPassant = 4,
-		Castling = 5
-	};
 
 	struct ChessAction
 	{

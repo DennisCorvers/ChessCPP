@@ -1,75 +1,80 @@
 #include "Game.h"
+#include "GameState.h";
+
+
+float Game::FPS() const {
+	return 1 / m_deltaTime;
+}
 
 Game::Game()
-	: m_window("Chess", sf::Vector2u(500, 500))
 {
-	m_clock.restart();
-	srand(time(nullptr));
+	initVariables();
+	initWindow();
 
-	m_spriteManager = new SpriteManager();
-
-	m_session = new Session();
-	m_session->startSession();
-
-	m_spriteManager->loadPiecesSprites(m_session->Board());
+	m_state = new GameState();
 }
 
 Game::~Game() {
-	delete m_session;
-	delete m_spriteManager;
+	delete m_window;
+	delete m_state;
 }
 
-Window* Game::GetWindow() {
-	return &m_window;
+void Game::initVariables()
+{
+	m_window = NULL;
+	m_deltaTime = 0.f;
 }
 
-float Game::ElapsedTime() const {
-	return m_elapsed.asSeconds();
-}
+void Game::initWindow()
+{
+	m_window = new sf::RenderWindow(
+		sf::VideoMode(1024, 576, 32),
+		"Chess",
+		sf::Style::Titlebar | sf::Style::Close);
 
-float Game::FPS() const {
-	return 1 / m_elapsed.asSeconds();
+	m_window->setFramerateLimit(60);
+	m_window->setVerticalSyncEnabled(true);
 }
 
 void Game::update() {
-	auto window = m_window.RenderWindow();
-	sf::Event event;
-	sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
 
-	while (window->pollEvent(event)) {
+	sf::Event event;
+	while (m_window->pollEvent(event)) {
 
 
 		switch (event.type) {
 
 		case sf::Event::Closed:
-			window->close();
-			break;
-
-		case sf::Event::MouseButtonPressed:
-			break;
-
-		case sf::Event::MouseButtonReleased:
-			break;
-
-		default:
+			m_window->close();
 			break;
 		}
-
 	}
+
+	m_state->update(m_deltaTime);
 }
 
 void Game::render() {
-	m_window.beginDraw();
+	m_window->clear(sf::Color::Black);
 
-	//Draw board
-	m_spriteManager->drawSprites(m_window);
+	m_state->render(m_window);
 
-	m_window.endDraw();
+	m_window->display();
 }
 
 void Game::lateUpdate() {
 
-	m_elapsed = m_clock.restart();
+	m_deltaTime = m_clock.restart().asSeconds();
+}
+
+void Game::run()
+{
+	m_deltaTime = 0;
+
+	while (m_window->isOpen()) {
+		update();
+		render();
+		lateUpdate();
+	}
 }
 
 

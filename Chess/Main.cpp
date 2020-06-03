@@ -22,11 +22,8 @@
 int main()
 {
 	Game game;
-	while (game.GetWindow()->isOpen()) {
-		game.update();
-		game.render();
-		game.lateUpdate();
-	}
+
+	game.run();
 
 	return 0;
 }

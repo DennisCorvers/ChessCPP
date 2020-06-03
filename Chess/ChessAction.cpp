@@ -1,5 +1,6 @@
 #include "ChessAction.h"
 
+
 namespace Mechanics {
 
 	ChessAction::ChessAction()

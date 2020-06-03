@@ -1,21 +1,22 @@
 #pragma once
 
-#include "Window.h"
-#include "Session.h"
-#include "SpriteManager.h"
+#include "SFML/Graphics.hpp"
 
-#include <iostream>
-
-using namespace Graphics;
+class State;
 
 class Game {
 
 private:
-	Session* m_session;
-	Window m_window;
+	sf::RenderWindow* m_window;
+
 	sf::Clock m_clock;
-	sf::Time m_elapsed;
-	SpriteManager* m_spriteManager;
+	float m_deltaTime;
+
+	State* m_state;
+
+	void initVariables();
+	void initWindow();
+
 
 public:
 	Game();
@@ -25,8 +26,8 @@ public:
 	void render();
 	void lateUpdate();
 
-	Window* GetWindow();
-	float ElapsedTime() const;
+	void run();
+
 	float FPS() const;
 };
 

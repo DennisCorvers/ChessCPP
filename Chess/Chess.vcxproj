@@ -147,11 +147,12 @@
     <ClCompile Include="ChessPiece.cpp" />
     <ClCompile Include="ChessPosition.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Session.cpp" />
-    <ClCompile Include="SpriteManager.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessAction.h" />
@@ -160,12 +161,11 @@
     <ClInclude Include="ChessPiece.h" />
     <ClInclude Include="ChessPosition.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Mechanics.h" />
-    <ClInclude Include="Session.h" />
-    <ClInclude Include="SpriteManager.h" />
-    <ClInclude Include="Utilities.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
