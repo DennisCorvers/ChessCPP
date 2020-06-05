@@ -1,91 +1,117 @@
 #include "ChessBoard.h"
 #include "ChessPiece.h"
 
-const char ChessBoard::m_defaultBoard[8][8] = {
-	{ -2, -3, -4, -5, -6, -4, -3, -2},
-	{ -1, -1, -1, -1, -1, -1, -1, -1 },
-	{  0,  0,  0,  0,  0,  0,  0,  0 },
-	{  0,  0,  0,  0,  0,  0,  0,  0 },
-	{  0,  0,  0,  0,  0,  0,  0,  0 },
-	{  0,  0,  0,  0,  0,  0,  0,  0 },
-	{  1,  1,  1,  1,  1,  1,  1,  1 },
-	{  2,  3,  4,  5,  6,  4,  3,  2 },
-};
-
-
-ChessBoard::ChessBoard(sf::Vector2f boardOffset, std::map<std::string, sf::Texture>& textures)
-	: textures(textures)
+ChessBoard::ChessBoard(BoardSizes boardsize, std::map<std::string, sf::Texture>& textures)
+	: textures(textures), m_boardSizes(boardsize)
 {
 	m_sprite.setTexture(textures["BOARD"]);
-	m_boardOffset = boardOffset;
 
+	initPieces();
 	initBoard();
 }
 
 ChessBoard::~ChessBoard()
 {
-	for (char i = 0; i < 64; i++)
-		delete m_board[i];
+	for (char i = 0; i < 32; i++)
+		delete m_pieces[i];
+}
+
+void ChessBoard::initPieces()
+{
+	for (char i = 0; i < BoardSettings::PIECECOUNT; i++)
+		m_pieces[i] = new ChessPiece(PieceColour::Black, PieceType::Pawn, textures["PIECES"]);
 }
 
 void ChessBoard::initBoard()
 {
+	int pieceCount = 0;
 	for (char x = 0; x < 8; x++)
 	{
 		for (char y = 0; y < 8; y++)
 		{
-			int index = x * 8 + y;
-			char pieceValue = m_defaultBoard[x][y];
+			char pieceValue = BoardSettings::DEFAULTBOARD[y][x];
+			m_board[x * 8 + y] = pieceValue;
 			if (pieceValue == 0)
-			{
-				m_board[index] = NULL;
 				continue;
-			}
+
+			ChessPiece* piece = m_pieces[pieceCount];
 			PieceColour colour = pieceValue < 0 ? PieceColour::Black : PieceColour::White;
-			createPiece(colour, PieceType(abs(pieceValue)), sf::Vector2f(x, y));
+			PieceType type = PieceType(abs(pieceValue));
+
+			piece->transform(colour, type);
+
+			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
+			piece->setCenter(pos.x, pos.y);
+
+			pieceCount++;
 		}
 	}
 }
 
-void ChessBoard::createPiece(PieceColour colour, PieceType pieceType, const sf::Vector2f position)
-{
-	int index = position.x * 8 + position.y;
-	ChessPiece* piece = new ChessPiece(colour, pieceType, textures["PIECES"]);
-
-	//Calculate size of squares and offets etc...
-	piece->setPosition(
-		56 * position.y + m_boardOffset.x,
-		56 * position.x + m_boardOffset.y);
-
-	m_board[index] = piece;
-}
-
-
 void ChessBoard::resetBoard()
 {
-	for (char i = 0; i < 64; i++)
-		delete m_board[i];
-
 	initBoard();
 }
 
 void ChessBoard::update()
 {
 
-	//Do drag stuff??
 }
 
 void ChessBoard::render(sf::RenderTarget* target)
 {
 	target->draw(m_sprite);
 
-	//Render "children"
-	for (char i = 0; i < 64; i++)
-	{
-		ChessPiece* piece = m_board[i];
-		if (!piece) { continue; }
-
-		piece->render(target);
-	}
+	for (char i = 0; i < BoardSettings::PIECECOUNT; i++)
+		m_pieces[i]->render(target);
 }
 
+void ChessBoard::snapPieceToBoard(const ChessPosition newPosition, ChessPiece * piece)
+{
+	sf::Vector2i boardPos(newPosition.X(), newPosition.Y());
+	sf::Vector2f newPos(boardToScreen(boardPos));
+
+	piece->setCenter(newPos.x, newPos.y);
+}
+
+ChessPiece* ChessBoard::getClickedPiece(const sf::Vector2f clickPosition) const
+{
+	for (char i = 0; i < BoardSettings::PIECECOUNT; i++)
+	{
+		ChessPiece* piece = m_pieces[i];
+		if (!piece->isEnabled) continue;
+		if (piece->boundsContains(clickPosition.x, clickPosition.y))
+			return piece;
+	}
+	return NULL;
+}
+
+bool ChessBoard::tryMove(const ChessMove move)
+{
+	return false;
+}
+
+bool ChessBoard::tryScreenToBoard(const sf::Vector2f mousePosition, sf::Vector2i* const boardPosition) const
+{
+	*boardPosition = sf::Vector2i(-1, -1);
+	if (mousePosition.x < m_boardSizes.leftOffset || mousePosition.y < m_boardSizes.topOffset)
+		return false;
+
+	int xPos = (int)((mousePosition.x - m_boardSizes.leftOffset) / m_boardSizes.fieldXSize);
+	int yPos = (int)((mousePosition.y - m_boardSizes.topOffset) / m_boardSizes.fieldYSize);
+
+	if (xPos > 7 || yPos > 7)
+		return false;
+
+	*boardPosition = sf::Vector2i(xPos, yPos);
+	return true;
+}
+
+sf::Vector2f ChessBoard::boardToScreen(const sf::Vector2i boardPosition) const
+{
+	sf::Vector2f pos(
+		m_boardSizes.leftOffset + m_boardSizes.fieldXSize / 2 + m_boardSizes.fieldXSize * boardPosition.x,
+		m_boardSizes.topOffset + m_boardSizes.fieldYSize / 2 + m_boardSizes.fieldYSize * boardPosition.y
+	);
+	return pos;
+}

@@ -21,9 +21,16 @@ public:
 
 	virtual void createSprite(sf::Texture* texture);
 
+
+	virtual const sf::Vector2f getPosition() const;
+	virtual const sf::Vector2f getCenter() const;
+	virtual const sf::FloatRect getGlobalBounds() const;
+	virtual const bool boundsContains(float x, float y) const;
+
 	virtual void setPosition(const float x, const float y);
-	const sf::Vector2f getPosition() const;
-	const sf::Vector2f getCenter() const;
+	virtual void setCenter(const float x, const float y);
+	virtual void setScale(const float x, const float y);
+
 	virtual void move(const float dt, const float x, const float y);
 
 	virtual void update();

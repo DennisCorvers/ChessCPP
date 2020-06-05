@@ -2,8 +2,6 @@
 #include "ChessBoard.h"
 #include "Enums.h"
 
-
-
 ChessPiece::ChessPiece(const PieceColour colour, const PieceType type, sf::Texture& textureSheet)
 {
 	m_sprite.setTexture(textureSheet);

@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "State.h"
+#include "EventManager.h"
 
 class Game {
 
@@ -16,6 +17,7 @@ private:
 	float m_deltaTime;
 
 	State* m_state;
+	EventManager* m_eventManager;
 
 	void initVariables();
 	void initWindow();

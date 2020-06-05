@@ -3,32 +3,73 @@
 #include "Enums.h"
 #include "ChessMove.h"
 #include "ChessPosition.h"
-
-class ChessPiece;
+#include "ChessPiece.h"
 
 namespace Mechanics {
 	struct ChessMove;
 	struct ChessPosition;
 }
 
+namespace BoardSettings {
+	static const char PIECECOUNT = 32;
+	static const char DEFAULTBOARD[8][8]{
+	{ -2, -3, -4, -5, -6, -4, -3, -2},
+	{ -1, -1, -1, -1, -1, -1, -1, -1 },
+	{  0,  0,  0,  0,  0,  0,  0,  0 },
+	{  0,  0,  0,  0,  0,  0,  0,  0 },
+	{  0,  0,  0,  0,  0,  0,  0,  0 },
+	{  0,  0,  0,  0,  0,  0,  0,  0 },
+	{  1,  1,  1,  1,  1,  1,  1,  1 },
+	{  2,  3,  4,  5,  6,  4,  3,  2 },
+	};
+}
+
+struct BoardSizes {
+
+	BoardSizes(float leftOffset, float topOffset, float fieldSize) {
+		this->leftOffset = leftOffset;
+		this->topOffset = topOffset;
+		this->fieldXSize = fieldSize;
+		this->fieldYSize = fieldSize;
+	}
+
+	BoardSizes(float leftOffset, float topOffset, float fieldXSize, float fieldYSize) {
+		this->leftOffset = leftOffset;
+		this->topOffset = topOffset;
+		this->fieldXSize = fieldXSize;
+		this->fieldYSize = fieldYSize;
+	}
+
+	float leftOffset;
+	float topOffset;
+	float fieldXSize;
+	float fieldYSize;
+};
+
 class ChessBoard : public Entity
 {
 private:
-	static const char m_defaultBoard[8][8];
+	char m_board[64];
+	ChessPiece* m_pieces[BoardSettings::PIECECOUNT];
 
-	ChessPiece* m_board[64];
-	sf::Vector2f m_boardOffset;
-
+	const BoardSizes m_boardSizes;
 	std::map<std::string, sf::Texture>& textures;
+
+	void initPieces();
 	void initBoard();
-	void createPiece(PieceColour colour, PieceType pieceType, const sf::Vector2f position);
 
 public:
-	ChessBoard(sf::Vector2f boardOffset, std::map<std::string, sf::Texture>& textures);
+	ChessBoard(BoardSizes boardsize, std::map<std::string, sf::Texture>& textures);
 	virtual ~ChessBoard() override;
 
 	void resetBoard();
 	virtual void update() override;
 	virtual void render(sf::RenderTarget* target) override;
+
+	void snapPieceToBoard(const ChessPosition newPosition, ChessPiece* piece);
+	ChessPiece* getClickedPiece(const sf::Vector2f clickPosition) const;
+	bool tryMove(const ChessMove move);
+	bool tryScreenToBoard(const sf::Vector2f mousePosition, sf::Vector2i* const boardPosition) const;
+	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 };
 

@@ -1,7 +1,18 @@
 #pragma once
 #include "State.h"
+#include "ChessBoard.h"
 
-class ChessBoard;
+struct MoveAction {
+	ChessPosition moveFrom;
+	ChessPosition moveTo;
+	ChessPiece* movingPiece;
+
+	ChessMove getChessMove() const {
+		return ChessMove(moveFrom, moveTo);
+	}
+};
+
+struct MyEvent;
 
 class GameState : public State
 {
@@ -9,6 +20,8 @@ private:
 	sf::View view;
 
 	ChessBoard* m_board;
+	MoveAction m_moveAction;
+
 	sf::Font m_font;
 
 	void initTextures();
@@ -16,11 +29,12 @@ private:
 	void initGame();
 	void initView();
 
+	void startDragging(const MyEvent& nextEvent);
+	void stopDragging(const MyEvent& nextEvent);
+
 public:
 	GameState(StateData* data);
 	~GameState();
-
-	virtual void initKeybinds() override;
 
 	void updateView(const float& deltaTime);
 

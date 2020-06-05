@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "GameState.h";
 
-
 float Game::FPS() const {
 	return 1 / m_deltaTime;
 }
@@ -10,6 +9,8 @@ Game::Game()
 {
 	initVariables();
 	initWindow();
+
+	
 	initStateDate();
 
 	m_state = new GameState(&m_stateData);
@@ -17,6 +18,7 @@ Game::Game()
 
 Game::~Game() {
 	delete m_window;
+	delete m_eventManager;
 	delete m_state;
 }
 
@@ -35,11 +37,14 @@ void Game::initWindow()
 
 	m_window->setFramerateLimit(60);
 	m_window->setVerticalSyncEnabled(true);
+
+	m_eventManager = new EventManager();
 }
 
 void Game::initStateDate()
 {
 	m_stateData.window = m_window;
+	m_stateData.eventManager = m_eventManager;
 }
 
 void Game::update() {
@@ -47,15 +52,16 @@ void Game::update() {
 	sf::Event event;
 	while (m_window->pollEvent(event)) {
 
-
 		switch (event.type) {
 
 		case sf::Event::Closed:
 			m_window->close();
 			break;
 		}
-	}
 
+		m_eventManager->handleEvent(event);
+	}
+	m_eventManager->update();
 	m_state->update(m_deltaTime);
 }
 
