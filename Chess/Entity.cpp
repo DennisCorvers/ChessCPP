@@ -74,15 +74,15 @@ void Entity::move(const float dt, const float x, const float y)
 {
 }
 
-void Entity::update()
+void Entity::update(const float& dt)
 {
 }
 
-void Entity::lateUpdate()
+void Entity::lateUpdate(const float& dt)
 {
 }
 
-void Entity::render(sf::RenderTarget* target)
+void Entity::render(sf::RenderTarget* const target)
 {
 	if (isEnabled)
 		target->draw(m_sprite);

@@ -14,29 +14,39 @@ ChessPosition::ChessPosition(unsigned char x, unsigned char y)
 	m_position = m_position | y;
 }
 
-unsigned char ChessPosition::X() const
+unsigned char ChessPosition::getX() const
 {
 	return m_position >> 4;
 }
 
-unsigned char ChessPosition::Y() const
+unsigned char ChessPosition::getY() const
 {
 	return m_position & 0x0F;
 }
 
 ChessPosition ChessPosition::distance(const ChessPosition & from, const ChessPosition & to)
 {
-	const char x = from.X() - to.X();
-	const char y = from.Y() - to.Y();
+	const char x = from.getX() - to.getX();
+	const char y = from.getY() - to.getY();
 	return ChessPosition(abs(x), abs(y));
+}
+
+bool ChessPosition::operator==(const ChessPosition & rhs)
+{
+	return m_position == rhs.m_position;
 }
 
 std::ostream& operator<<(std::ostream& output, const ChessPosition& cp)
 {
-	char x = cp.X() + 65;
-	int y = (8 - cp.Y());
+	char x = cp.getX() + 65;
+	int y = (8 - cp.getY());
 
 	return output << x << y;
+}
+
+bool operator==(const ChessPosition & lhs, const ChessPosition & rhs)
+{
+	return lhs.m_position == rhs.m_position;
 }
 
 

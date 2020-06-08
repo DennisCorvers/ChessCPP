@@ -33,8 +33,8 @@ public:
 
 	virtual void move(const float dt, const float x, const float y);
 
-	virtual void update();
-	virtual void lateUpdate();
-	virtual void render(sf::RenderTarget* target);
+	virtual void update(const float& dt);
+	virtual void lateUpdate(const float& dt);
+	virtual void render(sf::RenderTarget* const target);
 };
 

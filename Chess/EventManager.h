@@ -37,8 +37,12 @@ public:
 	void update();
 	bool pollEvent(MyEvent* const eventOut);
 
-	sf::Vector2i GetMousePos(sf::RenderWindow* l_wind = nullptr) {
-		return (l_wind ? sf::Mouse::getPosition(*l_wind) : sf::Mouse::getPosition());
+	static sf::Vector2i GetMousePos(const sf::RenderWindow* const window = nullptr) {
+		return (window ? sf::Mouse::getPosition(*window) : sf::Mouse::getPosition());
+	}
+
+	static sf::Vector2f GetPixelPosition(const sf::RenderWindow& window, const sf::View& view) {
+		return window.mapPixelToCoords(sf::Mouse::getPosition(window), view);
 	}
 
 private:

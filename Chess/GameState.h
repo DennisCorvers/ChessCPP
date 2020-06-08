@@ -2,16 +2,6 @@
 #include "State.h"
 #include "ChessBoard.h"
 
-struct MoveAction {
-	ChessPosition moveFrom;
-	ChessPosition moveTo;
-	ChessPiece* movingPiece;
-
-	ChessMove getChessMove() const {
-		return ChessMove(moveFrom, moveTo);
-	}
-};
-
 struct MyEvent;
 
 class GameState : public State
@@ -20,7 +10,6 @@ private:
 	sf::View view;
 
 	ChessBoard* m_board;
-	MoveAction m_moveAction;
 
 	sf::Font m_font;
 

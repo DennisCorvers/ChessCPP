@@ -1,5 +1,6 @@
 #include <iostream>
 #include "ChessMove.h"
+#include "SFML/Graphics.hpp"
 
 ChessMove::ChessMove(ChessPosition posFrom, ChessPosition posTo)
 {
@@ -19,6 +20,13 @@ ChessPosition ChessMove::getPositionTo() const
 ChessPosition ChessMove::distance() const
 {
 	return ChessPosition::distance(m_positionFrom, m_positionTo);
+}
+
+float ChessMove::vectorDistance() const
+{
+		return std::sqrtf(
+			std::powf(m_positionFrom.getX() - m_positionTo.getX(), 2) +
+			std::powf(m_positionFrom.getY() - m_positionTo.getY(), 2));
 }
 
 std::ostream& operator<<(std::ostream& output, const ChessMove& cp)

@@ -11,7 +11,7 @@ private:
 	char m_pieceData;
 
 public:
-	ChessPiece(const PieceColour colour, const PieceType type, sf::Texture& textureSheet);
+	ChessPiece(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet);
 	void transform(const PieceColour colour, const PieceType type);
 
 	virtual ~ChessPiece();

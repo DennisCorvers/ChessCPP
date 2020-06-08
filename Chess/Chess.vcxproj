@@ -141,6 +141,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoardManager.cpp" />
+    <ClCompile Include="ChessPieceManager.cpp" />
     <ClCompile Include="ChessAction.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="ChessMove.cpp" />
@@ -157,6 +159,8 @@
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoardManager.h" />
+    <ClInclude Include="ChessPieceManager.h" />
     <ClInclude Include="ChessAction.h" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="ChessMove.h" />
