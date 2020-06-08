@@ -72,69 +72,6 @@ void ChessPieceManager::update(const float & deltaTime)
 	//Animate moving pieces?
 }
 
-void ChessPieceManager::updateMousePosition(const sf::Vector2f screenposition, const MouseEvent mouseEvent) {
-
-	switch (mouseEvent)
-	{
-	case MouseEvent::MouseDown:
-		startSelect(screenposition);
-		break;
-	case MouseEvent::MouseUp:
-		endSelect(screenposition);
-		break;
-	case MouseEvent::MouseMove:
-		movePiece(screenposition);
-		break;
-	default:
-		break;
-	}
-}
-
-void ChessPieceManager::startSelect(const sf::Vector2f screenposition)
-{
-	sf::Vector2i pos = screenToBoard(screenposition);
-
-	ChessPiece* piece = getClickedPiece(screenposition);
-	if (piece)
-	{
-		m_moveAction.movingPiece = piece;
-		m_moveAction.moveFrom = ChessPosition(pos.x, pos.y);
-		m_moveAction.m_isMoving = true;
-
-		snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
-	}
-}
-
-inline void ChessPieceManager::movePiece(const sf::Vector2f screenposition)
-{
-	if (m_moveAction.m_isMoving)
-	{
-		auto clampedMouse = clampToBoard(screenposition);
-		m_moveAction.movingPiece->setCenter(clampedMouse.x, clampedMouse.y);
-	}
-}
-
-void ChessPieceManager::endSelect(const sf::Vector2f screenposition)
-{
-	if (!m_moveAction.movingPiece)
-		return;
-
-	sf::Vector2i pos = screenToBoard(screenposition);
-	m_moveAction.moveTo = ChessPosition(pos.x, pos.y);
-
-	//Piece has been selected but not moved
-	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
-		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
-		m_moveAction.m_isMoving = false;
-	}
-	//Piece has been selected and moved
-	else {
-		//Try to check if a move is valid...
-		snapEntityToBoard(m_moveAction.moveTo, m_moveAction.movingPiece);
-		m_moveAction.reset();
-	}
-}
-
 void ChessPieceManager::inputMove(const ChessMove& newMove, bool animate)
 {
 	newMove.getPositionFrom();
@@ -159,6 +96,60 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 	//Render again to ensure it's always on top.
 	if (m_moveAction.m_isMoving && m_moveAction.hasSelection())
 		m_moveAction.movingPiece->render(target);
+}
+
+void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const ChessBoard & board)
+{
+	sf::Vector2i pos = screenToBoard(screenPosition);
+
+	ChessPiece* piece = getClickedPiece(screenPosition);
+	if (!piece) return;
+
+	if (m_moveAction.hasSelection() &&
+		piece->getColour() != m_moveAction.movingPiece->getColour())
+		return;
+
+	m_moveAction.movingPiece = piece;
+	m_moveAction.moveFrom = ChessPosition(pos.x, pos.y);
+	m_moveAction.m_isMoving = true;
+
+	snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
+	//auto possibleMoves = board.getPossibleMoves(m_moveAction.moveFrom);
+	//foreach... gather and draw the valid moves on board...
+
+}
+
+void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
+{
+	if (m_moveAction.m_isMoving)
+	{
+		auto clampedMouse = clampToBoard(screenPosition);
+		m_moveAction.movingPiece->setCenter(clampedMouse.x, clampedMouse.y);
+	}
+}
+
+void ChessPieceManager::endSelection(const sf::Vector2f screenPosition, const ChessBoard& board)
+{
+	if (!m_moveAction.hasSelection())
+		return;
+
+	sf::Vector2i pos = screenToBoard(screenPosition);
+	m_moveAction.moveTo = ChessPosition(pos.x, pos.y);
+
+	//Piece has been selected but not moved
+	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
+		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
+		m_moveAction.m_isMoving = false;
+	}
+	//Piece has been selected and moved
+	else {
+		//Check if the move is in the list of valid moves, else snap back.
+		snapEntityToBoard(m_moveAction.moveTo, m_moveAction.movingPiece);
+		m_moveAction.reset();
+
+		//Disable rendering of markers...
+		//Clear/Overwrite possible moves list...
+	}
 }
 
 void ChessPieceManager::reset(char* const chessBoard)

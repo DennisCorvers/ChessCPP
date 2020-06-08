@@ -2,7 +2,7 @@
 #include "ChessPosition.h"
 #include "SFML/Graphics.hpp"
 
-
+class ChessBoard;
 class ChessPiece;
 class Entity;
 struct ChessMove;
@@ -48,10 +48,6 @@ private:
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
 
-	void startSelect(const sf::Vector2f screenposition);
-	inline void movePiece(const sf::Vector2f screenposition);
-	void endSelect(const sf::Vector2f screenposition);
-
 public:
 	ChessPieceManager(const sf::FloatRect boardSizes, const sf::Texture& texture);
 	~ChessPieceManager();
@@ -64,7 +60,9 @@ public:
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget* const target);
 
-	void updateMousePosition(const sf::Vector2f screenposition, const MouseEvent mouseEvent);
+	void startSelection(const sf::Vector2f screenPosition, const ChessBoard& board);
+	void updateSelection(const sf::Vector2f screenPosition);
+	void endSelection(const sf::Vector2f screenPosition, const ChessBoard& board);
 
 	void reset(char* const chessBoard);
 	void inputMove(const ChessMove & newMove, bool animate);

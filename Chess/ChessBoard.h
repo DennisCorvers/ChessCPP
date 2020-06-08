@@ -25,6 +25,8 @@ private:
 	const sf::FloatRect m_boardSizes;
 	std::map<std::string, sf::Texture>& textures;
 
+	std::vector<ChessPosition> m_validPositions;
+
 public:
 	ChessBoard(sf::FloatRect boardsize, std::map<std::string, sf::Texture>& textures);
 	virtual ~ChessBoard() override;
@@ -36,6 +38,7 @@ public:
 	virtual void render(sf::RenderTarget* const target) override;
 
 	void updateMousePosition(const sf::Vector2f screenPosition, const MouseEvent mEvent);
-	bool tryMove(const ChessMove move);
+	bool validateMove(const ChessMove& move);
+	std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition);
 };
 

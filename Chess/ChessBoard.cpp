@@ -6,8 +6,6 @@ ChessBoard::ChessBoard(sf::FloatRect boardsize, std::map<std::string, sf::Textur
 {
 	m_sprite.setTexture(textures["BOARD"]);
 	m_pieceManager = new ChessPieceManager(boardsize, textures["PIECES"]);
-
-
 }
 
 ChessBoard::~ChessBoard()
@@ -47,11 +45,19 @@ void ChessBoard::render(sf::RenderTarget* const target)
 
 void ChessBoard::updateMousePosition(const sf::Vector2f screenPosition, const MouseEvent mEvent)
 {
-	m_pieceManager->updateMousePosition(screenPosition, mEvent);
-
+	switch (mEvent)
+	{
+	case MouseEvent::MouseDown:
+		m_pieceManager->startSelection(screenPosition, *this);
+		break;
+	case MouseEvent::MouseMove:
+		m_pieceManager->updateSelection(screenPosition);
+		break;
+	case MouseEvent::MouseUp:
+		m_pieceManager->endSelection(screenPosition, *this);
+		break;
+	default:
+		break;
+	}
 }
 
-bool ChessBoard::tryMove(const ChessMove move)
-{
-	return false;
-}
