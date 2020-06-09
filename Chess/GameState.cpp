@@ -1,6 +1,7 @@
 #include "GameState.h"
-#include "ChessBoard.h"
+
 #include "EventManager.h"
+#include "BoardManager.h"
 
 void GameState::initTextures()
 {
@@ -20,15 +21,15 @@ void GameState::initFonts()
 void GameState::initGame()
 {
 	sf::FloatRect boardSizes(28, 28, 56, 56);
-	m_board = new ChessBoard(boardSizes, textures);
-	m_board->resetBoard();
+	m_boardManager = new BoardManager(boardSizes, textures);
+	m_boardManager->resetGame();
 }
 
 void GameState::initView()
 {
 	view.setSize(sf::Vector2f(stateData->window->getSize().x, stateData->window->getSize().y));
 	//view.setCenter(sf::Vector2f(window->getSize().x / 2.f, window->getSize().y / 2.f));
-	view.setCenter(m_board->getCenter()); //Focus on the centre of the board.
+	view.setCenter(m_boardManager->getBoardCenter()); //Focus on the centre of the board.
 }
 
 GameState::GameState(StateData* data)
@@ -43,7 +44,7 @@ GameState::GameState(StateData* data)
 
 GameState::~GameState()
 {
-	delete m_board;
+	delete m_boardManager;
 }
 
 void GameState::updateView(const float & deltaTime)
@@ -57,16 +58,18 @@ void GameState::updateInput(const float & deltaTime)
 		if (nextEvent.keyCode == sf::Mouse::Left) {
 			sf::Vector2f mousePos = EventManager::GetPixelPosition(*stateData->window, view);
 			if (nextEvent.eventType == MyEventType::MouseDown) {
-				m_board->updateMousePosition(mousePos, MouseEvent::MouseDown);
+				m_boardManager->startSelection(mousePos, PieceColour::Black);
+				//m_board->updateMousePosition(mousePos, MouseEvent::MouseDown);
 			}
 
 			if (nextEvent.eventType == MyEventType::MouseUp) {
-				m_board->updateMousePosition(mousePos, MouseEvent::MouseUp);
+				m_boardManager->endSelection(mousePos);
+				//m_board->updateMousePosition(mousePos, MouseEvent::MouseUp);
 			}
 		}
 
 		if (nextEvent.eventType == MyEventType::KeyUp && nextEvent.keyCode == sf::Keyboard::R) {
-			m_board->resetBoard();
+			m_boardManager->resetGame();
 		}
 	}
 }
@@ -75,15 +78,15 @@ void GameState::update(const float & deltaTime)
 {
 	updateInput(deltaTime);
 
-	if (m_board->hasPieceSelected()) {
+	if (m_boardManager->hasPieceSelected()) {
 		sf::Vector2f position = EventManager::GetPixelPosition(*stateData->window, view);
-		m_board->updateMousePosition(position, MouseEvent::MouseMove);
+		m_boardManager->updateMousePosition(position);
 	}
 }
 
 void GameState::render(sf::RenderTarget * target)
 {
-	m_board->render(target);
+	m_boardManager->render(target);
 
 	target->setView(view);
 }

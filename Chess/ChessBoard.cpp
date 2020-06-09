@@ -1,21 +1,38 @@
 #include "ChessBoard.h"
+#include "Enums.h"
 
-
-ChessBoard::ChessBoard(sf::FloatRect boardsize, std::map<std::string, sf::Texture>& textures)
-	: textures(textures), m_boardSizes(boardsize)
+ChessBoard::ChessBoard(const sf::Texture & boardTexture, const char(&boardData)[SIZE])
+	: m_boardTexture(boardTexture)
 {
-	m_sprite.setTexture(textures["BOARD"]);
-	m_pieceManager = new ChessPieceManager(boardsize, textures["PIECES"]);
+	m_sprite.setTexture(boardTexture);
+	m_defaultBoard = boardData;
 }
 
 ChessBoard::~ChessBoard()
+{	}
+
+const char * ChessBoard::getBoard() const
 {
-	delete m_pieceManager;
+	return m_currentBoard;
 }
 
-bool ChessBoard::hasPieceSelected() const
+bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColour playerColour) const
 {
-	return m_pieceManager->hasSelection();
+	char piece = m_currentBoard[position.getY() * 8 + position.getX()];
+
+	if (playerColour == PieceColour::Black) {
+		return piece < 0;
+	}
+	else {
+		return piece > 1;
+	}
+
+	return false;
+}
+
+bool ChessBoard::inputMove(const ChessMove newMove)
+{
+	return false;
 }
 
 void ChessBoard::resetBoard()
@@ -25,39 +42,22 @@ void ChessBoard::resetBoard()
 		for (char y = 0; y < 8; y++)
 		{
 			int index = x * 8 + y;
-			m_board[index] = BoardSettings::DEFAULTBOARD[y][x];
+			m_currentBoard[index] = m_defaultBoard[index];
 		}
 	}
-	m_pieceManager->reset(m_board);
 }
 
 void ChessBoard::update(const float& deltaTime)
 {
-	m_pieceManager->update(deltaTime);
 }
 
 void ChessBoard::render(sf::RenderTarget* const target)
 {
 	target->draw(m_sprite);
-
-	m_pieceManager->render(target);
 }
 
-void ChessBoard::updateMousePosition(const sf::Vector2f screenPosition, const MouseEvent mEvent)
+std::vector<ChessPosition> ChessBoard::getValidPositions(const ChessPosition & selectedPosition) const
 {
-	switch (mEvent)
-	{
-	case MouseEvent::MouseDown:
-		m_pieceManager->startSelection(screenPosition, *this);
-		break;
-	case MouseEvent::MouseMove:
-		m_pieceManager->updateSelection(screenPosition);
-		break;
-	case MouseEvent::MouseUp:
-		m_pieceManager->endSelection(screenPosition, *this);
-		break;
-	default:
-		break;
-	}
+	return std::vector<ChessPosition>();
 }
 

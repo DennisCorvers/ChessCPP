@@ -11,7 +11,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, const sf::T
 	m_moveAction.movingPiece = NULL;
 	m_moveAction.m_isMoving = false;
 
-	m_boardBoundaries = sf::Vector2f(m_boardSizes.left + 8 * m_boardSizes.width - 1, m_boardSizes.top + 8 * m_boardSizes.height - 1);
+	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
 	for (char i = 0; i < PIECECOUNT; i++) {
 		m_chessPieces[i] = new ChessPiece(PieceColour::Black, PieceType::Pawn, texture);
@@ -34,8 +34,15 @@ bool ChessPieceManager::hasSelection()
 	return m_moveAction.m_isMoving;
 }
 
-void ChessPieceManager::initialize(char* const chessBoard)
+sf::FloatRect ChessPieceManager::getBoardSizes()
 {
+	return m_boardSizes;
+}
+
+void ChessPieceManager::reset(const char* const chessBoard)
+{
+	m_moveAction.reset();
+
 	char pieceCount = 0;
 	for (char x = 0; x < 8; x++)
 	{
@@ -50,7 +57,7 @@ void ChessPieceManager::initialize(char* const chessBoard)
 			m_chessPieces[pieceCount]->isEnabled = true;
 			m_chessPieces[pieceCount]->transform(colour, type);
 
-			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
+			sf::Vector2f pos = boardToScreen(sf::Vector2i(y, x));
 			m_chessPieces[pieceCount]->setCenter(pos.x, pos.y);
 
 			pieceCount++;
@@ -72,14 +79,22 @@ void ChessPieceManager::update(const float & deltaTime)
 	//Animate moving pieces?
 }
 
-void ChessPieceManager::inputMove(const ChessMove& newMove, bool animate)
+void ChessPieceManager::inputMove(const ChessMove newMove, bool animate)
 {
-	newMove.getPositionFrom();
+	inputMove(newMove.getPositionFrom(), newMove.getPositionTo(), animate);
 }
 
-void ChessPieceManager::inputMove(const ChessPosition & posFrom, const ChessPosition & posTo, bool animate)
+void ChessPieceManager::inputMove(const ChessPosition posFrom, const ChessPosition posTo, bool animate)
 {
 	//Input remote moves/replay moves that should be animated/set directly
+	ChessPiece* pieceFrom = getClickedPiece(boardToScreen(posFrom));
+	ChessPiece* pieceTo = getClickedPiece(boardToScreen(posTo));
+
+	if (pieceFrom)
+		snapEntityToBoard(posTo, pieceFrom);
+
+	if (pieceTo)
+		pieceTo->isEnabled = false;
 }
 
 void ChessPieceManager::render(sf::RenderTarget* const target)
@@ -100,6 +115,7 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 
 void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const ChessBoard & board)
 {
+	//Change selection from Vector2f to ChessPosition
 	sf::Vector2i pos = screenToBoard(screenPosition);
 
 	ChessPiece* piece = getClickedPiece(screenPosition);
@@ -143,8 +159,11 @@ void ChessPieceManager::endSelection(const sf::Vector2f screenPosition, const Ch
 	}
 	//Piece has been selected and moved
 	else {
-		//Check if the move is in the list of valid moves, else snap back.
-		snapEntityToBoard(m_moveAction.moveTo, m_moveAction.movingPiece);
+
+		//Check if move is valid...
+
+		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
+		inputMove(m_moveAction.moveFrom, m_moveAction.moveTo, false);
 		m_moveAction.reset();
 
 		//Disable rendering of markers...
@@ -152,11 +171,12 @@ void ChessPieceManager::endSelection(const sf::Vector2f screenPosition, const Ch
 	}
 }
 
-void ChessPieceManager::reset(char* const chessBoard)
+const bool ChessPieceManager::boundsContains(float x, float y) const
 {
-	m_moveAction.reset();
-	initialize(chessBoard);
+	return m_boardCollider.contains(x, y);
 }
+
+
 
 void ChessPieceManager::snapEntityToBoard(const ChessPosition newPosition, Entity* const piece)
 {
@@ -199,6 +219,9 @@ sf::Vector2i ChessPieceManager::screenToBoard(const sf::Vector2f mousePosition) 
 	return sf::Vector2i(xPos, yPos);
 }
 
+sf::Vector2f ChessPieceManager::boardToScreen(const ChessPosition boardPosition) const {
+	return boardToScreen(sf::Vector2i(boardPosition.getX(), boardPosition.getY()));
+}
 sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) const
 {
 	sf::Vector2f pos(
@@ -211,8 +234,8 @@ sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) 
 sf::Vector2f ChessPieceManager::clampToBoard(const sf::Vector2f mousePosition) const
 {
 	return sf::Vector2f(
-		Math::clamp(mousePosition.x, m_boardSizes.left, m_boardBoundaries.x),
-		Math::clamp(mousePosition.y, m_boardSizes.top, m_boardBoundaries.y)
+		Math::clamp(mousePosition.x, m_boardSizes.left, m_boardCollider.width + m_boardCollider.left),
+		Math::clamp(mousePosition.y, m_boardSizes.top, m_boardCollider.height + m_boardCollider.top)
 	);
 }
 

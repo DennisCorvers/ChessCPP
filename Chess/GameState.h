@@ -1,15 +1,15 @@
 #pragma once
 #include "State.h"
-#include "ChessBoard.h"
 
-struct MyEvent;
+
+class BoardManager;
 
 class GameState : public State
 {
 private:
 	sf::View view;
 
-	ChessBoard* m_board;
+	BoardManager* m_boardManager;
 
 	sf::Font m_font;
 
@@ -17,9 +17,6 @@ private:
 	void initFonts();
 	void initGame();
 	void initView();
-
-	void startDragging(const MyEvent& nextEvent);
-	void stopDragging(const MyEvent& nextEvent);
 
 public:
 	GameState(StateData* data);

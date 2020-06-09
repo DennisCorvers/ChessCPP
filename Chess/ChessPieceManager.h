@@ -34,7 +34,7 @@ private:
 	MoveAction m_moveAction;
 	ChessPiece* m_chessPieces[PIECECOUNT];
 	sf::FloatRect m_boardSizes;
-	sf::Vector2f m_boardBoundaries;
+	sf::FloatRect m_boardCollider;
 
 	sf::RectangleShape m_selectionMarker;
 	sf::RectangleShape m_warningMarker;
@@ -45,17 +45,19 @@ private:
 	ChessPiece* getClickedPiece(const sf::Vector2f clickPosition) const;
 
 	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
+	sf::Vector2f boardToScreen(const ChessPosition boardPosition) const;
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
+
+	void initialize(const char* const chessboard);
+	void initMarkers();
 
 public:
 	ChessPieceManager(const sf::FloatRect boardSizes, const sf::Texture& texture);
 	~ChessPieceManager();
 
 	bool hasSelection();
-
-	void initialize(char* const chessboard);
-	void initMarkers();
+	sf::FloatRect getBoardSizes();
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget* const target);
@@ -64,8 +66,10 @@ public:
 	void updateSelection(const sf::Vector2f screenPosition);
 	void endSelection(const sf::Vector2f screenPosition, const ChessBoard& board);
 
-	void reset(char* const chessBoard);
-	void inputMove(const ChessMove & newMove, bool animate);
-	void inputMove(const ChessPosition& posFrom, const ChessPosition& posTo, bool animate);
+	const bool boundsContains(float x, float y) const;
+
+	void reset(const char* const chessBoard);
+	void inputMove(const ChessMove newMove, bool animate);
+	void inputMove(const ChessPosition posFrom, const ChessPosition posTo, bool animate);
 };
 
