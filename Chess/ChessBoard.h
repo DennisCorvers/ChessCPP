@@ -24,6 +24,8 @@ private:
 	char m_currentBoard[SIZE];
 	const char* m_defaultBoard;
 	sf::Texture m_boardTexture;
+
+	void applyMove(const ChessMove newMove);
 	
 public:
 	ChessBoard(const sf::Texture& boardTexture, const char(&boardData)[SIZE]);
@@ -33,7 +35,7 @@ public:
 
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
 
-	bool inputMove(const ChessMove newMove);
+	bool inputMove(const ChessMove newMove, const std::vector<ChessPosition>* possiblePositions);
 
 	void resetBoard();
 	virtual void update(const float& deltaTime) override;

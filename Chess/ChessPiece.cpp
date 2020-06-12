@@ -15,6 +15,9 @@ ChessPiece::~ChessPiece()
 
 void ChessPiece::transform(const PieceColour colour, const PieceType type)
 {
+	if (getType() == type && getColour() == colour)
+		return;
+
 	m_pieceData = (char)type;
 	if (colour == PieceColour::Black) {
 		m_pieceData *= -1;

@@ -8,6 +8,7 @@ private:
 	ChessPosition m_positionTo;
 
 public:
+	ChessMove();
 	ChessMove(ChessPosition posFrom, ChessPosition posTo);
 
 	ChessPosition getPositionFrom() const;

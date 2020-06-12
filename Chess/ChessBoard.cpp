@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "ChessBoard.h"
 #include "Enums.h"
 
@@ -30,8 +32,31 @@ bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColou
 	return false;
 }
 
-bool ChessBoard::inputMove(const ChessMove newMove)
+void ChessBoard::applyMove(const ChessMove newMove)
 {
+	//Add special moves...
+	int indexFrom = newMove.getPositionFrom().getX() * 8 + newMove.getPositionFrom().getY();
+	int indexTo = newMove.getPositionTo().getX() * 8 + newMove.getPositionTo().getY();
+
+	char piece = m_currentBoard[indexFrom];
+	m_currentBoard[indexFrom] = 0;
+	m_currentBoard[indexTo] = piece;
+}
+
+bool ChessBoard::inputMove(const ChessMove newMove, const std::vector<ChessPosition>* possiblePositions = nullptr)
+{
+	if (possiblePositions == nullptr)
+		possiblePositions = &getValidPositions(newMove.getPositionFrom());
+
+	for (auto it = possiblePositions->begin(); it != possiblePositions->end(); ++it)
+	{
+		if (newMove.getPositionTo() != *it)
+			continue;
+		else {
+			applyMove(newMove);
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -56,7 +81,7 @@ void ChessBoard::render(sf::RenderTarget* const target)
 	target->draw(m_sprite);
 }
 
-std::vector<ChessPosition> ChessBoard::getValidPositions(const ChessPosition & selectedPosition) const
+std::vector<ChessPosition> ChessBoard::getValidPositions(const ChessPosition& selectedPosition) const
 {
 	return std::vector<ChessPosition>();
 }

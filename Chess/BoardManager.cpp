@@ -28,7 +28,7 @@ sf::Vector2f BoardManager::getBoardCenter()
 void BoardManager::resetGame()
 {
 	m_board->resetBoard();
-	m_pieceManager->reset(m_board->getBoard());
+	m_pieceManager->syncPieces(m_board->getBoard(), false);
 }
 
 sf::Vector2i BoardManager::screenToBoardPosition(const sf::Vector2f screenPosition)
@@ -41,9 +41,14 @@ sf::Vector2i BoardManager::screenToBoardPosition(const sf::Vector2f screenPositi
 	return sf::Vector2i(xPos, yPos);
 }
 
-void BoardManager::inputMove(const ChessMove move, bool animate)
+bool BoardManager::inputMove(const ChessMove move, bool animate)
 {
+	bool moveApplied = m_board->inputMove(move, &m_positionCache);
+	if (moveApplied) {
+		m_pieceManager->syncPieces(m_board->getBoard(), animate);
+	}
 
+	return moveApplied;
 }
 
 void BoardManager::reverseMove(const ChessMove move, bool animate)
@@ -51,17 +56,20 @@ void BoardManager::reverseMove(const ChessMove move, bool animate)
 
 }
 
-sf::Vector2i BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour playerColour)
+void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour playerColour)
 {
 	if (!m_pieceManager->boundsContains(screenPosition.x, screenPosition.y))
-		return sf::Vector2i(-1, -1);
+		return;
 
 	auto pos = screenToBoardPosition(screenPosition);
-	if (!m_board->isValidSelection(ChessPosition(pos.x, pos.y), playerColour))
-		return sf::Vector2i(-1, -1);
+	ChessPosition newPos(pos.x, pos.y);
 
-	m_pieceManager->startSelection(screenPosition, *m_board);
-	return sf::Vector2i(-1, -1);
+	if (!m_board->isValidSelection(newPos, playerColour))
+		return;
+
+	m_positionCache = m_board->getValidPositions(newPos);
+	m_pieceManager->startSelection(screenPosition, m_positionCache);
+	return;
 }
 
 void BoardManager::updateMousePosition(const sf::Vector2f screenPosition)
@@ -69,10 +77,14 @@ void BoardManager::updateMousePosition(const sf::Vector2f screenPosition)
 	m_pieceManager->updateSelection(screenPosition);
 }
 
-sf::Vector2i BoardManager::endSelection(const sf::Vector2f screenPosition)
+void BoardManager::endSelection(const sf::Vector2f screenPosition)
 {
-	m_pieceManager->endSelection(screenPosition, *m_board);
-	return sf::Vector2i(-1, -1);
+	ChessMove newMove;
+	if (m_pieceManager->endSelection(screenPosition, newMove)) {
+		if (inputMove(newMove, false)) {
+			//Store correct move
+		}
+	}
 }
 
 void BoardManager::update(const float & deltaTime)

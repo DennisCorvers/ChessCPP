@@ -31,9 +31,14 @@ ChessPosition ChessPosition::distance(const ChessPosition & from, const ChessPos
 	return ChessPosition(abs(x), abs(y));
 }
 
-bool ChessPosition::operator==(const ChessPosition & rhs)
+bool ChessPosition::operator==(const ChessPosition & rhs) const
 {
 	return m_position == rhs.m_position;
+}
+
+bool ChessPosition::operator!=(const ChessPosition & rhs) const
+{
+	return !(*this == rhs);
 }
 
 std::ostream& operator<<(std::ostream& output, const ChessPosition& cp)
@@ -44,10 +49,6 @@ std::ostream& operator<<(std::ostream& output, const ChessPosition& cp)
 	return output << x << y;
 }
 
-bool operator==(const ChessPosition & lhs, const ChessPosition & rhs)
-{
-	return lhs.m_position == rhs.m_position;
-}
 
 
 

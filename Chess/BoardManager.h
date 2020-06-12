@@ -11,6 +11,7 @@ class BoardManager
 private:
 	ChessPieceManager* m_pieceManager;
 	ChessBoard* m_board;
+	std::vector<ChessPosition> m_positionCache;
 
 	sf::Vector2i screenToBoardPosition(const sf::Vector2f screenPosition);
 
@@ -26,15 +27,15 @@ public:
 	/**
 	Applies a chess move directly to the board without checking validity.
 	*/
-	void inputMove(const ChessMove move, bool animate);
+	bool inputMove(const ChessMove move, bool animate);
 	/**
 	Reverses the board to a previous state.
 	*/
 	void reverseMove(const ChessMove move, bool animate);
 
-	sf::Vector2i startSelection(const sf::Vector2f screenPosition, PieceColour playerColour);
+	void startSelection(const sf::Vector2f screenPosition, PieceColour playerColour);
 	void updateMousePosition(const sf::Vector2f screenPosition);
-	sf::Vector2i endSelection(const sf::Vector2f screenPosition);
+	void endSelection(const sf::Vector2f screenPosition);
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget* const target);

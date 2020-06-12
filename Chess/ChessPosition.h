@@ -14,10 +14,10 @@ public:
 
 	static ChessPosition distance(const ChessPosition& from, const ChessPosition& to);
 
-	bool operator==(const ChessPosition& rhs);
+	bool operator==(const ChessPosition& rhs) const;
+	bool operator!=(const ChessPosition& rhs) const;
 
 	friend std::ostream& operator<<(std::ostream& output, const ChessPosition& cp);
-	friend bool operator ==(const ChessPosition& lhs, const ChessPosition& rhs);
 };
 
 
