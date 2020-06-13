@@ -35,9 +35,6 @@
     <ClCompile Include="ChessMove.cpp">
       <Filter>Source Files\Mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="ChessPiece.cpp">
-      <Filter>Source Files\Mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -74,15 +71,18 @@
     <ClCompile Include="BoardManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="ChessRules.cpp">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="ChessPieceEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
       <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
     <ClInclude Include="ChessMove.h">
-      <Filter>Source Files\Mechanics</Filter>
-    </ClInclude>
-    <ClInclude Include="ChessPiece.h">
       <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -123,6 +123,12 @@
     </ClInclude>
     <ClInclude Include="BoardManager.h">
       <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessRules.h">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessPieceEntity.h">
+      <Filter>Source Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,15 +3,15 @@
 #include "ChessPosition.h"
 #include "SFML/Graphics.hpp"
 
-class ChessMove;
+struct ChessMove;
 class ChessBoard;
-class ChessPiece;
+class ChessPieceEntity;
 class Entity;
 
 struct MoveAction {
 	ChessPosition moveFrom;
 	ChessPosition moveTo;
-	ChessPiece* movingPiece;
+	ChessPieceEntity* movingPiece;
 	bool m_isMoving;
 
 	void reset() {
@@ -36,7 +36,7 @@ class ChessPieceManager
 private:
 	const static int PIECECOUNT = 32;
 	MoveAction m_moveAction;
-	ChessPiece* m_chessPieces[PIECECOUNT];
+	ChessPieceEntity* m_chessPieces[PIECECOUNT];
 	sf::FloatRect m_boardSizes;
 	sf::FloatRect m_boardCollider;
 
@@ -44,7 +44,7 @@ private:
 
 	void snapEntityToBoard(const ChessPosition newPosition, Entity* const piece);
 	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
-	ChessPiece* getClickedPiece(const sf::Vector2f clickPosition) const;
+	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
 
 	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
@@ -67,6 +67,6 @@ public:
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
 	const bool boundsContains(float x, float y) const;
-	void syncPieces(const char* const chessBoard, bool animate);
+	void syncPieces(const ChessBoard& chessBoard, bool animate);
 };
 

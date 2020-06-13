@@ -28,7 +28,7 @@ sf::Vector2f BoardManager::getBoardCenter()
 void BoardManager::resetGame()
 {
 	m_board->resetBoard();
-	m_pieceManager->syncPieces(m_board->getBoard(), false);
+	m_pieceManager->syncPieces(*m_board, false);
 }
 
 sf::Vector2i BoardManager::screenToBoardPosition(const sf::Vector2f screenPosition)
@@ -45,7 +45,7 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 {
 	bool moveApplied = m_board->inputMove(move, &m_positionCache);
 	if (moveApplied) {
-		m_pieceManager->syncPieces(m_board->getBoard(), animate);
+		m_pieceManager->syncPieces(*m_board, animate);
 	}
 
 	return moveApplied;

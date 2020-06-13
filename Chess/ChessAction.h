@@ -1,5 +1,5 @@
 #pragma once
-#include "ChessPiece.h"
+#include "ChessPieceEntity.h"
 #include "Enums.h"
 
 namespace Mechanics {

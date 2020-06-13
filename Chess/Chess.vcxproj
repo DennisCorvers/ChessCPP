@@ -146,8 +146,9 @@
     <ClCompile Include="ChessAction.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="ChessMove.cpp" />
-    <ClCompile Include="ChessPiece.cpp" />
+    <ClCompile Include="ChessPieceEntity.cpp" />
     <ClCompile Include="ChessPosition.cpp" />
+    <ClCompile Include="ChessRules.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Enums.cpp" />
@@ -164,8 +165,9 @@
     <ClInclude Include="ChessAction.h" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="ChessMove.h" />
-    <ClInclude Include="ChessPiece.h" />
+    <ClInclude Include="ChessPieceEntity.h" />
     <ClInclude Include="ChessPosition.h" />
+    <ClInclude Include="ChessRules.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enums.h" />

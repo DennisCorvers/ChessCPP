@@ -1,6 +1,7 @@
 #include "ChessPieceManager.h"
-#include "ChessPiece.h"
+#include "ChessPieceEntity.h"
 #include "ChessMove.h"
+#include "ChessBoard.h"
 #include "Enums.h"
 #include "Utils.h"
 
@@ -14,7 +15,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, const sf::T
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
 	for (char i = 0; i < PIECECOUNT; i++) {
-		m_chessPieces[i] = new ChessPiece(PieceColour::Black, PieceType::Pawn, texture);
+		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, texture);
 		m_chessPieces[i]->setScale(0.95, 0.95);
 
 		m_chessPieces[i]->isEnabled = false;
@@ -39,7 +40,7 @@ sf::FloatRect ChessPieceManager::getBoardSizes()
 	return m_boardSizes;
 }
 
-void ChessPieceManager::syncPieces(const char* const chessBoard, bool animate)
+void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 {
 	m_moveAction.reset();
 
@@ -49,7 +50,7 @@ void ChessPieceManager::syncPieces(const char* const chessBoard, bool animate)
 		for (char y = 0; y < 8; y++)
 		{
 			int i = x * 8 + y;
-			char val = chessBoard[i];
+			char val = chessBoard.getPiece(x, y);
 			if (val == 0) continue;
 
 			PieceColour colour = val < 0 ? PieceColour::Black : PieceColour::White;
@@ -57,7 +58,7 @@ void ChessPieceManager::syncPieces(const char* const chessBoard, bool animate)
 			m_chessPieces[pieceCount]->isEnabled = true;
 			m_chessPieces[pieceCount]->transform(colour, type);
 
-			sf::Vector2f pos = boardToScreen(sf::Vector2i(y, x));
+			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
 			m_chessPieces[pieceCount]->setCenter(pos.x, pos.y);
 
 			pieceCount++;
@@ -76,8 +77,8 @@ void ChessPieceManager::initMarkers()
 	for (size_t i = 0; i < PIECECOUNT; i++)
 	{
 		m_markerContainer.moveMarkers[i].setFillColor(sf::Color(0, 200, 0, 100));
-		m_markerContainer.moveMarkers[i].setRadius(m_boardSizes.width);
-		m_markerContainer.moveMarkers[i].setScale(m_boardSizes.width * .9f, m_boardCollider.height * .9f);
+		m_markerContainer.moveMarkers[i].setRadius(m_boardSizes.width / 3);
+		//m_markerContainer.moveMarkers[i].setScale(m_boardSizes.width * .9f, m_boardCollider.height * .9f);
 	}
 }
 
@@ -109,7 +110,7 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 	//Change selection from Vector2f to ChessPosition
 	sf::Vector2i pos = screenToBoard(screenPosition);
 
-	ChessPiece* piece = getClickedPiece(screenPosition);
+	ChessPieceEntity* piece = getClickedPiece(screenPosition);
 	if (!piece) return;
 
 	if (m_moveAction.hasSelection() &&
@@ -182,11 +183,11 @@ void ChessPieceManager::snapMarkerToBoard(const ChessPosition newPosition, sf::S
 	);
 }
 
-ChessPiece* ChessPieceManager::getClickedPiece(const sf::Vector2f clickPosition) const
+ChessPieceEntity* ChessPieceManager::getClickedPiece(const sf::Vector2f clickPosition) const
 {
 	for (char i = 0; i < PIECECOUNT; i++)
 	{
-		ChessPiece* piece = m_chessPieces[i];
+		ChessPieceEntity* piece = m_chessPieces[i];
 		if (!piece->isEnabled) continue;
 		if (piece->boundsContains(clickPosition.x, clickPosition.y))
 			return piece;

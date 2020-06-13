@@ -1,5 +1,5 @@
 #include <algorithm>
-
+#include "ChessRules.h"
 #include "ChessBoard.h"
 #include "Enums.h"
 
@@ -83,6 +83,6 @@ void ChessBoard::render(sf::RenderTarget* const target)
 
 std::vector<ChessPosition> ChessBoard::getValidPositions(const ChessPosition& selectedPosition) const
 {
-	return std::vector<ChessPosition>();
+	return ChessRules::getValidPositions(selectedPosition, *this);
 }
 

@@ -26,12 +26,20 @@ private:
 	sf::Texture m_boardTexture;
 
 	void applyMove(const ChessMove newMove);
-	
+
 public:
 	ChessBoard(const sf::Texture& boardTexture, const char(&boardData)[SIZE]);
 	virtual ~ChessBoard() override;
 
 	const char* getBoard() const;
+
+	inline const char getPiece(char x, char y) const {
+		return m_currentBoard[y * 8 + x];
+	}
+
+	inline const char getPiece(ChessPosition position) const {
+		return getPiece(position.getX(), position.getY());
+	}
 
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
 
