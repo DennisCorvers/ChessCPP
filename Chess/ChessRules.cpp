@@ -1,21 +1,36 @@
 #include "ChessBoard.h"
-#include "ChessRules.h"
+#include "ChessRules.h" 
 
 namespace {
-	sf::Vector2i kingMoves[8]{
-	sf::Vector2i(-1,1),
-	sf::Vector2i(0,1),
-	sf::Vector2i(1,1),
-	sf::Vector2i(1,0),
-	sf::Vector2i(1,-1),
-	sf::Vector2i(0,-1),
-	sf::Vector2i(-1,-1),
-	sf::Vector2i(-1,0)
+	const sf::Vector2i kingMoves[8]{
+		sf::Vector2i(-1,1),
+		sf::Vector2i(0,1),
+		sf::Vector2i(1,1),
+		sf::Vector2i(1,0),
+		sf::Vector2i(1,-1),
+		sf::Vector2i(0,-1),
+		sf::Vector2i(-1,-1),
+		sf::Vector2i(-1,0)
 	};
 
-	sf::Vector2i knightMoves[8]{
-
+	const sf::Vector2i knightMoves[8]{
+		sf::Vector2i(1,-2),
+		sf::Vector2i(2,-1),
+		sf::Vector2i(2,1),
+		sf::Vector2i(1,2),
+		sf::Vector2i(-1,2),
+		sf::Vector2i(-2,1),
+		sf::Vector2i(-2,-1),
+		sf::Vector2i(-2,-2)
 	};
+
+	const sf::Vector2i pawnMoves[4]{
+		sf::Vector2i(0,-1),
+		sf::Vector2i(0,-2),
+		sf::Vector2i(1,-1),
+		sf::Vector2i(-1,-1)
+	};
+
 
 	inline bool isOutOfBounds(const sf::Vector2i pos) {
 		return pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7;
@@ -29,8 +44,6 @@ namespace {
 			if (isOutOfBounds(newPos))
 				break;
 
-			//Something's on the board...
-			validMoves.push_back(ChessPosition(newPos.x, newPos.y)); continue;
 			char piece = board.getPiece(newPos.x, newPos.y);
 			if (piece != 0) {
 				if (piece > 0 && colour == PieceColour::Black)
@@ -58,7 +71,8 @@ namespace {
 	}
 
 	std::vector<ChessPosition> getPawnPositions(PieceColour colour, sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> ret(8);
+		std::vector<ChessPosition> ret;
+		ret.reserve(2);
 		//char nY = piece > 0 ? 7 - y : y;
 		//char mod = piece > 0 ? -1 : 1;
 
@@ -72,7 +86,7 @@ namespace {
 		return std::vector<ChessPosition>();
 	}
 	std::vector<ChessPosition> getRookPositions(PieceColour colour, sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves; 
+		std::vector<ChessPosition> moves;
 		moves.reserve(8);
 
 		addOrthogonal(colour, pos, board, moves);
@@ -86,7 +100,29 @@ namespace {
 		return moves;
 	}
 	std::vector<ChessPosition> getKnightPositions(PieceColour colour, sf::Vector2i pos, const ChessBoard& board) {
-		return std::vector<ChessPosition>();
+		std::vector<ChessPosition> moves;
+		moves.reserve(8);
+		
+		for (char i = 0; i < 8; i++)
+		{
+			sf::Vector2i kMove = knightMoves[i];
+			sf::Vector2i newPos(pos.x + kMove.x, pos.y + kMove.y);
+			if (isOutOfBounds(newPos))
+				continue;
+
+			//Something's on the board...
+			char piece = board.getPiece(newPos.x, newPos.y);
+			if (piece != 0) {
+				if (piece > 0 && colour == PieceColour::Black)
+					moves.push_back(ChessPosition(newPos.x, newPos.y));
+				else
+					continue;
+			}
+			else {
+				moves.push_back(ChessPosition(newPos.x, newPos.y));
+			}
+		}
+		return moves;
 	}
 	std::vector<ChessPosition> getQueenPositions(PieceColour colour, sf::Vector2i pos, const ChessBoard& board) {
 		std::vector<ChessPosition> moves;
@@ -99,8 +135,6 @@ namespace {
 	std::vector<ChessPosition> getKingPositions(PieceColour colour, sf::Vector2i pos, const ChessBoard& board) {
 		return std::vector<ChessPosition>();
 	}
-
-
 }
 
 std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & selectedPosition, const ChessBoard& board)
@@ -130,3 +164,5 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 
 	return std::vector<ChessPosition>();
 }
+
+//https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs

@@ -35,8 +35,8 @@ bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColou
 void ChessBoard::applyMove(const ChessMove newMove)
 {
 	//Add special moves...
-	int indexFrom = newMove.getPositionFrom().getX() * 8 + newMove.getPositionFrom().getY();
-	int indexTo = newMove.getPositionTo().getX() * 8 + newMove.getPositionTo().getY();
+	int indexFrom = newMove.getPositionFrom().getY() * 8 + newMove.getPositionFrom().getX();
+	int indexTo = newMove.getPositionTo().getY() * 8 + newMove.getPositionTo().getX();
 
 	char piece = m_currentBoard[indexFrom];
 	m_currentBoard[indexFrom] = 0;
