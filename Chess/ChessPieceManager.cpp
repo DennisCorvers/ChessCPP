@@ -115,10 +115,6 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
 	if (!piece) return;
 
-	if (m_moveAction.hasSelection() &&
-		piece->getColour() != m_moveAction.movingPiece->getColour())
-		return;
-
 	m_moveAction.movingPiece = piece;
 	m_moveAction.moveFrom = ChessPosition(pos.x, pos.y);
 	m_moveAction.m_isMoving = true;
