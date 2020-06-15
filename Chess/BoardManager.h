@@ -12,13 +12,12 @@ class BoardManager
 private:
 	ChessPieceManager* m_pieceManager;
 	ChessBoard* m_board;
-	std::vector<ChessPosition> m_positionCache;
 
 public:
 	BoardManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures);
 	~BoardManager();
 
-	bool hasPieceSelected();
+	bool isPieceMoving();
 	sf::Vector2f getBoardCenter();
 
 	void resetGame();

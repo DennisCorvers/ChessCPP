@@ -78,7 +78,7 @@ void GameState::update(const float & deltaTime)
 {
 	updateInput(deltaTime);
 
-	if (m_boardManager->hasPieceSelected()) {
+	if (m_boardManager->isPieceMoving()) {
 		sf::Vector2f position = EventManager::GetPixelPosition(*stateData->window, view);
 		m_boardManager->updateMousePosition(position);
 	}

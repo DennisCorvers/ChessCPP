@@ -14,13 +14,19 @@ struct MoveAction {
 	ChessPosition moveFrom;
 	ChessPosition moveTo;
 	ChessPieceEntity* movingPiece;
+	std::vector<ChessPosition> validPositions;
+
 	bool m_isMoving;
 
 	void reset() {
-		m_isMoving = false;movingPiece = nullptr;
+		m_isMoving = false;
+		movingPiece = nullptr;
 	}
 
-	bool hasSelection() { return movingPiece; }
+	bool hasSelection()
+	{
+		return movingPiece;
+	}
 };
 
 struct MoveMarkerContainer {
@@ -42,7 +48,7 @@ public:
 			m_moveMarkers[i] = moveMarker;
 	}
 
-	void moveMarker(sf::Vector2f position) {
+	inline void moveMarker(sf::Vector2f position) {
 		moveShape(m_moveMarkers[index++], position);
 	}
 
@@ -77,24 +83,23 @@ private:
 	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
 	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
 
+	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
 
+	void selectChessPiece(const MoveAction& moveData, const ChessBoard& board);
 	void initMarkers();
 
 public:
 	ChessPieceManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures);
 	virtual ~ChessPieceManager() override;
 
-	bool hasSelection();
-	sf::FloatRect getBoardSizes();
+	bool isPieceMoving();
 
 	virtual void update(const float& deltaTime) override;
 	virtual void render(sf::RenderTarget* const target) override;
 
-	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
-
-	void startSelection(const sf::Vector2f screenPosition, const std::vector<ChessPosition>& possiblePositions);
+	void startSelection(const sf::Vector2f screenPosition, const ChessBoard& board);
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 

@@ -12,15 +12,15 @@ private:
 
 protected:
 	sf::Sprite m_sprite;
+	bool m_isActive;
 
 public:
-	bool isEnabled;
+
 
 	Entity();
 	virtual ~Entity();
 
 	virtual void createSprite(sf::Texture* texture);
-
 
 	virtual const sf::Vector2f getPosition() const;
 	virtual const sf::Vector2f getCenter() const;
@@ -36,5 +36,12 @@ public:
 	virtual void update(const float& dt);
 	virtual void lateUpdate(const float& dt);
 	virtual void render(sf::RenderTarget* const target);
+
+	inline virtual void setActive(bool state) {
+		m_isActive = state;
+	}
+	inline virtual bool isActive() {
+		return m_isActive;
+	}
 };
 

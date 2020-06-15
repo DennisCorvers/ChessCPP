@@ -19,7 +19,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<st
 		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures["PIECES"]);
 		m_chessPieces[i]->setScale(0.95f, 0.95f);
 
-		m_chessPieces[i]->isEnabled = false;
+		m_chessPieces[i]->setActive(false);
 	}
 
 	initMarkers();
@@ -31,14 +31,9 @@ ChessPieceManager::~ChessPieceManager()
 		delete m_chessPieces[i];
 }
 
-bool ChessPieceManager::hasSelection()
+bool ChessPieceManager::isPieceMoving()
 {
 	return m_moveAction.m_isMoving;
-}
-
-sf::FloatRect ChessPieceManager::getBoardSizes()
-{
-	return m_boardSizes;
 }
 
 void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
@@ -52,10 +47,10 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 		{
 			int i = x * 8 + y;
 			ChessPiece val = chessBoard.getPiece(x, y);
-			if (val.isEmpty()) 
+			if (val.isEmpty())
 				continue;
 
-			m_chessPieces[pieceCount]->isEnabled = true;
+			m_chessPieces[pieceCount]->setActive(true);
 			m_chessPieces[pieceCount]->transform(val.getColour(), val.getType());
 
 			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
@@ -64,6 +59,9 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 			pieceCount++;
 		}
 	}
+
+	for (; pieceCount < PIECECOUNT; pieceCount++)
+		m_chessPieces[pieceCount]->setActive(false);
 }
 
 void ChessPieceManager::initMarkers()
@@ -105,28 +103,39 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 		m_moveAction.movingPiece->render(target);
 }
 
-void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const std::vector<ChessPosition>& possiblePositions)
+void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const ChessBoard& board)
 {
-	sf::Vector2i pos = screenToBoard(screenPosition);
+	if (!boundsContains(screenPosition.x, screenPosition.y))
+		return;
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
-	if (!piece) {
+
+	sf::Vector2i pos = screenToBoard(screenPosition);
+	ChessPosition newChessPos(pos.x, pos.y);
+
+	if (piece) {
+		if (m_moveAction.hasSelection()
+			&& piece->getColour() != m_moveAction.movingPiece->getColour()) {
+
+			if (!board.isValidPosition(newChessPos, m_moveAction.validPositions))
+				m_moveAction.reset();
+
+			return;
+		}
+		m_moveAction.moveFrom = newChessPos;
+		m_moveAction.movingPiece = piece;
+		m_moveAction.m_isMoving = true;
+		m_moveAction.validPositions = board.getValidPositions(m_moveAction.moveFrom);
+		selectChessPiece(m_moveAction, board);
+	}
+	else {
+		if (m_moveAction.hasSelection()) {
+			if (!board.isValidPosition(newChessPos, m_moveAction.validPositions))
+				m_moveAction.reset();
+			return;
+		}
 		m_moveAction.reset();
-		return;
 	}
-
-	m_moveAction.movingPiece = piece;
-	m_moveAction.moveFrom = ChessPosition(pos.x, pos.y);
-	m_moveAction.m_isMoving = true;
-
-	snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
-	for (auto it = possiblePositions.begin(); it != possiblePositions.end(); ++it)
-	{
-		ChessPosition chessPos = *it;
-		sf::Vector2f position(boardToScreen(sf::Vector2i(chessPos.getX(), chessPos.getY())));
-		m_markerContainer->moveMarker(position);
-	}
-	m_markerContainer->finalize();
 }
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
@@ -153,10 +162,9 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
 		return false;
 	}
-	else {
-		outMove = ChessMove(m_moveAction.moveFrom, m_moveAction.moveTo);
-		return true;
-	}
+
+	outMove = ChessMove(m_moveAction.moveFrom, m_moveAction.moveTo);
+	return true;
 }
 
 const bool ChessPieceManager::boundsContains(float x, float y) const
@@ -188,7 +196,7 @@ ChessPieceEntity* ChessPieceManager::getClickedPiece(const sf::Vector2f clickPos
 	for (char i = 0; i < PIECECOUNT; i++)
 	{
 		ChessPieceEntity* piece = m_chessPieces[i];
-		if (!piece->isEnabled) continue;
+		if (!piece->isActive()) continue;
 		if (piece->boundsContains(clickPosition.x, clickPosition.y))
 			return piece;
 	}
@@ -222,4 +230,15 @@ sf::Vector2f ChessPieceManager::clampToBoard(const sf::Vector2f mousePosition) c
 	);
 }
 
+void ChessPieceManager::selectChessPiece(const MoveAction & moveData, const ChessBoard & board)
+{
+	snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
+	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)
+	{
+		ChessPosition chessPos = *it;
+		sf::Vector2f position(boardToScreen(sf::Vector2i(chessPos.getX(), chessPos.getY())));
+		m_markerContainer->moveMarker(position);
+	}
+	m_markerContainer->finalize();
+}
 

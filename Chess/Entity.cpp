@@ -5,7 +5,7 @@
 
 void Entity::initialize()
 {
-	isEnabled = true;
+	setActive(true);
 }
 
 Entity::Entity()
@@ -25,13 +25,13 @@ void Entity::createSprite(sf::Texture * texture)
 
 void Entity::setPosition(const float x, const float y)
 {
-	if (isEnabled)
+	if (isActive())
 		m_sprite.setPosition(x, y);
 }
 
 void Entity::setCenter(const float x, const float y)
 {
-	if (isEnabled) {
+	if (isActive()) {
 		m_sprite.setPosition(
 			x - m_sprite.getGlobalBounds().width / 2.f,
 			y - m_sprite.getGlobalBounds().height / 2.f);
@@ -40,7 +40,7 @@ void Entity::setCenter(const float x, const float y)
 
 void Entity::setScale(const float x, const float y)
 {
-	if (isEnabled)
+	if (isActive())
 		m_sprite.setScale(x, y);
 }
 
@@ -84,6 +84,7 @@ void Entity::lateUpdate(const float& dt)
 
 void Entity::render(sf::RenderTarget* const target)
 {
-	if (isEnabled)
+	if (isActive())
 		target->draw(m_sprite);
 }
+

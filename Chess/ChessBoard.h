@@ -1,4 +1,5 @@
 #pragma once
+#include "ChessRules.h"
 #include "ChessPiece.h"
 #include "ChessMove.h"
 #include "Enums.h"
@@ -38,9 +39,10 @@ public:
 		return getPiece(position.getX(), position.getY());
 	}
 
+	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
 
-	bool inputMove(const ChessMove newMove, const std::vector<ChessPosition>* possiblePositions);
+	bool inputMove(const ChessMove newMove);
 
 	void resetBoard();
 

@@ -11,6 +11,16 @@ ChessBoard::ChessBoard(const char(&boardData)[SIZE])
 ChessBoard::~ChessBoard()
 {	}
 
+bool ChessBoard::isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const
+{
+	for (auto it = validPositions.begin(); it != validPositions.end(); ++it)
+	{
+		if (position == *it)
+			return true;
+	}
+	return false;
+}
+
 bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColour playerColour) const
 {
 	ChessPiece piece = getPiece(position);
@@ -29,20 +39,14 @@ void ChessBoard::applyMove(const ChessMove newMove)
 	m_currentBoard[indexTo] = piece;
 }
 
-bool ChessBoard::inputMove(const ChessMove newMove, const std::vector<ChessPosition>* possiblePositions = nullptr)
+bool ChessBoard::inputMove(const ChessMove newMove)
 {
-	if (possiblePositions == nullptr)
-		possiblePositions = &getValidPositions(newMove.getPositionFrom());
-
-	for (auto it = possiblePositions->begin(); it != possiblePositions->end(); ++it)
+	if (isValidPosition(newMove.getPositionTo(), getValidPositions(newMove.getPositionFrom())))
 	{
-		if (newMove.getPositionTo() != *it)
-			continue;
-		else {
-			applyMove(newMove);
-			return true;
-		}
+		applyMove(newMove);
+		return true;
 	}
+
 	return false;
 }
 
