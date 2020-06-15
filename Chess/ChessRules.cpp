@@ -24,7 +24,7 @@ namespace {
 		sf::Vector2i(-1,2),
 		sf::Vector2i(-2,1),
 		sf::Vector2i(-2,-1),
-		sf::Vector2i(-2,-2)
+		sf::Vector2i(-1,-2)
 	};
 
 	const MoveSet pawnMoves{
@@ -150,7 +150,7 @@ namespace {
 	}
 	std::vector<ChessPosition> getKnightPositions(sf::Vector2i pos, const ChessBoard& board) {
 		std::vector<ChessPosition> moves;
-		moves.reserve(8);
+		moves.reserve(4);
 
 		addMoveset(pos, board, moves, knightMoves);
 		return moves;
@@ -165,10 +165,10 @@ namespace {
 	}
 	std::vector<ChessPosition> getKingPositions(sf::Vector2i pos, const ChessBoard& board) {
 		std::vector<ChessPosition> moves;
-		moves.reserve(8);
+		moves.reserve(4);
 
 		addMoveset(pos, board, moves, kingMoves);
-		return std::vector<ChessPosition>();
+		return moves;
 	}
 }
 

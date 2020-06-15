@@ -68,18 +68,16 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 
 void ChessPieceManager::initMarkers()
 {
-	m_markerContainer.selectionMarker.setFillColor(sf::Color(246, 248, 121, 255));
-	m_markerContainer.selectionMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
+	m_selectionMarker.setFillColor(sf::Color(246, 248, 121, 255));
+	m_selectionMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
 
-	m_markerContainer.warningMarker.setFillColor(sf::Color(200, 0, 0, 255));
-	m_markerContainer.warningMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
+	m_warningMarker.setFillColor(sf::Color(200, 0, 0, 255));
+	m_warningMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
 
-	for (size_t i = 0; i < PIECECOUNT; i++)
-	{
-		m_markerContainer.moveMarkers[i].setFillColor(sf::Color(0, 200, 0, 100));
-		m_markerContainer.moveMarkers[i].setRadius(m_boardSizes.width / 3);
-		//m_markerContainer.moveMarkers[i].setScale(m_boardSizes.width * .9f, m_boardCollider.height * .9f);
-	}
+	sf::CircleShape moveMarker;
+	moveMarker.setFillColor(sf::Color(0, 200, 0, 100));
+	moveMarker.setRadius(m_boardSizes.width / 3);
+	m_markerContainer = std::make_unique<MoveMarkerContainer>(moveMarker);
 }
 
 void ChessPieceManager::update(const float & deltaTime)
@@ -93,10 +91,10 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 
 	//Render overlays for possible moves etc...
 	if (m_moveAction.hasSelection())
-		target->draw(m_markerContainer.selectionMarker);
-
-	for (char i = 0; i < m_markerContainer.count; i++)
-		target->draw(m_markerContainer.moveMarkers[i]);
+	{
+		target->draw(m_selectionMarker);
+		m_markerContainer->render(target);
+	}
 
 	//Rendering of all pieces
 	for (char i = 0; i < PIECECOUNT; i++)
@@ -109,22 +107,26 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 
 void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const std::vector<ChessPosition>& possiblePositions)
 {
-	//Change selection from Vector2f to ChessPosition
 	sf::Vector2i pos = screenToBoard(screenPosition);
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
-	if (!piece) return;
+	if (!piece) {
+		m_moveAction.reset();
+		return;
+	}
 
 	m_moveAction.movingPiece = piece;
 	m_moveAction.moveFrom = ChessPosition(pos.x, pos.y);
 	m_moveAction.m_isMoving = true;
 
-	snapMarkerToBoard(m_moveAction.moveFrom, m_markerContainer.selectionMarker);
+	snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
 	for (auto it = possiblePositions.begin(); it != possiblePositions.end(); ++it)
 	{
-		snapMarkerToBoard(*it, m_markerContainer.moveMarkers[m_markerContainer.count]);
-		m_markerContainer.count++;
+		ChessPosition chessPos = *it;
+		sf::Vector2f position(boardToScreen(sf::Vector2i(chessPos.getX(), chessPos.getY())));
+		m_markerContainer->moveMarker(position);
 	}
+	m_markerContainer->finalize();
 }
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)

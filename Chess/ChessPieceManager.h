@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include <memory>
 #include "ChessPosition.h"
 #include "Entity.h"
 
@@ -23,10 +24,37 @@ struct MoveAction {
 };
 
 struct MoveMarkerContainer {
-	sf::RectangleShape selectionMarker;
-	sf::RectangleShape warningMarker;
-	sf::CircleShape moveMarkers[32];
-	int count = 0;
+private:
+	sf::CircleShape m_moveMarkers[32];
+	int index = 0;
+	int renderCount = 0;
+
+	inline void moveShape(sf::Shape& shape, sf::Vector2f position) {
+		shape.setPosition(
+			position.x - shape.getGlobalBounds().width / 2.f,
+			position.y - shape.getGlobalBounds().height / 2.f
+		);
+	}
+
+public:
+	MoveMarkerContainer(const sf::CircleShape& moveMarker) {
+		for (size_t i = 0; i < 32; i++)
+			m_moveMarkers[i] = moveMarker;
+	}
+
+	void moveMarker(sf::Vector2f position) {
+		moveShape(m_moveMarkers[index++], position);
+	}
+
+	void finalize() {
+		renderCount = index;
+		index = 0;
+	}
+
+	void render(sf::RenderTarget* const target) {
+		for (size_t i = 0; i < renderCount; i++)
+			target->draw(m_moveMarkers[i]);
+	}
 };
 
 /**
@@ -41,7 +69,9 @@ private:
 	sf::FloatRect m_boardSizes;
 	sf::FloatRect m_boardCollider;
 
-	MoveMarkerContainer m_markerContainer;
+	std::unique_ptr<MoveMarkerContainer> m_markerContainer;
+	sf::RectangleShape m_selectionMarker;
+	sf::RectangleShape m_warningMarker;
 
 	void snapEntityToBoard(const ChessPosition newPosition, Entity* const piece);
 	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
