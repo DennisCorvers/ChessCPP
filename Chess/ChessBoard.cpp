@@ -13,23 +13,11 @@ ChessBoard::ChessBoard(const sf::Texture & boardTexture, const char(&boardData)[
 ChessBoard::~ChessBoard()
 {	}
 
-const char * ChessBoard::getBoard() const
-{
-	return m_currentBoard;
-}
-
 bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColour playerColour) const
 {
-	char piece = m_currentBoard[position.getY() * 8 + position.getX()];
+	ChessPiece piece = getPiece(position);
 
-	if (playerColour == PieceColour::Black) {
-		return piece < 0;
-	}
-	else {
-		return piece > 1;
-	}
-
-	return false;
+	return piece.getColour() == playerColour;
 }
 
 void ChessBoard::applyMove(const ChessMove newMove)
@@ -38,7 +26,7 @@ void ChessBoard::applyMove(const ChessMove newMove)
 	int indexFrom = newMove.getPositionFrom().getY() * 8 + newMove.getPositionFrom().getX();
 	int indexTo = newMove.getPositionTo().getY() * 8 + newMove.getPositionTo().getX();
 
-	char piece = m_currentBoard[indexFrom];
+	ChessPiece piece = m_currentBoard[indexFrom];
 	m_currentBoard[indexFrom] = 0;
 	m_currentBoard[indexTo] = piece;
 }

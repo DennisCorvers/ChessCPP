@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "ChessPiece.h"
 #include "ChessMove.h"
 #include "Enums.h"
 
@@ -21,7 +22,7 @@ class ChessBoard : public Entity
 private:
 	const static char SIZE = 64;
 
-	char m_currentBoard[SIZE];
+	ChessPiece m_currentBoard[SIZE];
 	const char* m_defaultBoard;
 	sf::Texture m_boardTexture;
 
@@ -31,13 +32,11 @@ public:
 	ChessBoard(const sf::Texture& boardTexture, const char(&boardData)[SIZE]);
 	virtual ~ChessBoard() override;
 
-	const char* getBoard() const;
-
-	inline const char getPiece(char x, char y) const {
+	inline const ChessPiece getPiece(char x, char y) const {
 		return m_currentBoard[y * 8 + x];
 	}
 
-	inline const char getPiece(ChessPosition position) const {
+	inline const ChessPiece getPiece(ChessPosition position) const {
 		return getPiece(position.getX(), position.getY());
 	}
 

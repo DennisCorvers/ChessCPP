@@ -1,22 +1,34 @@
 #pragma once
-//#include "ChessMove.h"
 #include "Entity.h"
 #include "Enums.h"
 
-
-
-class ChessPiece : public Entity
+class ChessPiece
 {
 private:
 	char m_pieceData;
 
 public:
-	ChessPiece(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet);
-	void transform(const PieceColour colour, const PieceType type);
-
+	ChessPiece();
+	ChessPiece(const char pieceValue);
 	virtual ~ChessPiece();
 
-	PieceColour getColour() const;
-	PieceType getType() const;
+	inline bool isEmpty() const {
+		return m_pieceData == 0;
+	}
+	void reset();
+	void setTo(const ChessPiece piece);
+
+	inline PieceColour getColour() const
+	{
+		if (m_pieceData < 0) { return PieceColour::Black; }
+		return PieceColour::White;
+	}
+	inline PieceType getType() const
+	{
+		return static_cast<PieceType>(abs(m_pieceData));
+	}
+
+	void operator=(const int& value);
 };
+
 

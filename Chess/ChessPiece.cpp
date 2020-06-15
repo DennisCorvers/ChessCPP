@@ -1,57 +1,31 @@
 #include "ChessPiece.h"
-#include "ChessBoard.h"
 #include "Enums.h"
 
-ChessPiece::ChessPiece(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet)
-{
-	m_sprite.setTexture(textureSheet);
+ChessPiece::ChessPiece() {
+	m_pieceData = 0;
+}
 
-	transform(colour, type);
+ChessPiece::ChessPiece(const char pieceValue)
+{
+	m_pieceData = pieceValue;
 }
 
 ChessPiece::~ChessPiece()
 {
 }
 
-void ChessPiece::transform(const PieceColour colour, const PieceType type)
+void ChessPiece::reset()
 {
-	if (getType() == type && getColour() == colour)
-		return;
-
-	m_pieceData = (char)type;
-	if (colour == PieceColour::Black) {
-		m_pieceData *= -1;
-	}
-
-	int size = 56;
-	int yPos = colour == PieceColour::White ? 1 : 0;
-	int xPos = 0;
-
-	switch (type) {
-	case PieceType::Pawn:
-		xPos = 5; break;
-	case PieceType::Rook:
-		xPos = 0; break;
-	case PieceType::Knight:
-		xPos = 1; break;
-	case PieceType::Bishop:
-		xPos = 2; break;
-	case PieceType::Queen:
-		xPos = 3; break;
-	case PieceType::King:
-		xPos = 4; break;
-	}
-
-	m_sprite.setTextureRect(sf::IntRect(size * xPos, size * yPos, size, size));
+	m_pieceData = 0;
 }
 
-PieceColour ChessPiece::getColour() const
+void ChessPiece::setTo(const ChessPiece piece)
 {
-	if (m_pieceData < 0) { return PieceColour::Black; }
-	return PieceColour::White;
+	m_pieceData = piece.m_pieceData;
 }
 
-PieceType ChessPiece::getType() const
+void ChessPiece::operator=(const int & value)
 {
-	return PieceType(std::abs(m_pieceData));
+	m_pieceData = value;
 }
+

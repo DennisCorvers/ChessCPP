@@ -16,7 +16,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, const sf::T
 
 	for (char i = 0; i < PIECECOUNT; i++) {
 		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, texture);
-		m_chessPieces[i]->setScale(0.95, 0.95);
+		m_chessPieces[i]->setScale(0.95f, 0.95f);
 
 		m_chessPieces[i]->isEnabled = false;
 	}
@@ -50,13 +50,12 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 		for (char y = 0; y < 8; y++)
 		{
 			int i = x * 8 + y;
-			char val = chessBoard.getPiece(x, y);
-			if (val == 0) continue;
+			ChessPiece val = chessBoard.getPiece(x, y);
+			if (val.isEmpty()) 
+				continue;
 
-			PieceColour colour = val < 0 ? PieceColour::Black : PieceColour::White;
-			PieceType type = PieceType(abs(val));
 			m_chessPieces[pieceCount]->isEnabled = true;
-			m_chessPieces[pieceCount]->transform(colour, type);
+			m_chessPieces[pieceCount]->transform(val.getColour(), val.getType());
 
 			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
 			m_chessPieces[pieceCount]->setCenter(pos.x, pos.y);
