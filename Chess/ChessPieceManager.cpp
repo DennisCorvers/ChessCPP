@@ -5,9 +5,10 @@
 #include "Enums.h"
 #include "Utils.h"
 
-ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, const sf::Texture& texture)
+ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures)
 {
 	m_boardSizes = boardSizes;
+	m_sprite.setTexture(textures["BOARD"]);
 
 	m_moveAction.movingPiece = NULL;
 	m_moveAction.m_isMoving = false;
@@ -15,7 +16,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, const sf::T
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
 	for (char i = 0; i < PIECECOUNT; i++) {
-		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, texture);
+		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures["PIECES"]);
 		m_chessPieces[i]->setScale(0.95f, 0.95f);
 
 		m_chessPieces[i]->isEnabled = false;
@@ -88,6 +89,8 @@ void ChessPieceManager::update(const float & deltaTime)
 
 void ChessPieceManager::render(sf::RenderTarget* const target)
 {
+	target->draw(m_sprite);
+
 	//Render overlays for possible moves etc...
 	if (m_moveAction.hasSelection())
 		target->draw(m_markerContainer.selectionMarker);

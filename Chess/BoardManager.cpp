@@ -4,8 +4,8 @@
 
 BoardManager::BoardManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures)
 {
-	m_board = new ChessBoard(textures["BOARD"], BoardSettings::DEFAULTBOARD);
-	m_pieceManager = new ChessPieceManager(boardSizes, textures["PIECES"]);
+	m_board = new ChessBoard(BoardSettings::DEFAULTBOARD);
+	m_pieceManager = new ChessPieceManager(boardSizes, textures);
 }
 
 
@@ -22,23 +22,13 @@ bool BoardManager::hasPieceSelected()
 
 sf::Vector2f BoardManager::getBoardCenter()
 {
-	return m_board->getCenter();
+	return m_pieceManager->getCenter();
 }
 
 void BoardManager::resetGame()
 {
 	m_board->resetBoard();
 	m_pieceManager->syncPieces(*m_board, false);
-}
-
-sf::Vector2i BoardManager::screenToBoardPosition(const sf::Vector2f screenPosition)
-{
-	auto m_boardSizes = m_pieceManager->getBoardSizes();
-
-	int xPos = (int)((screenPosition.x - m_boardSizes.left) / m_boardSizes.width);
-	int yPos = (int)((screenPosition.y - m_boardSizes.top) / m_boardSizes.height);
-
-	return sf::Vector2i(xPos, yPos);
 }
 
 bool BoardManager::inputMove(const ChessMove move, bool animate)
@@ -61,11 +51,11 @@ void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour
 	if (!m_pieceManager->boundsContains(screenPosition.x, screenPosition.y))
 		return;
 
-	auto pos = screenToBoardPosition(screenPosition);
+	auto pos = m_pieceManager->screenToBoard(screenPosition);
 	ChessPosition newPos(pos.x, pos.y);
 
-	if (!m_board->isValidSelection(newPos, playerColour))
-		return;
+	//if (!m_board->isValidSelection(newPos, playerColour))
+	//	return;
 
 	m_positionCache = m_board->getValidPositions(newPos);
 	m_pieceManager->startSelection(screenPosition, m_positionCache);
@@ -94,6 +84,5 @@ void BoardManager::update(const float & deltaTime)
 
 void BoardManager::render(sf::RenderTarget * const target)
 {
-	m_board->render(target);
 	m_pieceManager->render(target);
 }

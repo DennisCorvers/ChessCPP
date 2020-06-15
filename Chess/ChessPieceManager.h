@@ -1,7 +1,8 @@
 #pragma once
-#include <functional>
-#include "ChessPosition.h"
 #include "SFML/Graphics.hpp"
+#include "ChessPosition.h"
+#include "Entity.h"
+
 
 struct ChessMove;
 class ChessBoard;
@@ -31,7 +32,7 @@ struct MoveMarkerContainer {
 /**
 Handles all player interaction with the pieces on the board.
 */
-class ChessPieceManager
+class ChessPieceManager : public Entity
 {
 private:
 	const static int PIECECOUNT = 32;
@@ -46,21 +47,22 @@ private:
 	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
 	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
 
-	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
 
 	void initMarkers();
 
 public:
-	ChessPieceManager(const sf::FloatRect boardSizes, const sf::Texture& texture);
-	~ChessPieceManager();
+	ChessPieceManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures);
+	virtual ~ChessPieceManager() override;
 
 	bool hasSelection();
 	sf::FloatRect getBoardSizes();
 
-	void update(const float& deltaTime);
-	void render(sf::RenderTarget* const target);
+	virtual void update(const float& deltaTime) override;
+	virtual void render(sf::RenderTarget* const target) override;
+
+	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
 
 	void startSelection(const sf::Vector2f screenPosition, const std::vector<ChessPosition>& possiblePositions);
 	void updateSelection(const sf::Vector2f screenPosition);

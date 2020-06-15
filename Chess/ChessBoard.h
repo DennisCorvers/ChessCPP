@@ -1,5 +1,4 @@
 #pragma once
-#include "Entity.h"
 #include "ChessPiece.h"
 #include "ChessMove.h"
 #include "Enums.h"
@@ -17,20 +16,19 @@ namespace BoardSettings {
 	};
 }
 
-class ChessBoard : public Entity
+class ChessBoard
 {
 private:
 	const static char SIZE = 64;
 
 	ChessPiece m_currentBoard[SIZE];
 	const char* m_defaultBoard;
-	sf::Texture m_boardTexture;
 
 	void applyMove(const ChessMove newMove);
 
 public:
-	ChessBoard(const sf::Texture& boardTexture, const char(&boardData)[SIZE]);
-	virtual ~ChessBoard() override;
+	ChessBoard(const char(&boardData)[SIZE]);
+	virtual ~ChessBoard();
 
 	inline const ChessPiece getPiece(char x, char y) const {
 		return m_currentBoard[y * 8 + x];
@@ -45,8 +43,6 @@ public:
 	bool inputMove(const ChessMove newMove, const std::vector<ChessPosition>* possiblePositions);
 
 	void resetBoard();
-	virtual void update(const float& deltaTime) override;
-	virtual void render(sf::RenderTarget* const target) override;
 
 	std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const;
 };

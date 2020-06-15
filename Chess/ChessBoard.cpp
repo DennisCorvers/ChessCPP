@@ -3,10 +3,8 @@
 #include "ChessBoard.h"
 #include "Enums.h"
 
-ChessBoard::ChessBoard(const sf::Texture & boardTexture, const char(&boardData)[SIZE])
-	: m_boardTexture(boardTexture)
+ChessBoard::ChessBoard(const char(&boardData)[SIZE])
 {
-	m_sprite.setTexture(boardTexture);
 	m_defaultBoard = boardData;
 }
 
@@ -58,15 +56,6 @@ void ChessBoard::resetBoard()
 			m_currentBoard[index] = m_defaultBoard[index];
 		}
 	}
-}
-
-void ChessBoard::update(const float& deltaTime)
-{
-}
-
-void ChessBoard::render(sf::RenderTarget* const target)
-{
-	target->draw(m_sprite);
 }
 
 std::vector<ChessPosition> ChessBoard::getValidPositions(const ChessPosition& selectedPosition) const

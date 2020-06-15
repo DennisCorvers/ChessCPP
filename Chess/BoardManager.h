@@ -1,7 +1,8 @@
 #pragma once
-#include "ChessMove.h"
 #include "SFML/Graphics.hpp"
+#include "ChessMove.h"
 #include "Enums.h"
+#include "Entity.h"
 
 class ChessPieceManager;
 class ChessBoard;
@@ -12,8 +13,6 @@ private:
 	ChessPieceManager* m_pieceManager;
 	ChessBoard* m_board;
 	std::vector<ChessPosition> m_positionCache;
-
-	sf::Vector2i screenToBoardPosition(const sf::Vector2f screenPosition);
 
 public:
 	BoardManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures);
