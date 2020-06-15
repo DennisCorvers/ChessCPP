@@ -20,7 +20,9 @@ public:
 
 	inline PieceColour getColour() const
 	{
-		if (m_pieceData < 0) { return PieceColour::Black; }
+		if (m_pieceData < 0) 
+			return PieceColour::Black;
+
 		return PieceColour::White;
 	}
 	inline PieceType getType() const

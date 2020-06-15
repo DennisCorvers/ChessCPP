@@ -49,8 +49,7 @@ namespace {
 			if (!other.isEmpty()) {
 				if (piece.getColour() != other.getColour())
 					validMoves.emplace_back(newPos.x, newPos.y);
-				else
-					break;
+				break;
 			}
 			else {
 				validMoves.emplace_back(newPos.x, newPos.y);
@@ -100,8 +99,8 @@ namespace {
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		int mod = piece.getColour() == PieceColour::White ? -1 : 1;
 		bool hasMoved = !
-			(piece.getColour() == PieceColour::Black && pos.y == 1) ||
-			(piece.getColour() == PieceColour::White && 8 - pos.y == 1);
+			((piece.getColour() == PieceColour::Black && pos.y == 1) ||
+			(piece.getColour() == PieceColour::White && pos.y == 6));
 
 		//Move 1 ahead
 		sf::Vector2i newPos(pos.x, pos.y + mod);
