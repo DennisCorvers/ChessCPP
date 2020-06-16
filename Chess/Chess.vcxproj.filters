@@ -38,9 +38,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChessAction.cpp">
-      <Filter>Source Files\Mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="ChessBoard.cpp">
       <Filter>Source Files\Mechanics</Filter>
     </ClCompile>

@@ -1,20 +1,24 @@
 #pragma once
-#include "ChessPieceEntity.h"
 #include "Enums.h"
+#include "ChessPiece.h"
+#include "ChessPosition.h"
 
-namespace Mechanics {
+struct ChessAction
+{
+public:
+	ActionType actionType;
+	ChessPosition moveFrom;
+	ChessPosition moveTo;
+	ChessPiece pieceFrom;
+	ChessPiece pieceTo;
 
-	struct ChessAction
-	{
-	private:
-		char m_resultingAction;
-	public:
-		ChessAction();
-		ChessAction(ActionType actionType, PieceType pieceType);
+	ChessAction()
+		:actionType(ActionType::None) {
+	}
 
-		ActionType getActionType() const;
-		PieceType getPieceType() const;
-	};
-}
+	inline bool isValidMove() {
+		return actionType != ActionType::None;
+	}
+};
 
 

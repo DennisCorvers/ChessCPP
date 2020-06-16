@@ -28,26 +28,34 @@ bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColou
 	return piece.getColour() == playerColour;
 }
 
-void ChessBoard::applyMove(const ChessMove newMove)
+ChessAction ChessBoard::applyMove(const ChessMove newMove)
 {
 	//Add special moves...
 	int indexFrom = newMove.getPositionFrom().getY() * 8 + newMove.getPositionFrom().getX();
 	int indexTo = newMove.getPositionTo().getY() * 8 + newMove.getPositionTo().getX();
 
-	ChessPiece piece = m_currentBoard[indexFrom];
+	ChessAction newAction;
+	newAction.pieceFrom = m_currentBoard[indexFrom];
+	newAction.pieceTo = m_currentBoard[indexTo];
+	newAction.moveFrom = newMove.getPositionFrom();
+	newAction.moveTo = newMove.getPositionTo();
+
 	m_currentBoard[indexFrom] = 0;
-	m_currentBoard[indexTo] = piece;
+	m_currentBoard[indexTo] = newAction.pieceFrom;
+	if (!newAction.pieceTo.isEmpty())
+		newAction.actionType = ActionType::Take;
+	else
+		newAction.actionType = ActionType::Normal;
+
+	return newAction;
 }
 
-bool ChessBoard::inputMove(const ChessMove newMove)
+ChessAction ChessBoard::inputMove(const ChessMove newMove)
 {
 	if (isValidPosition(newMove.getPositionTo(), getValidPositions(newMove.getPositionFrom())))
-	{
-		applyMove(newMove);
-		return true;
-	}
+		return applyMove(newMove);
 
-	return false;
+	return ChessAction();
 }
 
 void ChessBoard::resetBoard()

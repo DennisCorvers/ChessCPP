@@ -1,8 +1,8 @@
 #pragma once
-#include "ChessRules.h"
 #include "ChessPiece.h"
 #include "ChessMove.h"
 #include "Enums.h"
+#include "ChessAction.h"
 
 namespace BoardSettings {
 	static const char DEFAULTBOARD[64]{
@@ -25,7 +25,7 @@ private:
 	ChessPiece m_currentBoard[SIZE];
 	const char* m_defaultBoard;
 
-	void applyMove(const ChessMove newMove);
+	ChessAction applyMove(const ChessMove newMove);
 
 public:
 	ChessBoard(const char(&boardData)[SIZE]);
@@ -42,7 +42,7 @@ public:
 	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
 
-	bool inputMove(const ChessMove newMove);
+	ChessAction inputMove(const ChessMove newMove);
 
 	void resetBoard();
 

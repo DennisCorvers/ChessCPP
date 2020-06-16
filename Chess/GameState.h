@@ -1,6 +1,8 @@
 #pragma once
-#include "State.h"
+#include <queue>
 
+#include "State.h"
+#include "ChessMove.h"
 
 class BoardManager;
 
@@ -8,9 +10,7 @@ class GameState : public State
 {
 private:
 	sf::View view;
-
 	BoardManager* m_boardManager;
-
 	sf::Font m_font;
 
 	void initTextures();
@@ -18,6 +18,8 @@ private:
 	void initSounds();
 	void initGame();
 	void initView();
+
+	std::queue<ChessMove> m_moveBuffer;
 
 public:
 	GameState(StateData* data);

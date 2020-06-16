@@ -39,7 +39,6 @@ void GameState::initGame()
 void GameState::initView()
 {
 	view.setSize(sf::Vector2f(stateData->window->getSize().x, stateData->window->getSize().y));
-	//view.setCenter(sf::Vector2f(window->getSize().x / 2.f, window->getSize().y / 2.f));
 	view.setCenter(m_boardManager->getBoardCenter()); //Focus on the centre of the board.
 }
 
@@ -71,12 +70,13 @@ void GameState::updateInput(const float & deltaTime)
 			sf::Vector2f mousePos = EventManager::GetPixelPosition(*stateData->window, view);
 			if (nextEvent.eventType == MyEventType::MouseDown) {
 				m_boardManager->startSelection(mousePos, PieceColour::Black);
-				//m_board->updateMousePosition(mousePos, MouseEvent::MouseDown);
 			}
 
 			if (nextEvent.eventType == MyEventType::MouseUp) {
-				m_boardManager->endSelection(mousePos);
-				//m_board->updateMousePosition(mousePos, MouseEvent::MouseUp);
+				ChessMove newMove;
+				if (m_boardManager->endSelection(mousePos, newMove)) {
+					m_moveBuffer.push(newMove);
+				}
 			}
 		}
 
@@ -93,6 +93,11 @@ void GameState::update(const float & deltaTime)
 	if (m_boardManager->isPieceMoving()) {
 		sf::Vector2f position = EventManager::GetPixelPosition(*stateData->window, view);
 		m_boardManager->updateMousePosition(position);
+	}
+
+	if (!m_moveBuffer.empty()) {
+		m_boardManager->inputMove(m_moveBuffer.front(), true);
+		m_moveBuffer.pop();
 	}
 }
 

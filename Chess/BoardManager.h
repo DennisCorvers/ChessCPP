@@ -8,6 +8,7 @@
 
 class ChessPieceManager;
 class ChessBoard;
+struct ChessAction;
 
 class BoardManager
 {
@@ -19,6 +20,8 @@ private:
 	sf::Sound m_soundPieceCheck;
 	sf::Sound m_soundPieceMove;
 
+	void handleSound(const ChessAction& chessAction, bool playSound);
+
 public:
 	BoardManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, std::map <AssetFlags, sf::SoundBuffer>& sounds);
 	~BoardManager();
@@ -28,18 +31,11 @@ public:
 
 	void resetGame();
 
-	/**
-	Applies a chess move directly to the board without checking validity.
-	*/
 	bool inputMove(const ChessMove move, bool animate);
-	/**
-	Reverses the board to a previous state.
-	*/
-	void reverseMove(const ChessMove move, bool animate);
 
-	void startSelection(const sf::Vector2f screenPosition, PieceColour playerColour);
-	void updateMousePosition(const sf::Vector2f screenPosition);
-	void endSelection(const sf::Vector2f screenPosition);
+	void startSelection(const sf::Vector2f screenPosition, PieceColour playerColour) const;
+	void updateMousePosition(const sf::Vector2f screenPosition) const;
+	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget* const target);
