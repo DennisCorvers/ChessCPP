@@ -2,10 +2,16 @@
 #include "ChessPieceManager.h"
 #include "ChessBoard.h"
 
-BoardManager::BoardManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures)
+BoardManager::BoardManager(const sf::FloatRect boardSizes, 
+	std::map<AssetFlags, sf::Texture>& textures, 
+	std::map <AssetFlags, sf::SoundBuffer>& sounds)
 {
 	m_board = new ChessBoard(BoardSettings::DEFAULTBOARD);
 	m_pieceManager = new ChessPieceManager(boardSizes, textures);
+
+	m_soundPieceCheck.setBuffer(sounds[AssetFlags::s_piece_check]);
+	m_soundPieceMove.setBuffer(sounds[AssetFlags::s_piece_move]);
+	m_soundPieceTake.setBuffer(sounds[AssetFlags::s_piece_take]);
 }
 
 
@@ -36,6 +42,7 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	bool moveApplied = m_board->inputMove(move);
 	if (moveApplied) {
 		m_pieceManager->syncPieces(*m_board, animate);
+		m_soundPieceMove.play();
 	}
 
 	return moveApplied;

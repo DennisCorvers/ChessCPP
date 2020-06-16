@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "GameState.h";
+#include "GameState.h"
 
 float Game::FPS() const {
 	return 1 / m_deltaTime;

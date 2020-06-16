@@ -5,10 +5,10 @@
 #include "Enums.h"
 #include "Utils.h"
 
-ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures)
+ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures)
 {
 	m_boardSizes = boardSizes;
-	m_sprite.setTexture(textures["BOARD"]);
+	m_sprite.setTexture(textures[AssetFlags::t_board]);
 
 	m_moveAction.movingPiece = NULL;
 	m_moveAction.m_isMoving = false;
@@ -16,7 +16,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<st
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
 	for (char i = 0; i < PIECECOUNT; i++) {
-		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures["PIECES"]);
+		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures[AssetFlags::t_pieces]);
 		m_chessPieces[i]->setScale(0.95f, 0.95f);
 
 		m_chessPieces[i]->setActive(false);
@@ -126,6 +126,7 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 		m_moveAction.movingPiece = piece;
 		m_moveAction.m_isMoving = true;
 		m_moveAction.validPositions = board.getValidPositions(m_moveAction.moveFrom);
+
 		selectChessPiece(m_moveAction, board);
 	}
 	else {
@@ -164,6 +165,7 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	}
 
 	outMove = ChessMove(m_moveAction.moveFrom, m_moveAction.moveTo);
+	m_moveAction.reset();
 	return true;
 }
 

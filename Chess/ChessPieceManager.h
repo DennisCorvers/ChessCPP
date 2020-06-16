@@ -3,6 +3,7 @@
 #include <memory>
 #include "ChessPosition.h"
 #include "Entity.h"
+#include "AssetFlags.h"
 
 
 struct ChessMove;
@@ -91,7 +92,7 @@ private:
 	void initMarkers();
 
 public:
-	ChessPieceManager(const sf::FloatRect boardSizes, std::map<std::string, sf::Texture>& textures);
+	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures);
 	virtual ~ChessPieceManager() override;
 
 	bool isPieceMoving();

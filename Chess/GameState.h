@@ -15,6 +15,7 @@ private:
 
 	void initTextures();
 	void initFonts();
+	void initSounds();
 	void initGame();
 	void initView();
 

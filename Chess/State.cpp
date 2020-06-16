@@ -13,7 +13,7 @@ State::~State()
 {
 }
 
-const bool & State::getQuit() const
+const bool State::getQuit() const
 {
 	return false;
 }

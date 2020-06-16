@@ -136,5 +136,8 @@
     <ClInclude Include="ChessPiece.h">
       <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
+    <ClInclude Include="AssetFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

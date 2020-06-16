@@ -2,6 +2,8 @@
 
 #include <map>
 #include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
+#include "AssetFlags.h"
 
 class EventManager;
 
@@ -20,13 +22,14 @@ private:
 protected:
 	const StateData* stateData;
 
-	std::map<std::string, sf::Texture> textures;
+	std::map<AssetFlags, sf::Texture> textures;
+	std::map<AssetFlags, sf::SoundBuffer> sounds;
 
 public:
 	State(StateData* data);
 	virtual ~State();
 
-	const bool& getQuit() const;
+	const bool getQuit() const;
 
 	void endState();
 
