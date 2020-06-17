@@ -7,11 +7,22 @@ ChessPiece::ChessPiece() {
 
 ChessPiece::ChessPiece(const char pieceValue)
 {
-	m_pieceData = pieceValue;
+	if (pieceValue < 0)
+		setColour(PieceColour::Black);
+	else
+		setColour(PieceColour::White);
+	setType(static_cast<PieceType>(abs(pieceValue)));
+}
+
+ChessPiece::ChessPiece(PieceColour colour, PieceType pieceType)
+{
+	setColour(colour);
+	setType(pieceType);
 }
 
 ChessPiece::~ChessPiece()
 {
+
 }
 
 void ChessPiece::reset()
@@ -19,13 +30,15 @@ void ChessPiece::reset()
 	m_pieceData = 0;
 }
 
-void ChessPiece::setTo(const ChessPiece piece)
+void ChessPiece::setTo(const ChessPiece piece, bool hasMoved = true)
 {
 	m_pieceData = piece.m_pieceData;
+	if (hasMoved)
+		setMoved();
 }
 
-void ChessPiece::operator=(const int & value)
+void ChessPiece::setTo(PieceType newType)
 {
-	m_pieceData = value;
+	setType(newType);
 }
 

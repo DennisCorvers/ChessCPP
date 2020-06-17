@@ -11,7 +11,7 @@ ChessPosition::ChessPosition(unsigned char x, unsigned char y)
 	if (y > 7) throw std::invalid_argument("y must be within the range [0, 7]");
 
 	m_position = x << 4;
-	m_position = m_position | y;
+	m_position |= y;
 }
 
 unsigned char ChessPosition::getX() const

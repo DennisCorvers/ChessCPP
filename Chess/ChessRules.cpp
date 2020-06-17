@@ -198,4 +198,8 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 	return std::vector<ChessPosition>();
 }
 
+bool isEnpassant();
+bool isCastling();
+bool isPromotion();
+
 //https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
