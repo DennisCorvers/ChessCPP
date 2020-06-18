@@ -1,5 +1,4 @@
 #include "GameState.h"
-
 #include "EventManager.h"
 #include "BoardManager.h"
 

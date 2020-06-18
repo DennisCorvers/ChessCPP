@@ -27,6 +27,11 @@ public:
 	inline bool isValidMove() {
 		return actionType != ActionType::None;
 	}
+
+	friend std::ostream& operator<<(std::ostream& output, const ChessAction& action) {
+		return output << EnumtoString(action.pieceFrom.getColour()) << " " << EnumtoString(action.pieceFrom.getType()) << " " 
+			<< action.moveFrom << " to " << action.moveTo;
+	}
 };
 
 

@@ -26,6 +26,7 @@ private:
 	const char* m_defaultBoard;
 
 	ChessAction applyMove(const ChessMove newMove);
+	std::vector<ChessAction> m_moveHistory;
 
 public:
 	ChessBoard(const char(&boardData)[SIZE]);
@@ -41,6 +42,7 @@ public:
 
 	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
+	const ChessAction& getLastMove();
 
 	ChessAction inputMove(const ChessMove newMove);
 

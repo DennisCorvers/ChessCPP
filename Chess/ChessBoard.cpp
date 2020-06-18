@@ -5,6 +5,7 @@
 
 ChessBoard::ChessBoard(const char(&boardData)[SIZE])
 {
+	m_moveHistory.reserve(32);
 	m_defaultBoard = boardData;
 }
 
@@ -28,6 +29,11 @@ bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColou
 	return piece.getColour() == playerColour;
 }
 
+const ChessAction& ChessBoard::getLastMove()
+{
+	return m_moveHistory.back();
+}
+
 ChessAction ChessBoard::applyMove(const ChessMove newMove)
 {
 	//Add special moves...
@@ -41,29 +47,36 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 	pieceTo.setTo(pieceFrom, true);
 	pieceFrom.reset();
 
-	if (ChessRules::isPromotion(newMove, pieceTo, *this)) {
-		newAction.actionType = ActionType::Promotion;
-		pieceTo.setTo(PieceType::Queen);
-	}
 
 	if (!newAction.pieceTo.isEmpty())
 		newAction.actionType = ActionType::Take;
 	else
 		newAction.actionType = ActionType::Normal;
 
+
+	if (ChessRules::isPromotion(newMove, pieceTo, *this)) {
+		newAction.actionType = ActionType::Promotion;
+		pieceTo.setTo(PieceType::Queen);
+	}
+
 	return newAction;
 }
 
 ChessAction ChessBoard::inputMove(const ChessMove newMove)
 {
-	if (isValidPosition(newMove.getPositionTo(), getValidPositions(newMove.getPositionFrom())))
-		return applyMove(newMove);
+	if (isValidPosition(newMove.getPositionTo(), getValidPositions(newMove.getPositionFrom()))) {
+		auto result = applyMove(newMove);
+		m_moveHistory.push_back(result);
+		return result;
+	}
 
 	return ChessAction();
 }
 
 void ChessBoard::resetBoard()
 {
+	m_moveHistory.clear();
+
 	for (char x = 0; x < 8; x++)
 	{
 		for (char y = 0; y < 8; y++)
