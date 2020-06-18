@@ -170,6 +170,19 @@ namespace {
 		std::vector<ChessPosition> moves;
 		moves.reserve(4);
 
+		//Castling moves
+		ChessPiece piece = board.getPiece(pos.x, pos.y);
+		for (char i = -2; i <= 2; i += 4)
+		{
+			sf::Vector2i newPos(pos.x + i, pos.y);
+			if (isOutOfBounds(newPos))
+				continue;
+
+			ChessMove newMove(ChessPosition(pos.x, pos.y), ChessPosition(newPos.x, newPos.y));
+			if (ChessRules::isCastling(newMove, piece, board))
+				moves.emplace_back(newPos.x, newPos.y);
+		}
+
 		addMoveset(pos, board, moves, kingMoves);
 		return moves;
 	}
@@ -199,6 +212,20 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 	}
 
 	return std::vector<ChessPosition>();
+}
+
+bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
+{
+	if (piece.getType() != PieceType::Pawn)
+		return false;
+
+	char yPos = move.getPositionTo().getY();
+	if ((piece.getColour() == PieceColour::White && yPos == 0) ||
+		(piece.getColour() == PieceColour::Black && yPos == 7)) {
+		return true;
+	}
+
+	return false;
 }
 
 bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board) {
@@ -240,19 +267,41 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 	return true;
 }
 
-bool isCastling();
-//https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
-
-bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
+bool ChessRules::isCastling(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
 {
-	if (piece.getType() != PieceType::Pawn)
+	if (piece.getType() != PieceType::King || piece.hasMoved())
 		return false;
 
-	char yPos = move.getPositionTo().getY();
-	if ((piece.getColour() == PieceColour::White && yPos == 0) ||
-		(piece.getColour() == PieceColour::Black && yPos == 7)) {
-		return true;
+	//Validate move distance
+	char xDistance = move.getPositionFrom().getX() - move.getPositionTo().getX();
+	if (abs(xDistance) != 2)
+		return false;
+
+	char yPos = piece.getColour() == PieceColour::White ? 7 : 0;
+	char rookX = xDistance > 0 ? 0 : 7;
+
+	//Check if rook (has moved)
+	ChessPiece rook = board.getPiece(rookX, yPos);
+	if (rook.getType() != PieceType::Rook || rook.hasMoved())
+		return false;
+
+	// Check that the adjacent squares are empty
+	char mod = xDistance > 0 ? -1 : 1;
+	char kingX = move.getPositionFrom().getX();
+	char len = abs(kingX - rookX);
+	for (int i = 1; i < len; i++)
+	{
+		//TODO Check for every position if it results in a CHECK
+		ChessPosition newPos(kingX + i * mod, yPos);
+		if (!board.getPiece(kingX + i * mod, yPos).isEmpty())
+			return false;
 	}
 
-	return false;
+	return true;
 }
+
+//https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
+
+
+
+

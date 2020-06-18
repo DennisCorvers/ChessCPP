@@ -10,6 +10,7 @@ namespace ChessRules {
 
 	bool isEnpassant(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board);
 	bool isPromotion(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board);
+	bool isCastling(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board);
 }
 
 

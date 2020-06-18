@@ -40,14 +40,8 @@ bool ChessBoard::tryGetLastMove(ChessAction& out) const
 
 ChessAction ChessBoard::applyMove(const ChessMove newMove)
 {
-	//Add special moves...
-	int indexFrom = newMove.getPositionFrom().getY() * 8 + newMove.getPositionFrom().getX();
-	int indexTo = newMove.getPositionTo().getY() * 8 + newMove.getPositionTo().getX();
-
-	ChessPiece& pieceFrom = m_currentBoard[indexFrom];
-	ChessPiece& pieceTo = m_currentBoard[indexTo];
-	pieceFrom.setMoved(); pieceTo.setMoved();
-
+	ChessPiece& pieceFrom = getPiece(newMove.getPositionFrom());
+	ChessPiece& pieceTo = getPiece(newMove.getPositionTo());
 	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
 	//Apply promotion
@@ -74,6 +68,25 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 		return newAction;
 	}
 
+	//Apply Castling
+	if (ChessRules::isCastling(newMove, pieceFrom, *this)) {
+		newAction.actionType = ActionType::Castling;
+		bool castleLeft = newAction.moveTo.getX() < 5;
+		char yPos = newAction.moveFrom.getY();
+		char xPos = castleLeft ? 0 : 7;
+		char xMod = castleLeft ? 1 : -1;
+
+		pieceTo.setTo(pieceFrom);
+		pieceFrom.reset();
+
+		ChessPiece& rook = getPiece(xPos, yPos);
+		ChessPiece& rookTo = getPiece(newAction.moveTo.getX() + xMod, yPos);
+		rookTo.setTo(rook);
+		rook.reset();
+
+		return newAction;
+	}
+
 	if (!newAction.pieceTo.isEmpty())
 		newAction.actionType = ActionType::Take;
 	else
@@ -81,17 +94,17 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 
 	pieceTo.setTo(pieceFrom);
 	pieceFrom.reset();
-	//Apply Castling
-
 
 	return newAction;
 }
 
 ChessAction ChessBoard::inputMove(const ChessMove newMove)
 {
+	sf::Clock c; c.restart();
 	if (isValidPosition(newMove.getPositionTo(), getValidPositions(newMove.getPositionFrom()))) {
 		auto result = applyMove(newMove);
 		m_moveHistory.push_back(result);
+		std::cout << "Time: " << c.getElapsedTime().asMicroseconds() << std::endl;
 		return result;
 	}
 

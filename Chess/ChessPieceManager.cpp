@@ -50,11 +50,14 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 			if (val.isEmpty())
 				continue;
 
-			m_chessPieces[pieceCount]->setActive(true);
-			m_chessPieces[pieceCount]->transform(val.getColour(), val.getType());
+			ChessPieceEntity* piece = m_chessPieces[pieceCount];
+			piece->setActive(true);
+			piece->transform(val.getColour(), val.getType());
+			piece->xPos = x;
+			piece->yPos = y;
 
 			sf::Vector2f pos = boardToScreen(sf::Vector2i(x, y));
-			m_chessPieces[pieceCount]->setCenter(pos.x, pos.y);
+			piece->setCenter(pos.x, pos.y);
 
 			pieceCount++;
 		}
@@ -113,13 +116,15 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 	ChessPosition newChessPos(pos.x, pos.y);
 
 	//Prevents double checking and double selections
-	if (m_moveAction.moveFrom == newChessPos && m_moveAction.hasSelection())
-	{
+	if (m_moveAction.moveFrom == newChessPos && m_moveAction.hasSelection()) {
 		m_moveAction.setMoving(true);
 		return;
 	}
 
 	if (piece) {
+		if (piece->xPos != pos.x || piece->yPos != pos.y)
+			return;
+
 		if (m_moveAction.hasSelection() && piece->getColour() != m_moveAction.movingPiece->getColour())
 			return;
 
@@ -131,7 +136,8 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 		selectChessPiece(m_moveAction, board);
 	}
 	else {
-		m_moveAction.reset();
+		if (!m_moveAction.hasSelection())
+			m_moveAction.reset();
 	}
 }
 
@@ -169,10 +175,11 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 		}
 	}
 
-	//Reset entity if an invalid position is selected.
+	//Reset selection if an invalid position is selected.
 	if (!isValidMove) {
 		m_moveAction.moveTo = m_moveAction.moveFrom;
 		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
+		m_moveAction.reset();
 		return false;
 	}
 

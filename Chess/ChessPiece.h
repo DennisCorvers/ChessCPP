@@ -39,8 +39,11 @@ public:
 	void reset() {
 		m_pieceData = 0;
 	}
-	void setTo(const ChessPiece piece) {
+	void setTo(const ChessPiece piece, bool hasMoved = true) {
 		m_pieceData = piece.m_pieceData;
+
+		if (hasMoved)
+			setMoved();
 	}
 	void setTo(PieceType newType) {
 		setType(newType);

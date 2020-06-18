@@ -16,5 +16,7 @@ public:
 
 	PieceColour getColour() const;
 	PieceType getType() const;
+	char xPos;
+	char yPos;
 };
 

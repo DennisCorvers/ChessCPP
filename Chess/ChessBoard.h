@@ -28,6 +28,14 @@ private:
 	ChessAction applyMove(const ChessMove newMove);
 	std::vector<ChessAction> m_moveHistory;
 
+	inline ChessPiece& getPiece(char x, char y) {
+		return m_currentBoard[y * 8 + x];
+	}
+
+	inline ChessPiece& getPiece(ChessPosition position) {
+		return getPiece(position.getX(), position.getY());
+	}
+
 public:
 	ChessBoard(const char(&boardData)[SIZE]);
 	virtual ~ChessBoard();
