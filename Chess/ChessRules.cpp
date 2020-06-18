@@ -98,9 +98,6 @@ namespace {
 
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		int mod = piece.getColour() == PieceColour::White ? -1 : 1;
-		bool hasMoved = !
-			((piece.getColour() == PieceColour::Black && pos.y == 1) ||
-			(piece.getColour() == PieceColour::White && pos.y == 6));
 
 		//Move 1 ahead
 		sf::Vector2i newPos(pos.x, pos.y + mod);
@@ -109,7 +106,7 @@ namespace {
 		{
 			moves.emplace_back(newPos.x, newPos.y);
 			//Try move 2 is 1 is clear.
-			if (!hasMoved)
+			if (!piece.hasMoved())
 			{
 				sf::Vector2i newPos(pos.x, pos.y + 2 * mod);
 				other = board.getPiece(newPos.x, newPos.y);
@@ -200,6 +197,18 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 
 bool isEnpassant();
 bool isCastling();
-bool isPromotion();
-
 //https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
+
+bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
+{
+	if (piece.getType() != PieceType::Pawn)
+		return false;
+
+	char yPos = move.getPositionTo().getY();
+	if ((piece.getColour() == PieceColour::White && yPos == 0) ||
+		(piece.getColour() == PieceColour::Black && yPos == 7)) {
+		return true;
+	}
+
+	return false;
+}

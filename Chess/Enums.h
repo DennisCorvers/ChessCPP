@@ -26,7 +26,8 @@ enum struct ActionType : char {
 	Checkmate = 2,
 	Take = 3,
 	EnPassant = 4,
-	Castling = 5
+	Castling = 5,
+	Promotion = 6
 };
 
 enum struct SessionState : char {

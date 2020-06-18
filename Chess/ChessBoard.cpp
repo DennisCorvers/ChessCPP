@@ -34,14 +34,18 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 	int indexFrom = newMove.getPositionFrom().getY() * 8 + newMove.getPositionFrom().getX();
 	int indexTo = newMove.getPositionTo().getY() * 8 + newMove.getPositionTo().getX();
 
-	ChessAction newAction;
-	newAction.pieceFrom = m_currentBoard[indexFrom];
-	newAction.pieceTo = m_currentBoard[indexTo];
-	newAction.moveFrom = newMove.getPositionFrom();
-	newAction.moveTo = newMove.getPositionTo();
+	ChessPiece& pieceFrom = m_currentBoard[indexFrom];
+	ChessPiece& pieceTo = m_currentBoard[indexTo];
+	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
-	m_currentBoard[indexFrom] = 0;
-	m_currentBoard[indexTo] = newAction.pieceFrom;
+	pieceTo.setTo(pieceFrom, true);
+	pieceFrom.reset();
+
+	if (ChessRules::isPromotion(newMove, pieceTo, *this)) {
+		newAction.actionType = ActionType::Promotion;
+		pieceTo.setTo(PieceType::Queen);
+	}
+
 	if (!newAction.pieceTo.isEmpty())
 		newAction.actionType = ActionType::Take;
 	else

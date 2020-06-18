@@ -62,6 +62,7 @@ void BoardManager::handleSound(const ChessAction & chessAction, bool playSound)
 	case ActionType::Castling:
 	case ActionType::EnPassant:
 	case ActionType::Normal:
+	case ActionType::Promotion:
 		m_soundPieceMove.play();
 		break;
 	case ActionType::Take:

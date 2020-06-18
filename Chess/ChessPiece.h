@@ -9,14 +9,14 @@ private:
 	static const unsigned char colour_mask = 0b01000000;
 	static const unsigned char moved_mask = 0b10000000;
 
-	char m_pieceData;
+	unsigned char m_pieceData = 0;
 
 	inline void setType(PieceType type) {
 		m_pieceData = (m_pieceData & (~type_mask)) | (static_cast<char>(type));
 	}
 	inline void setColour(PieceColour colour) {
 
-		char value = colour == PieceColour::Black ? 0 : 1 << 6;
+		char value = colour == PieceColour::Black ? 0 : colour_mask;
 		m_pieceData = (m_pieceData & (~colour_mask)) | value;
 	}
 
@@ -30,7 +30,7 @@ public:
 		return (m_pieceData & type_mask) == 0;
 	}
 	inline bool hasMoved() const {
-		return m_pieceData & moved_mask;
+		return (m_pieceData & moved_mask) == moved_mask;
 	}
 	inline void setMoved() {
 		m_pieceData |= moved_mask;
