@@ -12,21 +12,31 @@ class ChessPieceEntity;
 class Entity;
 
 struct MoveAction {
+private:
+	bool m_isMoving;
+
+public:
 	ChessPosition moveFrom;
 	ChessPosition moveTo;
 	ChessPieceEntity* movingPiece;
 	std::vector<ChessPosition> validPositions;
 
-	bool m_isMoving;
+	inline void setMoving(bool state) {
+		m_isMoving = state;
+	}
 
-	void reset() {
+	inline void reset() {
 		m_isMoving = false;
 		movingPiece = nullptr;
 	}
 
-	bool hasSelection()
+	inline bool hasSelection()
 	{
 		return movingPiece;
+	}
+
+	inline bool isMoving() {
+		return movingPiece && m_isMoving;
 	}
 };
 

@@ -59,15 +59,18 @@ void BoardManager::handleSound(const ChessAction & chessAction, bool playSound)
 	case ActionType::Checkmate:
 		m_soundPieceCheck.play();
 		break;
+
 	case ActionType::Castling:
 	case ActionType::EnPassant:
 	case ActionType::Normal:
-	case ActionType::Promotion:
 		m_soundPieceMove.play();
 		break;
+
 	case ActionType::Take:
+	case ActionType::Promotion:
 		m_soundPieceTake.play();
 		break;
+
 	default:
 		break;
 	}

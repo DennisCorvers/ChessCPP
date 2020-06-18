@@ -11,7 +11,7 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<As
 	m_sprite.setTexture(textures[AssetFlags::t_board]);
 
 	m_moveAction.movingPiece = NULL;
-	m_moveAction.m_isMoving = false;
+	m_moveAction.setMoving(false);
 
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
@@ -33,7 +33,7 @@ ChessPieceManager::~ChessPieceManager()
 
 bool ChessPieceManager::isPieceMoving()
 {
-	return m_moveAction.m_isMoving;
+	return m_moveAction.isMoving();
 }
 
 void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
@@ -99,7 +99,7 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 		m_chessPieces[i]->render(target);
 
 	//Render again to ensure it's always on top.
-	if (m_moveAction.m_isMoving && m_moveAction.hasSelection())
+	if (m_moveAction.isMoving())
 		m_moveAction.movingPiece->render(target);
 }
 
@@ -109,39 +109,35 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const 
 		return;
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
-
 	sf::Vector2i pos = screenToBoard(screenPosition);
 	ChessPosition newChessPos(pos.x, pos.y);
 
+	//Prevents double checking and double selections
+	if (m_moveAction.moveFrom == newChessPos && m_moveAction.hasSelection())
+	{
+		m_moveAction.setMoving(true);
+		return;
+	}
+
 	if (piece) {
-		if (m_moveAction.hasSelection()
-			&& piece->getColour() != m_moveAction.movingPiece->getColour()) {
-
-			if (!board.isValidPosition(newChessPos, m_moveAction.validPositions))
-				m_moveAction.reset();
-
+		if (m_moveAction.hasSelection() && piece->getColour() != m_moveAction.movingPiece->getColour())
 			return;
-		}
+
 		m_moveAction.moveFrom = newChessPos;
 		m_moveAction.movingPiece = piece;
-		m_moveAction.m_isMoving = true;
+		m_moveAction.setMoving(true);
 		m_moveAction.validPositions = board.getValidPositions(m_moveAction.moveFrom);
 
 		selectChessPiece(m_moveAction, board);
 	}
 	else {
-		if (m_moveAction.hasSelection()) {
-			if (!board.isValidPosition(newChessPos, m_moveAction.validPositions))
-				m_moveAction.reset();
-			return;
-		}
 		m_moveAction.reset();
 	}
 }
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
 {
-	if (m_moveAction.m_isMoving)
+	if (m_moveAction.isMoving())
 	{
 		auto clampedMouse = clampToBoard(screenPosition);
 		m_moveAction.movingPiece->setCenter(clampedMouse.x, clampedMouse.y);
@@ -155,12 +151,28 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 
 	sf::Vector2i pos = screenToBoard(screenPosition);
 	m_moveAction.moveTo = ChessPosition(pos.x, pos.y);
+	m_moveAction.setMoving(false);
 
-	snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
-	m_moveAction.m_isMoving = false;
+	//Reset entity if the same position is selected.
+	if (m_moveAction.moveFrom == m_moveAction.moveTo)
+	{
+		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
+		return false;
+	}
 
+	bool isValidMove = false;
+	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)
+	{
+		if (m_moveAction.moveTo == *it) {
+			isValidMove = true;
+			break;
+		}
+	}
 
-	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
+	//Reset entity if an invalid position is selected.
+	if (!isValidMove) {
+		m_moveAction.moveTo = m_moveAction.moveFrom;
+		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
 		return false;
 	}
 
@@ -212,7 +224,7 @@ sf::Vector2i ChessPieceManager::screenToBoard(const sf::Vector2f mousePosition) 
 	int xPos = (int)((mousePos.x - m_boardSizes.left) / m_boardSizes.width);
 	int yPos = (int)((mousePos.y - m_boardSizes.top) / m_boardSizes.height);
 
-	return sf::Vector2i(xPos, yPos);
+	return sf::Vector2i(Math::limit(xPos, 7), Math::limit(yPos, 7));
 }
 
 sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) const

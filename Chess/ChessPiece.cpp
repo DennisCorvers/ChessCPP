@@ -25,20 +25,4 @@ ChessPiece::~ChessPiece()
 
 }
 
-void ChessPiece::reset()
-{
-	m_pieceData = 0;
-}
-
-void ChessPiece::setTo(const ChessPiece piece, bool hasMoved = true)
-{
-	m_pieceData = piece.m_pieceData;
-	if (hasMoved)
-		setMoved();
-}
-
-void ChessPiece::setTo(PieceType newType)
-{
-	setType(newType);
-}
 

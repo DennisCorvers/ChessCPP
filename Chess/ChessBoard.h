@@ -42,7 +42,7 @@ public:
 
 	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;
 	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
-	const ChessAction& getLastMove();
+	bool tryGetLastMove(ChessAction& out) const;
 
 	ChessAction inputMove(const ChessMove newMove);
 

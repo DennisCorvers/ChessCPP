@@ -29,9 +29,13 @@ bool ChessBoard::isValidSelection(const ChessPosition position, const PieceColou
 	return piece.getColour() == playerColour;
 }
 
-const ChessAction& ChessBoard::getLastMove()
+bool ChessBoard::tryGetLastMove(ChessAction& out) const
 {
-	return m_moveHistory.back();
+	if (m_moveHistory.size() < 1)
+		return false;
+
+	out = m_moveHistory.back();
+	return true;
 }
 
 ChessAction ChessBoard::applyMove(const ChessMove newMove)
@@ -42,22 +46,43 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 
 	ChessPiece& pieceFrom = m_currentBoard[indexFrom];
 	ChessPiece& pieceTo = m_currentBoard[indexTo];
+	pieceFrom.setMoved(); pieceTo.setMoved();
+
 	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
-	pieceTo.setTo(pieceFrom, true);
-	pieceFrom.reset();
+	//Apply promotion
+	if (ChessRules::isPromotion(newMove, pieceFrom, *this)) {
+		newAction.actionType = ActionType::Promotion;
 
+		pieceTo.setTo(pieceFrom);
+		pieceTo.setTo(PieceType::Queen);
+		pieceFrom.reset();
+
+		return newAction;
+	}
+
+	//Apply EnPassant
+	if (ChessRules::isEnpassant(newMove, pieceFrom, *this)) {
+		newAction.actionType = ActionType::EnPassant;
+		char mod = pieceFrom.getColour() == PieceColour::Black ? -1 : 1;
+		int passantIndex = (newMove.getPositionTo().getY() + mod) * 8 + newMove.getPositionTo().getX();
+
+		m_currentBoard[passantIndex].reset();
+		pieceTo.setTo(pieceFrom);
+		pieceFrom.reset();
+
+		return newAction;
+	}
 
 	if (!newAction.pieceTo.isEmpty())
 		newAction.actionType = ActionType::Take;
 	else
 		newAction.actionType = ActionType::Normal;
 
+	pieceTo.setTo(pieceFrom);
+	pieceFrom.reset();
+	//Apply Castling
 
-	if (ChessRules::isPromotion(newMove, pieceTo, *this)) {
-		newAction.actionType = ActionType::Promotion;
-		pieceTo.setTo(PieceType::Queen);
-	}
 
 	return newAction;
 }

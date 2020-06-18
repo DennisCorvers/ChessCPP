@@ -27,11 +27,6 @@ namespace {
 		sf::Vector2i(-1,-2)
 	};
 
-	const MoveSet pawnMoves{
-		sf::Vector2i(-1,1),
-		sf::Vector2i(1,1)
-	};
-
 	inline bool isOutOfBounds(const sf::Vector2i pos) {
 		return pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7;
 	}
@@ -116,9 +111,9 @@ namespace {
 		}
 
 		//Attack moves
-		for (char i = 0; i < pawnMoves.size(); i++)
+		for (char i = -1; i <= 1; i += 2)
 		{
-			sf::Vector2i newPos(pos.x + pawnMoves[i].x, pos.y + pawnMoves[i].y * mod);
+			sf::Vector2i newPos(pos.x + i, pos.y + mod);
 			if (isOutOfBounds(newPos))
 				continue;
 
@@ -127,7 +122,18 @@ namespace {
 				moves.push_back(ChessPosition(newPos.x, newPos.y));
 		}
 
-		//TODO Check En_Passant
+		//En Passant
+		ChessPosition posFrom(pos.x, pos.y);
+		for (char i = -1; i <= 1; i += 2)
+		{
+			newPos = sf::Vector2i(pos.x + i, pos.y + mod);
+			if (isOutOfBounds(newPos))
+				continue;
+
+			ChessMove newMove(posFrom, ChessPosition(newPos.x, newPos.y));
+			if (ChessRules::isEnpassant(newMove, piece, board))
+				moves.emplace_back(newPos.x, newPos.y);
+		}
 
 		return moves;
 	}
@@ -195,7 +201,45 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 	return std::vector<ChessPosition>();
 }
 
-bool isEnpassant();
+bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board) {
+
+	//Moving piece must be a pawn
+	if (piece.getType() != PieceType::Pawn)
+		return false;
+
+	//Move is diagonal
+	ChessPosition diagMove = move.distance();
+	if (diagMove.getX() != 1 || diagMove.getY() != 1)
+		return false;
+
+	//There must be at least one prior move
+	ChessAction lastAction;
+	if (!board.tryGetLastMove(lastAction))
+		return false;
+
+	//Prior move must have been a pawn of the opposite colour
+	const ChessPiece& lastPiece = lastAction.pieceFrom;
+	if (lastPiece.getType() != PieceType::Pawn || piece.getColour() == lastPiece.getColour())
+		return false;
+
+	//Last move was a jump of 2
+	ChessPosition lastMove = ChessPosition::distance(lastAction.moveFrom, lastAction.moveTo);
+	if (lastMove.getY() != 2)
+		return false;
+
+	//Move To must be empty
+	if (!board.getPiece(move.getPositionTo()).isEmpty())
+		return false;
+
+	//Opposite pawn exists at EnPassant position
+	char mod = piece.getColour() == PieceColour::Black ? -1 : 1;
+	ChessPosition newPos(move.getPositionTo().getX(), move.getPositionTo().getY() + mod);
+	if (board.getPiece(newPos).getType() != PieceType::Pawn)
+		return false;
+
+	return true;
+}
+
 bool isCastling();
 //https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
 
