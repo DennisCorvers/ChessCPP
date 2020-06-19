@@ -195,7 +195,7 @@ const bool ChessPieceManager::boundsContains(float x, float y) const
 
 void ChessPieceManager::snapEntityToBoard(const ChessPosition newPosition, Entity* const piece)
 {
-	sf::Vector2i boardPos(newPosition.getX(), newPosition.getY());
+	sf::Vector2i boardPos(newPosition.x(), newPosition.y());
 	sf::Vector2f newPos(boardToScreen(boardPos));
 
 	piece->setCenter(newPos.x, newPos.y);
@@ -203,7 +203,7 @@ void ChessPieceManager::snapEntityToBoard(const ChessPosition newPosition, Entit
 
 void ChessPieceManager::snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker)
 {
-	sf::Vector2i boardPos(newPosition.getX(), newPosition.getY());
+	sf::Vector2i boardPos(newPosition.x(), newPosition.y());
 	sf::Vector2f newPos(boardToScreen(boardPos));
 
 	marker.setPosition(
@@ -257,7 +257,7 @@ void ChessPieceManager::selectChessPiece(const MoveAction & moveData, const Ches
 	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)
 	{
 		ChessPosition chessPos = *it;
-		sf::Vector2f position(boardToScreen(sf::Vector2i(chessPos.getX(), chessPos.getY())));
+		sf::Vector2f position(boardToScreen(sf::Vector2i(chessPos.x(), chessPos.y())));
 		m_markerContainer->moveMarker(position);
 	}
 	m_markerContainer->finalize();

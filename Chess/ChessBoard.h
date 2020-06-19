@@ -33,7 +33,7 @@ private:
 	}
 
 	inline ChessPiece& getPiece(ChessPosition position) {
-		return getPiece(position.getX(), position.getY());
+		return getPiece(position.x(), position.y());
 	}
 
 public:
@@ -45,7 +45,7 @@ public:
 	}
 
 	inline const ChessPiece getPiece(ChessPosition position) const {
-		return getPiece(position.getX(), position.getY());
+		return getPiece(position.x(), position.y());
 	}
 
 	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;

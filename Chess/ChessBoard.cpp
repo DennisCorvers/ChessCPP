@@ -59,9 +59,9 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 	if (ChessRules::isEnpassant(newMove, pieceFrom, *this)) {
 		newAction.actionType = ActionType::EnPassant;
 		char mod = pieceFrom.getColour() == PieceColour::Black ? -1 : 1;
-		int passantIndex = (newMove.getPositionTo().getY() + mod) * 8 + newMove.getPositionTo().getX();
+		ChessPiece& passantPiece = getPiece(newMove.getPositionTo().x(), newMove.getPositionTo().y() + mod);
+		passantPiece.reset();
 
-		m_currentBoard[passantIndex].reset();
 		pieceTo.setTo(pieceFrom);
 		pieceFrom.reset();
 
@@ -71,8 +71,8 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 	//Apply Castling
 	if (ChessRules::isCastling(newMove, pieceFrom, *this)) {
 		newAction.actionType = ActionType::Castling;
-		bool castleLeft = newAction.moveTo.getX() < 5;
-		char yPos = newAction.moveFrom.getY();
+		bool castleLeft = newAction.moveTo.x() < 5;
+		char yPos = newAction.moveFrom.y();
 		char xPos = castleLeft ? 0 : 7;
 		char xMod = castleLeft ? 1 : -1;
 
@@ -80,7 +80,7 @@ ChessAction ChessBoard::applyMove(const ChessMove newMove)
 		pieceFrom.reset();
 
 		ChessPiece& rook = getPiece(xPos, yPos);
-		ChessPiece& rookTo = getPiece(newAction.moveTo.getX() + xMod, yPos);
+		ChessPiece& rookTo = getPiece(newAction.moveTo.x() + xMod, yPos);
 		rookTo.setTo(rook);
 		rook.reset();
 

@@ -191,7 +191,7 @@ namespace {
 std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & selectedPosition, const ChessBoard& board)
 {
 	ChessPiece pieceValue = board.getPiece(selectedPosition);
-	sf::Vector2i position(selectedPosition.getX(), selectedPosition.getY());
+	sf::Vector2i position(selectedPosition.x(), selectedPosition.y());
 
 	switch (pieceValue.getType())
 	{
@@ -219,7 +219,7 @@ bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, c
 	if (piece.getType() != PieceType::Pawn)
 		return false;
 
-	char yPos = move.getPositionTo().getY();
+	char yPos = move.getPositionTo().y();
 	if ((piece.getColour() == PieceColour::White && yPos == 0) ||
 		(piece.getColour() == PieceColour::Black && yPos == 7)) {
 		return true;
@@ -236,7 +236,7 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 
 	//Move is diagonal
 	ChessPosition diagMove = move.distance();
-	if (diagMove.getX() != 1 || diagMove.getY() != 1)
+	if (diagMove.x() != 1 || diagMove.y() != 1)
 		return false;
 
 	//There must be at least one prior move
@@ -251,7 +251,7 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 
 	//Last move was a jump of 2
 	ChessPosition lastMove = ChessPosition::distance(lastAction.moveFrom, lastAction.moveTo);
-	if (lastMove.getY() != 2)
+	if (lastMove.y() != 2)
 		return false;
 
 	//Move To must be empty
@@ -260,7 +260,7 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 
 	//Opposite pawn exists at EnPassant position
 	char mod = piece.getColour() == PieceColour::Black ? -1 : 1;
-	ChessPosition newPos(move.getPositionTo().getX(), move.getPositionTo().getY() + mod);
+	ChessPosition newPos(move.getPositionTo().x(), move.getPositionTo().y() + mod);
 	if (board.getPiece(newPos).getType() != PieceType::Pawn)
 		return false;
 
@@ -273,7 +273,7 @@ bool ChessRules::isCastling(const ChessMove & move, const ChessPiece & piece, co
 		return false;
 
 	//Validate move distance
-	char xDistance = move.getPositionFrom().getX() - move.getPositionTo().getX();
+	char xDistance = move.getPositionFrom().x() - move.getPositionTo().x();
 	if (abs(xDistance) != 2)
 		return false;
 
@@ -287,7 +287,7 @@ bool ChessRules::isCastling(const ChessMove & move, const ChessPiece & piece, co
 
 	// Check that the adjacent squares are empty
 	char mod = xDistance > 0 ? -1 : 1;
-	char kingX = move.getPositionFrom().getX();
+	char kingX = move.getPositionFrom().x();
 	char len = abs(kingX - rookX);
 	for (int i = 1; i < len; i++)
 	{

@@ -147,9 +147,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     <ClCompile Include="ChessPiece.cpp" />
     <ClCompile Include="ChessPieceManager.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
-    <ClCompile Include="ChessMove.cpp" />
     <ClCompile Include="ChessPieceEntity.cpp" />
-    <ClCompile Include="ChessPosition.cpp" />
     <ClCompile Include="ChessRules.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Entity.cpp" />
