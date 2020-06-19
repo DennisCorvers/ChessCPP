@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "ChessBoard.h"
 #include "ChessRules.h" 
+#include "ChessBoard.h"
 
 namespace {
 
@@ -215,7 +215,7 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 	return std::vector<ChessPosition>();
 }
 
-bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
+bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece& piece, const ChessBoard & board)
 {
 	if (piece.getType() != PieceType::Pawn)
 		return false;
@@ -229,7 +229,7 @@ bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece & piece, c
 	return false;
 }
 
-bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board) {
+bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece& piece, const ChessBoard& board) {
 
 	//Moving piece must be a pawn
 	if (piece.getType() != PieceType::Pawn)
@@ -241,8 +241,8 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 		return false;
 
 	//There must be at least one prior move
-	ChessAction lastAction;
-	if (!board.tryGetLastMove(lastAction))
+	ChessAction lastAction = board.getLastMove();
+	if (lastAction.actionType != ActionType::Normal)
 		return false;
 
 	//Prior move must have been a pawn of the opposite colour
@@ -261,14 +261,14 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece & piece, c
 
 	//Opposite pawn exists at EnPassant position
 	char mod = piece.getColour() == PieceColour::Black ? -1 : 1;
-	ChessPosition newPos(move.getPositionTo().x(), move.getPositionTo().y() + mod);
-	if (board.getPiece(newPos).getType() != PieceType::Pawn)
+	const ChessPiece otherPawn = board.getPiece(move.getPositionTo().x(), move.getPositionTo().y() + mod);
+	if (otherPawn.getType() != PieceType::Pawn || otherPawn.getColour() == piece.getColour())
 		return false;
 
 	return true;
 }
 
-bool ChessRules::isCastling(const ChessMove & move, const ChessPiece & piece, const ChessBoard & board)
+bool ChessRules::isCastling(const ChessMove & move, const ChessPiece& piece, const ChessBoard & board)
 {
 	if (piece.getType() != PieceType::King || piece.hasMoved())
 		return false;
@@ -299,6 +299,11 @@ bool ChessRules::isCastling(const ChessMove & move, const ChessPiece & piece, co
 	}
 
 	return true;
+}
+
+bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
+{
+	return false;
 }
 
 //https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs

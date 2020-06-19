@@ -10,14 +10,18 @@ struct ChessAction;
 class BoardManager
 {
 private:
-	ChessPieceManager* m_pieceManager;
-	ChessBoard* m_board;
+	std::unique_ptr<ChessPieceManager> m_pieceManager;
+	std::unique_ptr<ChessBoard> m_board;
 
 	sf::Sound m_soundPieceTake;
 	sf::Sound m_soundPieceCheck;
 	sf::Sound m_soundPieceMove;
 
-	void handleSound(const ChessAction& chessAction, bool playSound);
+	bool m_hasCachedMove = false;
+	ChessMove m_cachedMove;
+
+	void handleSound(const ActionType chessAction, bool playSound);
+	bool validateMove(const ChessMove move) const;
 
 public:
 	BoardManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, std::map <AssetFlags, sf::SoundBuffer>& sounds);

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ChessPieceEntity.h"
-#include "ChessBoard.h"
 
 ChessPieceEntity::ChessPieceEntity(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet)
 {

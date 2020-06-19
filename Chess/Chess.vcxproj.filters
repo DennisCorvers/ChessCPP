@@ -38,9 +38,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChessBoard.cpp">
-      <Filter>Source Files\Mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="Client.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
@@ -83,6 +80,9 @@
     <ClCompile Include="Enums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChessBoard.cpp">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -95,9 +95,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChessAction.h">
-      <Filter>Source Files\Mechanics</Filter>
-    </ClInclude>
-    <ClInclude Include="ChessBoard.h">
       <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">
@@ -144,6 +141,9 @@
     </ClInclude>
     <ClInclude Include="Enums.h">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessBoard.h">
+      <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

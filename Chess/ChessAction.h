@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include "ChessPiece.h"
 #include "ChessPosition.h"
+#include "ChessMove.h"
 
 struct ChessAction
 {

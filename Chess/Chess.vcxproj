@@ -147,10 +147,10 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="BoardManager.cpp" />
     <ClCompile Include="ChessPiece.cpp" />
     <ClCompile Include="ChessPieceManager.cpp" />
-    <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="ChessPieceEntity.cpp" />
     <ClCompile Include="ChessRules.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -170,11 +170,11 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetFlags.h" />
+    <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />
     <ClInclude Include="ChessPiece.h" />
     <ClInclude Include="ChessPieceManager.h" />
     <ClInclude Include="ChessAction.h" />
-    <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="ChessMove.h" />
     <ClInclude Include="ChessPieceEntity.h" />
     <ClInclude Include="ChessPosition.h" />

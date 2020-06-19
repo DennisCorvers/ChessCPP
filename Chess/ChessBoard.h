@@ -1,8 +1,9 @@
 #pragma once
 #include "ChessPiece.h"
-#include "ChessMove.h"
-#include "Enums.h"
 #include "ChessAction.h"
+#include "ChessRules.h"
+
+struct ChessMove;
 
 namespace BoardSettings {
 	static const char DEFAULTBOARD[64]{
@@ -20,42 +21,52 @@ namespace BoardSettings {
 class ChessBoard
 {
 private:
-	const static char SIZE = 64;
+	const static char BOARDSIZE = 64;
 
-	ChessPiece m_currentBoard[SIZE];
+	ChessPiece m_board[BOARDSIZE];
 	const char* m_defaultBoard;
+	ChessAction m_lastMove;
 
-	ChessAction applyMove(const ChessMove newMove);
-	std::vector<ChessAction> m_moveHistory;
+	std::map<PieceColour, ChessPosition> m_kingMap;
+	int m_moveNumber = 0;
 
 	inline ChessPiece& getPiece(char x, char y) {
-		return m_currentBoard[y * 8 + x];
+		return m_board[y * 8 + x];
 	}
 
-	inline ChessPiece& getPiece(ChessPosition position) {
+	inline ChessPiece& getPiece(const ChessPosition position) {
 		return getPiece(position.x(), position.y());
 	}
+
+	void applyMove(const ChessAction & move, const ChessPiece & piece);
+	void reverseMove(const ChessAction& move);
 
 public:
-	ChessBoard(const char(&boardData)[SIZE]);
+
+	ChessBoard(const char(&boardData)[BOARDSIZE]);
 	virtual ~ChessBoard();
 
-	inline const ChessPiece getPiece(char x, char y) const {
-		return m_currentBoard[y * 8 + x];
+	inline const ChessPiece& getPiece(char x, char y) const {
+		return m_board[y * 8 + x];
 	}
 
-	inline const ChessPiece getPiece(ChessPosition position) const {
+	inline const ChessPiece& getPiece(const ChessPosition position) const {
 		return getPiece(position.x(), position.y());
 	}
 
-	bool isValidPosition(const ChessPosition position, const std::vector<ChessPosition>& validPositions) const;
-	bool isValidSelection(const ChessPosition position, const PieceColour playerColour) const;
-	bool tryGetLastMove(ChessAction& out) const;
+	inline const ChessAction& getLastMove() const {
+		return m_lastMove;
+	}
 
-	ChessAction inputMove(const ChessMove newMove);
+	inline const PieceColour getPlayingColour() const {
+		return m_moveNumber % 2 == 0 ? PieceColour::White : PieceColour::Black;
+	}
 
+	ActionType simulateMove(const ChessMove& newMove, bool tryApplyMove);
 	void resetBoard();
 
-	std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const;
+	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const {
+		return ChessRules::getValidPositions(selectedPosition, *this);
+	}
 };
 

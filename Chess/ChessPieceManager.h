@@ -112,6 +112,6 @@ public:
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
 	const bool boundsContains(float x, float y) const;
-	void syncPieces(const ChessBoard& chessBoard, bool animate);
+	void syncPieces(const ChessBoard& Board, bool animate);
 };
 

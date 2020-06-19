@@ -33,6 +33,13 @@ public:
 			std::powf(static_cast<float>(m_positionFrom.y() - m_positionTo.y()), 2));
 	}
 
+	bool operator==(const ChessMove& rhs) const {
+		return m_positionFrom == rhs.m_positionFrom && m_positionTo == rhs.m_positionTo;
+	}
+	bool operator!=(const ChessMove& rhs) const {
+		return !(*this == rhs);
+	}
+
 	friend std::ostream& operator<<(std::ostream& output, const ChessMove& cp) {
 		return output << cp.getPositionFrom() << " -> " << cp.getPositionTo();
 	}

@@ -35,7 +35,7 @@ bool ChessPieceManager::isPieceMoving()
 	return m_moveAction.isMoving();
 }
 
-void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
+void ChessPieceManager::syncPieces(const ChessBoard& Board, bool animate)
 {
 	m_moveAction.reset();
 
@@ -45,7 +45,7 @@ void ChessPieceManager::syncPieces(const ChessBoard& chessBoard, bool animate)
 		for (char y = 0; y < 8; y++)
 		{
 			int i = x * 8 + y;
-			ChessPiece val = chessBoard.getPiece(x, y);
+			ChessPiece val = Board.getPiece(x, y);
 			if (val.isEmpty())
 				continue;
 
