@@ -1,10 +1,7 @@
 #pragma once
-#include "SFML/Graphics.hpp"
-#include <memory>
 #include "ChessPosition.h"
 #include "Entity.h"
 #include "AssetFlags.h"
-
 
 struct ChessMove;
 class ChessBoard;

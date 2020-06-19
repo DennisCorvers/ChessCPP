@@ -1,6 +1,5 @@
+#include "pch.h"
 #include "EventManager.h"
-
-
 
 EventManager::EventManager()
 {
@@ -30,8 +29,8 @@ void EventManager::handleEvent(const sf::Event& sfmlEvent)
 		myEvent.eventType = MyEventType(eType);
 		myEvent.keyCode = sfmlEvent.mouseButton.button;
 
-		myEvent.mousePos.x = sfmlEvent.mouseButton.x;
-		myEvent.mousePos.y = sfmlEvent.mouseButton.y;
+		myEvent.mousePos.x = static_cast<float>(sfmlEvent.mouseButton.x);
+		myEvent.mousePos.y = static_cast<float>(sfmlEvent.mouseButton.y);
 	}
 
 	if (myEvent.eventType != MyEventType::None) {

@@ -1,7 +1,6 @@
-#include <algorithm>
+#include "pch.h"
 #include "ChessRules.h"
 #include "ChessBoard.h"
-#include "Enums.h"
 
 ChessBoard::ChessBoard(const char(&boardData)[SIZE])
 {

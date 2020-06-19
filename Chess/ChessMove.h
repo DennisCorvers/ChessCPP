@@ -2,8 +2,6 @@
 #include <iostream>
 #include "ChessPosition.h"
 
-
-
 struct ChessMove {
 private:
 	ChessPosition m_positionFrom;

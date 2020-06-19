@@ -2,7 +2,6 @@
 #include "Entity.h"
 #include "Enums.h"
 
-
 class ChessPieceEntity : public Entity
 {
 private:

@@ -1,8 +1,5 @@
 #pragma once
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
 #include "ChessMove.h"
-#include "Enums.h"
 #include "AssetFlags.h"
 #include "Entity.h"
 

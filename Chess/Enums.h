@@ -1,12 +1,12 @@
 #pragma once
-#include <string>
 
 enum struct PieceColour : char
 {
 	White = 1,
 	Black = -1
 };
-const std::string EnumtoString(const PieceColour pieceColour);
+
+
 
 enum struct PieceType : char
 {
@@ -17,7 +17,8 @@ enum struct PieceType : char
 	Queen = 5,
 	King = 6
 };
-const std::string EnumtoString(const PieceType pieceType);
+
+
 
 enum struct ActionType : char {
 	None = -1,
@@ -37,5 +38,9 @@ enum struct SessionState : char {
 	Waiting = 3
 };
 
+namespace Enums {
 
+	const std::string EnumtoString(const PieceType pieceType);
 
+	const std::string EnumtoString(const PieceColour pieceColour);
+}

@@ -1,7 +1,6 @@
+#include "pch.h"
 #include "State.h"
 #include "EventManager.h"
-#include "SFML/Graphics.hpp"
-
 
 State::State(StateData* data)
 {

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "GameState.h"
 #include "EventManager.h"
 #include "BoardManager.h"
@@ -37,7 +38,10 @@ void GameState::initGame()
 
 void GameState::initView()
 {
-	view.setSize(sf::Vector2f(stateData->window->getSize().x, stateData->window->getSize().y));
+	float x = static_cast<float>(stateData->window->getSize().x);
+	float y = static_cast<float>(stateData->window->getSize().y);
+
+	view.setSize(sf::Vector2f(x, y));
 	view.setCenter(m_boardManager->getBoardCenter()); //Focus on the centre of the board.
 }
 

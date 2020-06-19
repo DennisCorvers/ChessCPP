@@ -1,9 +1,8 @@
+#include "pch.h"
 #include "ChessPieceManager.h"
 #include "ChessPieceEntity.h"
 #include "ChessMove.h"
 #include "ChessBoard.h"
-#include "Enums.h"
-#include "Utils.h"
 
 ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures)
 {

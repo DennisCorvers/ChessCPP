@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "ChessPieceEntity.h"
 #include "ChessBoard.h"
-#include "Enums.h"
 
 ChessPieceEntity::ChessPieceEntity(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet)
 {

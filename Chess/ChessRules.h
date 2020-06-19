@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "ChessPosition.h"
+
 class ChessBoard;
 class ChessPiece;
 struct ChessMove;

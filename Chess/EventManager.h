@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <queue>
-
 enum struct MyEventType {
 	None = -1,
 	KeyDown = sf::Event::KeyPressed,

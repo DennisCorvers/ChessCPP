@@ -24,6 +24,12 @@
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{258c071f-847c-40a1-9547-5a35edcec40b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{4fc3dc28-d2be-4e05-a6de-7c078fd0ba47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{384928f6-a999-47bf-af03-4569f890c42a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -40,9 +46,6 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Enums.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="State.cpp">
       <Filter>Source Files\States</Filter>
@@ -71,6 +74,15 @@
     <ClCompile Include="ChessPiece.cpp">
       <Filter>Source Files\Mechanics</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Enums.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -94,9 +106,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Source Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
@@ -108,9 +117,6 @@
     </ClInclude>
     <ClInclude Include="StateManager.h">
       <Filter>Source Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChessPieceManager.h">
       <Filter>Source Files\Managers</Filter>
@@ -127,8 +133,17 @@
     <ClInclude Include="ChessPiece.h">
       <Filter>Source Files\Mechanics</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="AssetFlags.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,19 +1,6 @@
-#include "Enums.h"
+#include "pch.h"
 
-
-const std::string EnumtoString(const PieceColour pieceColour) {
-	switch (pieceColour)
-	{
-	case PieceColour::Black:
-		return "Black";
-	case PieceColour::White:
-		return "White";
-	default:
-		return "";
-	}
-}
-
-const std::string EnumtoString(const PieceType pieceType) {
+const std::string Enums::EnumtoString(const PieceType pieceType) {
 	switch (pieceType)
 	{
 	case PieceType::Pawn:
@@ -28,6 +15,18 @@ const std::string EnumtoString(const PieceType pieceType) {
 		return "Queen";
 	case PieceType::King:
 		return "King";
+	default:
+		return "";
+	}
+}
+
+const std::string Enums::EnumtoString(const PieceColour pieceColour) {
+	switch (pieceColour)
+	{
+	case PieceColour::Black:
+		return "Black";
+	case PieceColour::White:
+		return "White";
 	default:
 		return "";
 	}
