@@ -158,12 +158,10 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	m_moveAction.moveTo = ChessPosition(pos.x, pos.y);
 	m_moveAction.setMoving(false);
 
+	snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
 	//Reset entity if the same position is selected.
 	if (m_moveAction.moveFrom == m_moveAction.moveTo)
-	{
-		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
 		return false;
-	}
 
 	bool isValidMove = false;
 	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)
@@ -177,7 +175,6 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	//Reset selection if an invalid position is selected.
 	if (!isValidMove) {
 		m_moveAction.moveTo = m_moveAction.moveFrom;
-		snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
 		m_moveAction.reset();
 		return false;
 	}

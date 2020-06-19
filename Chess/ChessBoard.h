@@ -38,12 +38,12 @@ private:
 		return getPiece(position.x(), position.y());
 	}
 
-	void applyMove(const ChessAction & move, const ChessPiece & piece);
-	void reverseMove(const ChessAction& move);
+	static void applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece & piece);
 
 public:
 
 	ChessBoard(const char(&boardData)[BOARDSIZE]);
+	ChessBoard(const ChessBoard& board);
 	virtual ~ChessBoard();
 
 	inline const ChessPiece& getPiece(char x, char y) const {

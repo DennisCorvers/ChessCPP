@@ -5,6 +5,7 @@
 namespace {
 
 	using MoveSet = std::vector<sf::Vector2i>;
+	using ValidMoves = std::vector<ChessPosition>;
 
 	const MoveSet kingMoves{
 		sf::Vector2i(-1,1),
@@ -32,7 +33,7 @@ namespace {
 		return pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7;
 	}
 
-	void slide(sf::Vector2i pos, sf::Vector2i dir, const ChessBoard& board, std::vector<ChessPosition>& validMoves)
+	void slide(sf::Vector2i pos, sf::Vector2i dir, const ChessBoard& board, ValidMoves& validMoves)
 	{
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		for (char i = 1; i < 8; i++)
@@ -53,19 +54,19 @@ namespace {
 		}
 	}
 
-	void addDiagonal(sf::Vector2i pos, const ChessBoard& board, std::vector<ChessPosition>& validMoves) {
+	void addDiagonal(sf::Vector2i pos, const ChessBoard& board, ValidMoves& validMoves) {
 		slide(pos, sf::Vector2i(1, 1), board, validMoves);
 		slide(pos, sf::Vector2i(-1, -1), board, validMoves);
 		slide(pos, sf::Vector2i(-1, 1), board, validMoves);
 		slide(pos, sf::Vector2i(1, -1), board, validMoves);
 	}
-	void addOrthogonal(sf::Vector2i pos, const ChessBoard& board, std::vector<ChessPosition>& validMoves) {
+	void addOrthogonal(sf::Vector2i pos, const ChessBoard& board, ValidMoves& validMoves) {
 		slide(pos, sf::Vector2i(1, 0), board, validMoves);
 		slide(pos, sf::Vector2i(-1, 0), board, validMoves);
 		slide(pos, sf::Vector2i(0, 1), board, validMoves);
 		slide(pos, sf::Vector2i(0, -1), board, validMoves);
 	}
-	void addMoveset(sf::Vector2i pos, const ChessBoard& board, std::vector<ChessPosition>& validMoves, const MoveSet& moveSet) {
+	void addMoveset(sf::Vector2i pos, const ChessBoard& board, ValidMoves& validMoves, const MoveSet& moveSet) {
 
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		for (char i = 0; i < moveSet.size(); i++)
@@ -88,8 +89,8 @@ namespace {
 		}
 	}
 
-	std::vector<ChessPosition> getPawnPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getPawnPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(2);
 
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
@@ -138,37 +139,37 @@ namespace {
 
 		return moves;
 	}
-	std::vector<ChessPosition> getRookPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getRookPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(8);
 
 		addOrthogonal(pos, board, moves);
 		return moves;
 	}
-	std::vector<ChessPosition> getBishopPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getBishopPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(8);
 
 		addDiagonal(pos, board, moves);
 		return moves;
 	}
-	std::vector<ChessPosition> getKnightPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getKnightPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(4);
 
 		addMoveset(pos, board, moves, knightMoves);
 		return moves;
 	}
-	std::vector<ChessPosition> getQueenPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getQueenPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(8);
 
 		addOrthogonal(pos, board, moves);
 		addDiagonal(pos, board, moves);
 		return moves;
 	}
-	std::vector<ChessPosition> getKingPositions(sf::Vector2i pos, const ChessBoard& board) {
-		std::vector<ChessPosition> moves;
+	ValidMoves getKingPositions(sf::Vector2i pos, const ChessBoard& board) {
+		ValidMoves moves;
 		moves.reserve(4);
 
 		//Castling moves
@@ -189,7 +190,7 @@ namespace {
 	}
 }
 
-std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & selectedPosition, const ChessBoard& board)
+ValidMoves ChessRules::getValidPositions(const ChessPosition & selectedPosition, const ChessBoard& board)
 {
 	ChessPiece pieceValue = board.getPiece(selectedPosition);
 	sf::Vector2i position(selectedPosition.x(), selectedPosition.y());
@@ -212,7 +213,7 @@ std::vector<ChessPosition> ChessRules::getValidPositions(const ChessPosition & s
 		break;
 	}
 
-	return std::vector<ChessPosition>();
+	return ValidMoves();
 }
 
 bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece& piece, const ChessBoard & board)
@@ -303,6 +304,12 @@ bool ChessRules::isCastling(const ChessMove & move, const ChessPiece& piece, con
 
 bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 {
+	//Pretend the King is every piece (Pawn/Rook/Knight/Bishop/Queen/King) 
+	//and check if that same enemy piece is at any of the possible locations
+
+	//If so, King is in Check
+	//If the King is in Check, Check for CheckMate.
+
 	return false;
 }
 

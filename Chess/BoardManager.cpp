@@ -40,15 +40,15 @@ void BoardManager::resetGame()
 
 bool BoardManager::inputMove(const ChessMove move, bool animate)
 {
-	if (m_hasCachedMove) {
+	if (!m_hasCachedMove) {
 		std::cout << "No cached move found!" << std::endl;
-	
-		if (!validateMove(move)) {
+
+		if (!validateMove(move))
 			return false;
-		}
 	}
 	else
 		m_hasCachedMove = false;
+
 
 	ActionType moveResult = m_board->simulateMove(move, true);
 	if (moveResult != ActionType::None)

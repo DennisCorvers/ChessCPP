@@ -10,6 +10,17 @@ ChessBoard::ChessBoard(const char(&boardData)[BOARDSIZE])
 	m_kingMap[PieceColour::White] = ChessPosition(0, 0);
 }
 
+ChessBoard::ChessBoard(const ChessBoard & board)
+{
+	for (char i = 0; i < BOARDSIZE; i++)
+		m_board[i] = board.m_board[i];
+
+	m_defaultBoard = board.m_defaultBoard;
+	m_kingMap = board.m_kingMap;
+	m_lastMove = board.m_lastMove;
+	m_moveNumber = board.m_moveNumber;
+}
+
 ChessBoard::~ChessBoard()
 {
 
@@ -53,41 +64,44 @@ ActionType ChessBoard::simulateMove(const ChessMove& newMove, bool tryApplyMove 
 		newAction.actionType = ActionType::Castling;
 	}
 
-	//Move game state one move ahead
-	applyMove(newAction, pieceFrom);
 
-	if (ChessRules::isCheck(m_kingMap[pieceFrom.getColour()], *this)) {
-		reverseMove(newAction);
+	//Simulate the input move on a copy of the board.
+	ChessBoard nextState = *this;
+	applyMove(nextState, newAction, pieceFrom);
+
+	if (ChessRules::isCheck(m_kingMap[pieceFrom.getColour()], nextState)) {
 		newAction.actionType = ActionType::None;
 	}
 	else {
-		if (tryApplyMove)
-			m_lastMove = newAction;
-		else
-			reverseMove(newAction);
+		if (tryApplyMove) {
+			nextState.m_lastMove = newAction;
+
+			//This state could be saved (or a delta) to replay/rewind games
+			*this = nextState;
+		}
 	}
 
 	return newAction.actionType;
 }
 
-void ChessBoard::applyMove(const ChessAction& action, const ChessPiece& piece)
+void ChessBoard::applyMove(ChessBoard & board, const ChessAction & action, const ChessPiece & piece)
 {
 	if (action.actionType == ActionType::None)
 		return;
 
 	if (piece.getType() == PieceType::King)
-		m_kingMap[piece.getColour()] = action.moveTo;
+		board.m_kingMap[piece.getColour()] = action.moveTo;
 
 	ChessMove move(action.moveFrom, action.moveTo);
-	ChessPiece& pieceFrom = getPiece(action.moveFrom);
-	ChessPiece& pieceTo = getPiece(action.moveTo);
+	ChessPiece& pieceFrom = board.getPiece(action.moveFrom);
+	ChessPiece& pieceTo = board.getPiece(action.moveTo);
 
 	switch (action.actionType) {
 
 	case ActionType::EnPassant:
 	{
 		char mod = pieceFrom.getColour() == PieceColour::Black ? -1 : 1;
-		ChessPiece& passantPiece = getPiece(move.getPositionTo().x(), move.getPositionTo().y() + mod);
+		ChessPiece& passantPiece = board.getPiece(move.getPositionTo().x(), move.getPositionTo().y() + mod);
 		passantPiece.reset();
 
 		pieceTo.setTo(pieceFrom);
@@ -104,8 +118,8 @@ void ChessBoard::applyMove(const ChessAction& action, const ChessPiece& piece)
 		pieceTo.setTo(pieceFrom);
 		pieceFrom.reset();
 
-		ChessPiece& rook = getPiece(xPos, yPos);
-		ChessPiece& rookTo = getPiece(action.moveTo.x() + xMod, yPos);
+		ChessPiece& rook = board.getPiece(xPos, yPos);
+		ChessPiece& rookTo = board.getPiece(action.moveTo.x() + xMod, yPos);
 		rookTo.setTo(rook);
 		rook.reset();
 		break;
@@ -125,39 +139,5 @@ void ChessBoard::applyMove(const ChessAction& action, const ChessPiece& piece)
 	}
 	}
 
-	m_moveNumber++;
-}
-
-void ChessBoard::reverseMove(const ChessAction& action)
-{
-	if (action.actionType == ActionType::None)
-		return;
-
-	//if (piece.getType() == PieceType::King)
-	//	m_kingMap[piece.getColour()] = action.moveTo;
-
-	ChessMove move(action.moveFrom, action.moveTo);
-	ChessPiece& pieceFrom = getPiece(action.moveFrom);
-	ChessPiece& pieceTo = getPiece(action.moveTo);
-
-	switch (action.actionType) {
-	case ActionType::Promotion:
-	{
-
-	}
-	case ActionType::EnPassant:
-	{
-
-	}
-	case ActionType::Castling:
-	{
-
-	}
-	default:
-	{
-
-	}
-	}
-
-	m_moveNumber--;
+	board.m_moveNumber++;
 }
