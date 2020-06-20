@@ -40,7 +40,7 @@ public:
 		return getPiece(position.x(), position.y());
 	}
 
-	inline const ChessAction& getLastMove() const {
+	inline const ChessAction& getLastAction() const {
 		return m_lastMove;
 	}
 
@@ -51,7 +51,7 @@ public:
 	/**
 	Apply the input to the board to create the next game state.
 	*/
-	static ActionType simulateMove(const ChessBoard& thisState, ChessBoard& nextStateOut, const ChessMove& newMove, bool validateCheckmate);
+	static std::unique_ptr<ChessBoard> simulateMove(const ChessBoard& thisState, const ChessMove& newMove, bool validateCheckmate);
 	void resetBoard(const char(&boardData)[BOARDSIZE]);
 
 	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) {

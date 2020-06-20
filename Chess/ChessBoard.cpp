@@ -40,7 +40,7 @@ void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 	}
 }
 
-ActionType ChessBoard::simulateMove(const ChessBoard & thisState, ChessBoard & nextStateOut, const ChessMove & newMove, bool validateCheckmate)
+std::unique_ptr<ChessBoard> ChessBoard::simulateMove(const ChessBoard & thisState, const ChessMove & newMove, bool validateCheckmate)
 {
 	ChessPiece pieceFrom = thisState.getPiece(newMove.getPositionFrom());
 	ChessPiece pieceTo = thisState.getPiece(newMove.getPositionTo());
@@ -69,25 +69,24 @@ ActionType ChessBoard::simulateMove(const ChessBoard & thisState, ChessBoard & n
 		newAction.actionType = ActionType::EnPassant;
 
 	//Simulate the input move on a copy of the board.
-	nextStateOut = ChessBoard(thisState);
+	std::unique_ptr<ChessBoard> nextState = std::make_unique<ChessBoard>(thisState);
+	applyMove(*nextState, newAction, pieceFrom);
 
-	applyMove(nextStateOut, newAction, pieceFrom);
-
-	if (ChessRules::isCheck(nextStateOut.m_kingMap[pieceFrom.getColour()], nextStateOut)) {
+	if (ChessRules::isCheck(nextState->m_kingMap[pieceFrom.getColour()], *nextState)) {
 		newAction.actionType = ActionType::None;
 	}
 	else {
 		if (validateCheckmate) {
 			PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-			if (ChessRules::isCheck(nextStateOut.m_kingMap[enemyColour], nextStateOut)) {
+			if (ChessRules::isCheck(nextState->m_kingMap[enemyColour], *nextState)) {
 				newAction.actionType = ActionType::Check;
 				//Check for checkmate?
 			}
 		}
 	}
 
-	nextStateOut.m_lastMove = newAction;
-	return newAction.actionType;
+	nextState->m_lastMove = newAction;
+	return nextState;
 }
 
 void ChessBoard::applyMove(ChessBoard & board, const ChessAction & action, const ChessPiece & piece)

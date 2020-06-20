@@ -48,13 +48,12 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	else
 		m_hasCachedMove = false;
 
-
-	std::unique_ptr<ChessBoard> nextState = std::make_unique<ChessBoard>();
-	ActionType moveResult = ChessBoard::simulateMove(*m_board, *nextState, move, true);
-	if (moveResult != ActionType::None)
+	auto nextState = ChessBoard::simulateMove(*m_board, move, true);
+	auto actionResult = nextState->getLastAction().actionType;
+	if (actionResult != ActionType::None)
 	{
 		m_board = std::move(nextState);
-		handleSound(moveResult, true);
+		handleSound(actionResult, true);
 		m_pieceManager->syncPieces(*m_board, animate);
 	}
 

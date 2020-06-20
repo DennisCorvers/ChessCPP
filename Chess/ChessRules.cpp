@@ -72,9 +72,8 @@ namespace {
 			//Ensure King doesn't move through, or ends up in check
 			//Only check the squares the King is moving through
 			if (i < 3) {
-				ChessBoard newState;
 				ChessMove newMove(move.getPositionFrom(), newPos);
-				if (ChessBoard::simulateMove(board, newState, newMove, false) == ActionType::None)
+				if (ChessBoard::simulateMove(board, newMove, false)->getLastAction().actionType == ActionType::None)
 					return false;
 			}
 		}
@@ -268,9 +267,8 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 
 	for (auto item : allMoves)
 	{
-		ChessBoard nextState;
 		ChessMove nextMove(selectedPosition, item);
-		if (ChessBoard::simulateMove(board, nextState, nextMove, false) != ActionType::None)
+		if (ChessBoard::simulateMove(board, nextMove, false)->getLastAction().actionType != ActionType::None)
 			validMoves.emplace_back(item.x(), item.y());
 	}
 
@@ -306,7 +304,7 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece& piece, co
 		return false;
 
 	//There must be at least one prior move
-	ChessAction lastAction = board.getLastMove();
+	ChessAction lastAction = board.getLastAction();
 	if (lastAction.actionType != ActionType::Normal)
 		return false;
 
