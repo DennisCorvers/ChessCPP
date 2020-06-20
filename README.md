@@ -17,3 +17,10 @@ Loading files with SFML uses a path relative to the current executing applicatio
 ```C++
 loadFromFile("Assets\\Sprites\\Board.png")
 ```
+
+Disabling the Console Window on release builds:
+
+Go to Configuration Properties > Linker > System > SybSystem
+```
+Windows (/SUBSYSTEM:WINDOWS)
+```
