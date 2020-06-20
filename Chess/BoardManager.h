@@ -3,6 +3,19 @@
 #include "AssetFlags.h"
 #include "Entity.h"
 
+namespace BoardSettings {
+	static const char DEFAULTBOARD[64]{
+	 -2, -3, -4, -5, -6, -4, -3, -2,
+	 -1, -1, -1, -1, -1, -1, -1, -1,
+	  0,  0,  0,  0,  0,  0,  0,  0,
+	  0,  0,  0,  0,  0,  0,  0,  0,
+	  0,  0,  0,  0,  0,  0,  0,  0,
+	  0,  0,  0,  0,  0,  0,  0,  0,
+	  1,  1,  1,  1,  1,  1,  1,  1,
+	  2,  3,  4,  5,  6,  4,  3,  2,
+	};
+}
+
 class ChessPieceManager;
 class ChessBoard;
 struct ChessAction;

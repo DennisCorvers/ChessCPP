@@ -3,9 +3,8 @@
 #include "ChessRules.h"
 #include "ChessMove.h"
 
-ChessBoard::ChessBoard(const char(&boardData)[BOARDSIZE])
+ChessBoard::ChessBoard()
 {
-	m_defaultBoard = boardData;
 	m_kingMap[PieceColour::Black] = ChessPosition(0, 0);
 	m_kingMap[PieceColour::White] = ChessPosition(0, 0);
 }
@@ -15,7 +14,6 @@ ChessBoard::ChessBoard(const ChessBoard & board)
 	for (char i = 0; i < BOARDSIZE; i++)
 		m_board[i] = board.m_board[i];
 
-	m_defaultBoard = board.m_defaultBoard;
 	m_kingMap = board.m_kingMap;
 	m_lastMove = board.m_lastMove;
 	m_moveNumber = board.m_moveNumber;
@@ -26,14 +24,14 @@ ChessBoard::~ChessBoard()
 
 }
 
-void ChessBoard::resetBoard()
+void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 {
 	for (char x = 0; x < 8; x++)
 	{
 		for (char y = 0; y < 8; y++)
 		{
 			int index = x * 8 + y;
-			m_board[index] = m_defaultBoard[index];
+			m_board[index] = boardData[index];
 
 			const ChessPiece& piece = m_board[index];
 			if (piece.getType() == PieceType::King)
@@ -42,61 +40,53 @@ void ChessBoard::resetBoard()
 	}
 }
 
-ActionType ChessBoard::simulateMove(const ChessMove& newMove, bool tryApplyMove = true)
+ActionType ChessBoard::simulateMove(const ChessBoard & thisState, ChessBoard & nextStateOut, const ChessMove & newMove, bool validateCheckmate)
 {
-	ChessPiece& pieceFrom = getPieceRef(newMove.getPositionFrom());
-	ChessPiece& pieceTo = getPieceRef(newMove.getPositionTo());
-	ChessAction newAction(newMove);
-	newAction.pieceFrom = pieceFrom;
-	newAction.actionType = ActionType::Normal;
-
+	ChessPiece pieceFrom = thisState.getPiece(newMove.getPositionFrom());
+	ChessPiece pieceTo = thisState.getPiece(newMove.getPositionTo());
+	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
 	if (!pieceTo.isEmpty())
 	{
-		if (pieceTo.getType() == PieceType::King)
+		if (pieceTo.getType() == PieceType::King) {
 			newAction.actionType = ActionType::None;
-		else
+		}
+		else {
 			newAction.actionType = ActionType::Take;
+		}
 	}
-	else
+	else {
 		newAction.actionType = ActionType::Normal;
-
-
-	if (pieceFrom.getType() == PieceType::Pawn) {
-		if (ChessRules::isEnpassant(newMove, pieceFrom, *this)) {
-			newAction.actionType = ActionType::EnPassant;
-		}
-		else if (ChessRules::isPromotion(newMove, pieceFrom, *this)) {
-			newAction.actionType = ActionType::Promotion;
-		}
 	}
-	else if (ChessRules::isCastling(newMove, pieceFrom, *this)) {
+
+	if (pieceFrom.getType() == PieceType::King && !pieceFrom.hasMoved() && newMove.distance().x() == 2)
 		newAction.actionType = ActionType::Castling;
-	}
 
+	if (ChessRules::isPromotion(newMove, pieceFrom, thisState))
+		newAction.actionType = ActionType::Promotion;
+
+	if (ChessRules::isEnpassant(newMove, pieceFrom, thisState))
+		newAction.actionType = ActionType::EnPassant;
 
 	//Simulate the input move on a copy of the board.
-	ChessBoard nextState = *this;
-	applyMove(nextState, newAction, pieceFrom);
+	nextStateOut = ChessBoard(thisState);
 
-	if (ChessRules::isCheck(nextState.m_kingMap[pieceFrom.getColour()], nextState)) {
+	applyMove(nextStateOut, newAction, pieceFrom);
+
+	if (ChessRules::isCheck(nextStateOut.m_kingMap[pieceFrom.getColour()], nextStateOut)) {
 		newAction.actionType = ActionType::None;
 	}
 	else {
-		if (tryApplyMove) {
-			nextState.m_lastMove = newAction;
-
-			//This state could be saved (or a delta) to replay/rewind games
-			*this = nextState;
-
+		if (validateCheckmate) {
 			PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-			if (ChessRules::isCheck(m_kingMap[enemyColour], *this)) {
+			if (ChessRules::isCheck(nextStateOut.m_kingMap[enemyColour], nextStateOut)) {
 				newAction.actionType = ActionType::Check;
 				//Check for checkmate?
 			}
 		}
 	}
 
+	nextStateOut.m_lastMove = newAction;
 	return newAction.actionType;
 }
 

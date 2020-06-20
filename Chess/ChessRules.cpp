@@ -3,8 +3,6 @@
 #include "ChessBoard.h"
 
 namespace {
-	static std::vector<ChessPosition> moveBuffer(16);
-
 	using MoveSet = std::vector<sf::Vector2i>;
 	using ValidMoves = std::vector<ChessPosition>;
 
@@ -41,6 +39,47 @@ namespace {
 
 	inline bool isOutOfBounds(const sf::Vector2i pos) {
 		return pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7;
+	}
+
+	bool isCastling(const ChessMove & move, const ChessPiece& piece, const ChessBoard& board)
+	{
+		if (piece.getType() != PieceType::King || piece.hasMoved())
+			return false;
+
+		//Validate move distance
+		char xDistance = move.getPositionFrom().x() - move.getPositionTo().x();
+		if (abs(xDistance) != 2)
+			return false;
+
+		char yPos = piece.getColour() == PieceColour::White ? 7 : 0;
+		char rookX = xDistance > 0 ? 0 : 7;
+
+		//Check if rook (has moved)
+		ChessPiece rook = board.getPiece(rookX, yPos);
+		if (rook.getType() != PieceType::Rook || rook.hasMoved())
+			return false;
+
+		// Check that the adjacent squares are empty
+		char mod = xDistance > 0 ? -1 : 1;
+		char kingX = move.getPositionFrom().x();
+		char len = abs(kingX - rookX);
+		for (int i = 1; i < len; i++)
+		{
+			ChessPosition newPos(kingX + i * mod, yPos);
+			if (!board.getPiece(kingX + i * mod, yPos).isEmpty())
+				return false;
+
+			//Ensure King doesn't move through, or ends up in check
+			//Only check the squares the King is moving through
+			if (i < 3) {
+				ChessBoard newState;
+				ChessMove newMove(move.getPositionFrom(), newPos);
+				if (ChessBoard::simulateMove(board, newState, newMove, false) == ActionType::None)
+					return false;
+			}
+		}
+
+		return true;
 	}
 
 	void slide(sf::Vector2i pos, sf::Vector2i dir, const ChessBoard& board, ValidMoves& validMoves)
@@ -99,7 +138,7 @@ namespace {
 		}
 	}
 
-	void getPawnPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
+	void getPawnPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool verifyCheck) {
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		int mod = piece.getColour() == PieceColour::White ? -1 : 1;
 
@@ -132,16 +171,19 @@ namespace {
 		}
 
 		//En Passant
-		ChessPosition posFrom(pos.x, pos.y);
-		for (char i = -1; i <= 1; i += 2)
-		{
-			newPos = sf::Vector2i(pos.x + i, pos.y + mod);
-			if (isOutOfBounds(newPos))
-				continue;
+		//Do not validate "Check" postitions for EnPassant
+		if (verifyCheck) {
+			ChessPosition posFrom(pos.x, pos.y);
+			for (char i = -1; i <= 1; i += 2)
+			{
+				newPos = sf::Vector2i(pos.x + i, pos.y + mod);
+				if (isOutOfBounds(newPos))
+					continue;
 
-			ChessMove newMove(posFrom, ChessPosition(newPos.x, newPos.y));
-			if (ChessRules::isEnpassant(newMove, piece, board))
-				validMoves.emplace_back(newPos.x, newPos.y);
+				ChessMove newMove(posFrom, ChessPosition(newPos.x, newPos.y));
+				if (ChessRules::isEnpassant(newMove, piece, board))
+					validMoves.emplace_back(newPos.x, newPos.y);
+			}
 		}
 	}
 	void getRookPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
@@ -157,32 +199,40 @@ namespace {
 		addOrthogonal(pos, board, validMoves);
 		addDiagonal(pos, board, validMoves);
 	}
-	void getKingPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
-
-		//Castling moves
-		ChessPiece piece = board.getPiece(pos.x, pos.y);
-		for (char i = -2; i <= 2; i += 4)
-		{
-			sf::Vector2i newPos(pos.x + i, pos.y);
-			if (isOutOfBounds(newPos))
-				continue;
-
-			ChessMove newMove(ChessPosition(pos.x, pos.y), ChessPosition(newPos.x, newPos.y));
-			if (ChessRules::isCastling(newMove, piece, board))
-				validMoves.emplace_back(newPos.x, newPos.y);
-		}
+	void getKingPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool verifyCheck) {
 
 		addMoveset(pos, board, validMoves, kingMoves);
+
+		//Castling moves
+		if (verifyCheck) { //Don't double check castling!
+
+			//Can't castle while in check!
+			if (ChessRules::isCheck(ChessPosition(pos.x, pos.y), board))
+				return;
+
+			ChessPiece piece = board.getPiece(pos.x, pos.y);
+			for (char i = -2; i <= 2; i += 4)
+			{
+				sf::Vector2i newPos(pos.x + i, pos.y);
+				if (isOutOfBounds(newPos))
+					continue;
+
+				ChessMove newMove(ChessPosition(pos.x, pos.y), ChessPosition(newPos.x, newPos.y));
+				if (isCastling(newMove, piece, board))
+					validMoves.emplace_back(newPos.x, newPos.y);
+			}
+		}
 	}
 
-	ValidMoves getAllPositions(const sf::Vector2i pos, const PieceType pieceType, const ChessBoard& board) {
+	ValidMoves getAllPositions(const sf::Vector2i pos, const PieceType pieceType, const ChessBoard& board, bool verifyCheck = true) {
 
-		moveBuffer.clear();
+		ValidMoves moveBuffer;
+		moveBuffer.reserve(16);
 
 		switch (pieceType)
 		{
 		case PieceType::Pawn:
-			getPawnPositions(pos, moveBuffer, board);
+			getPawnPositions(pos, moveBuffer, board, verifyCheck);
 			break;
 		case PieceType::Rook:
 			getRookPositions(pos, moveBuffer, board);
@@ -197,7 +247,7 @@ namespace {
 			getQueenPositions(pos, moveBuffer, board);
 			break;
 		case PieceType::King:
-			getKingPositions(pos, moveBuffer, board);
+			getKingPositions(pos, moveBuffer, board, verifyCheck);
 			break;
 		default:
 			break;
@@ -207,7 +257,7 @@ namespace {
 	}
 }
 
-ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, ChessBoard& board)
+ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, const ChessBoard& board)
 {
 	sf::Clock c; c.restart();
 	PieceType type = board.getPiece(selectedPosition).getType();
@@ -218,8 +268,9 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 
 	for (auto item : allMoves)
 	{
+		ChessBoard nextState;
 		ChessMove nextMove(selectedPosition, item);
-		if (board.simulateMove(nextMove, false) != ActionType::None)
+		if (ChessBoard::simulateMove(board, nextState, nextMove, false) != ActionType::None)
 			validMoves.emplace_back(item.x(), item.y());
 	}
 
@@ -282,39 +333,6 @@ bool ChessRules::isEnpassant(const ChessMove & move, const ChessPiece& piece, co
 	return true;
 }
 
-bool ChessRules::isCastling(const ChessMove & move, const ChessPiece& piece, const ChessBoard & board)
-{
-	if (piece.getType() != PieceType::King || piece.hasMoved())
-		return false;
-
-	//Validate move distance
-	char xDistance = move.getPositionFrom().x() - move.getPositionTo().x();
-	if (abs(xDistance) != 2)
-		return false;
-
-	char yPos = piece.getColour() == PieceColour::White ? 7 : 0;
-	char rookX = xDistance > 0 ? 0 : 7;
-
-	//Check if rook (has moved)
-	ChessPiece rook = board.getPiece(rookX, yPos);
-	if (rook.getType() != PieceType::Rook || rook.hasMoved())
-		return false;
-
-	// Check that the adjacent squares are empty
-	char mod = xDistance > 0 ? -1 : 1;
-	char kingX = move.getPositionFrom().x();
-	char len = abs(kingX - rookX);
-	for (int i = 1; i < len; i++)
-	{
-		//TODO Check for every position if it results in a CHECK
-		ChessPosition newPos(kingX + i * mod, yPos);
-		if (!board.getPiece(kingX + i * mod, yPos).isEmpty())
-			return false;
-	}
-
-	return true;
-}
-
 bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 {
 	PieceColour kingColour = board.getPiece(king).getColour();
@@ -322,7 +340,7 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 
 	for (char i = 0; i < 6; i++)
 	{
-		ValidMoves allMoves = getAllPositions(pos, pieceTypes[i], board);
+		ValidMoves allMoves = getAllPositions(pos, pieceTypes[i], board, false);
 
 		for (auto item : allMoves)
 		{
@@ -332,11 +350,6 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 		}
 	}
 
-	return false;
-}
-
-bool ChessRules::isCheckMate(const ChessPosition & king, const ChessBoard & board)
-{
 	return false;
 }
 

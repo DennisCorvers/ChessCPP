@@ -5,26 +5,12 @@
 
 struct ChessMove;
 
-namespace BoardSettings {
-	static const char DEFAULTBOARD[64]{
-	 -2, -3, -4, -5, -6, -4, -3, -2,
-	 -1, -1, -1, -1, -1, -1, -1, -1,
-	  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,
-	  1,  1,  1,  1,  1,  1,  1,  1,
-	  2,  3,  4,  5,  6,  4,  3,  2,
-	};
-}
-
 class ChessBoard
 {
 private:
 	const static char BOARDSIZE = 64;
 
 	ChessPiece m_board[BOARDSIZE];
-	const char* m_defaultBoard;
 	ChessAction m_lastMove;
 
 	std::map<PieceColour, ChessPosition> m_kingMap;
@@ -42,7 +28,7 @@ private:
 
 public:
 
-	ChessBoard(const char(&boardData)[BOARDSIZE]);
+	ChessBoard();
 	ChessBoard(const ChessBoard& board);
 	virtual ~ChessBoard();
 
@@ -62,8 +48,11 @@ public:
 		return m_moveNumber % 2 == 0 ? PieceColour::White : PieceColour::Black;
 	}
 
-	ActionType simulateMove(const ChessMove& newMove, bool tryApplyMove);
-	void resetBoard();
+	/**
+	Apply the input to the board to create the next game state.
+	*/
+	static ActionType simulateMove(const ChessBoard& thisState, ChessBoard& nextStateOut, const ChessMove& newMove, bool validateCheckmate);
+	void resetBoard(const char(&boardData)[BOARDSIZE]);
 
 	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) {
 		return ChessRules::getValidPositions(selectedPosition, *this);

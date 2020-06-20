@@ -42,8 +42,8 @@ public:
 	void setTo(const ChessPiece piece, bool hasMoved = true) {
 		m_pieceData = piece.m_pieceData;
 
-		//if (hasMoved)
-		//	setMoved();
+		if (hasMoved)
+			setMoved();
 	}
 	void setTo(PieceType newType) {
 		setType(newType);

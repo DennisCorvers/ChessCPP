@@ -8,14 +8,13 @@ BoardManager::BoardManager(const sf::FloatRect boardSizes,
 	std::map<AssetFlags, sf::Texture>& textures,
 	std::map <AssetFlags, sf::SoundBuffer>& sounds)
 {
-	m_board = std::make_unique<ChessBoard>(BoardSettings::DEFAULTBOARD);
+	m_board = std::make_unique<ChessBoard>();
 	m_pieceManager = std::make_unique<ChessPieceManager>(boardSizes, textures);
 
 	m_soundPieceCheck.setBuffer(sounds[AssetFlags::s_piece_check]);
 	m_soundPieceMove.setBuffer(sounds[AssetFlags::s_piece_move]);
 	m_soundPieceTake.setBuffer(sounds[AssetFlags::s_piece_take]);
 }
-
 
 BoardManager::~BoardManager()
 {
@@ -34,7 +33,7 @@ sf::Vector2f BoardManager::getBoardCenter()
 
 void BoardManager::resetGame()
 {
-	m_board->resetBoard();
+	m_board->resetBoard(BoardSettings::DEFAULTBOARD);
 	m_pieceManager->syncPieces(*m_board, false);
 }
 
@@ -50,9 +49,11 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 		m_hasCachedMove = false;
 
 
-	ActionType moveResult = m_board->simulateMove(move, true);
+	std::unique_ptr<ChessBoard> nextState = std::make_unique<ChessBoard>();
+	ActionType moveResult = ChessBoard::simulateMove(*m_board, *nextState, move, true);
 	if (moveResult != ActionType::None)
 	{
+		m_board = std::move(nextState);
 		handleSound(moveResult, true);
 		m_pieceManager->syncPieces(*m_board, animate);
 	}
