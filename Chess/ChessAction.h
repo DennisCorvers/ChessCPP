@@ -25,13 +25,14 @@ public:
 		moveTo = move.getPositionTo();
 	}
 
-	inline bool isValidMove() {
-		return actionType != ActionType::None;
+	ChessAction(ChessMove move)
+		:actionType(ActionType::None) {
+		moveFrom = move.getPositionFrom();
+		moveTo = move.getPositionTo();
 	}
 
-	friend std::ostream& operator<<(std::ostream& output, const ChessAction& action) {
-		return output << Enums::EnumtoString(action.pieceFrom.getColour()) << " " << Enums::EnumtoString(action.pieceFrom.getType()) << " " 
-			<< action.moveFrom << " to " << action.moveTo;
+	inline bool isValidMove() {
+		return actionType != ActionType::None;
 	}
 };
 

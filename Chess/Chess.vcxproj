@@ -139,11 +139,14 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>D:\Projects\C++ Projects\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-network-s.lib;sfml-system-s.lib;sfml-audio-s.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;ws2_32.lib;shlwapi.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r</Command>
+      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

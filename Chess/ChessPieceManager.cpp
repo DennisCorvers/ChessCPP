@@ -105,7 +105,7 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 		m_moveAction.movingPiece->render(target);
 }
 
-void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, const ChessBoard& board)
+void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessBoard& board)
 {
 	if (!boundsContains(screenPosition.x, screenPosition.y))
 		return;

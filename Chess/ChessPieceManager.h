@@ -107,7 +107,7 @@ public:
 	virtual void update(const float& deltaTime) override;
 	virtual void render(sf::RenderTarget* const target) override;
 
-	void startSelection(const sf::Vector2f screenPosition, const ChessBoard& board);
+	void startSelection(const sf::Vector2f screenPosition, ChessBoard& board);
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 

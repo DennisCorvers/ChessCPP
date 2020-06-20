@@ -3,11 +3,12 @@
 #include "ChessBoard.h"
 
 namespace {
+	static std::vector<ChessPosition> moveBuffer(16);
 
 	using MoveSet = std::vector<sf::Vector2i>;
 	using ValidMoves = std::vector<ChessPosition>;
 
-	const MoveSet kingMoves{
+	const static MoveSet kingMoves{
 		sf::Vector2i(-1,1),
 		sf::Vector2i(0,1),
 		sf::Vector2i(1,1),
@@ -18,7 +19,7 @@ namespace {
 		sf::Vector2i(-1,0)
 	};
 
-	const MoveSet knightMoves{
+	const static MoveSet knightMoves{
 		sf::Vector2i(1,-2),
 		sf::Vector2i(2,-1),
 		sf::Vector2i(2,1),
@@ -27,6 +28,15 @@ namespace {
 		sf::Vector2i(-2,1),
 		sf::Vector2i(-2,-1),
 		sf::Vector2i(-1,-2)
+	};
+
+	const static PieceType pieceTypes[6]{
+		PieceType::Pawn,
+		PieceType::Rook,
+		PieceType::Knight,
+		PieceType::Bishop,
+		PieceType::Queen,
+		PieceType::King
 	};
 
 	inline bool isOutOfBounds(const sf::Vector2i pos) {
@@ -89,10 +99,7 @@ namespace {
 		}
 	}
 
-	ValidMoves getPawnPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(2);
-
+	void getPawnPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		int mod = piece.getColour() == PieceColour::White ? -1 : 1;
 
@@ -101,14 +108,14 @@ namespace {
 		ChessPiece other = board.getPiece(newPos.x, newPos.y);
 		if (!isOutOfBounds(newPos) && other.isEmpty())
 		{
-			moves.emplace_back(newPos.x, newPos.y);
+			validMoves.emplace_back(newPos.x, newPos.y);
 			//Try move 2 is 1 is clear.
 			if (!piece.hasMoved())
 			{
 				sf::Vector2i newPos(pos.x, pos.y + 2 * mod);
 				other = board.getPiece(newPos.x, newPos.y);
 				if (!isOutOfBounds(newPos) && other.isEmpty())
-					moves.emplace_back(newPos.x, newPos.y);
+					validMoves.emplace_back(newPos.x, newPos.y);
 			}
 		}
 
@@ -121,7 +128,7 @@ namespace {
 
 			ChessPiece other = board.getPiece(newPos.x, newPos.y);
 			if (!other.isEmpty() && other.getColour() != piece.getColour())
-				moves.push_back(ChessPosition(newPos.x, newPos.y));
+				validMoves.push_back(ChessPosition(newPos.x, newPos.y));
 		}
 
 		//En Passant
@@ -134,43 +141,23 @@ namespace {
 
 			ChessMove newMove(posFrom, ChessPosition(newPos.x, newPos.y));
 			if (ChessRules::isEnpassant(newMove, piece, board))
-				moves.emplace_back(newPos.x, newPos.y);
+				validMoves.emplace_back(newPos.x, newPos.y);
 		}
-
-		return moves;
 	}
-	ValidMoves getRookPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(8);
-
-		addOrthogonal(pos, board, moves);
-		return moves;
+	void getRookPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
+		addOrthogonal(pos, board, validMoves);
 	}
-	ValidMoves getBishopPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(8);
-
-		addDiagonal(pos, board, moves);
-		return moves;
+	void getBishopPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
+		addDiagonal(pos, board, validMoves);
 	}
-	ValidMoves getKnightPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(4);
-
-		addMoveset(pos, board, moves, knightMoves);
-		return moves;
+	void getKnightPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
+		addMoveset(pos, board, validMoves, knightMoves);
 	}
-	ValidMoves getQueenPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(8);
-
-		addOrthogonal(pos, board, moves);
-		addDiagonal(pos, board, moves);
-		return moves;
+	void getQueenPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
+		addOrthogonal(pos, board, validMoves);
+		addDiagonal(pos, board, validMoves);
 	}
-	ValidMoves getKingPositions(sf::Vector2i pos, const ChessBoard& board) {
-		ValidMoves moves;
-		moves.reserve(4);
+	void getKingPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board) {
 
 		//Castling moves
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
@@ -182,38 +169,64 @@ namespace {
 
 			ChessMove newMove(ChessPosition(pos.x, pos.y), ChessPosition(newPos.x, newPos.y));
 			if (ChessRules::isCastling(newMove, piece, board))
-				moves.emplace_back(newPos.x, newPos.y);
+				validMoves.emplace_back(newPos.x, newPos.y);
 		}
 
-		addMoveset(pos, board, moves, kingMoves);
-		return moves;
+		addMoveset(pos, board, validMoves, kingMoves);
+	}
+
+	ValidMoves getAllPositions(const sf::Vector2i pos, const PieceType pieceType, const ChessBoard& board) {
+
+		moveBuffer.clear();
+
+		switch (pieceType)
+		{
+		case PieceType::Pawn:
+			getPawnPositions(pos, moveBuffer, board);
+			break;
+		case PieceType::Rook:
+			getRookPositions(pos, moveBuffer, board);
+			break;
+		case PieceType::Knight:
+			getKnightPositions(pos, moveBuffer, board);
+			break;
+		case PieceType::Bishop:
+			getBishopPositions(pos, moveBuffer, board);
+			break;
+		case PieceType::Queen:
+			getQueenPositions(pos, moveBuffer, board);
+			break;
+		case PieceType::King:
+			getKingPositions(pos, moveBuffer, board);
+			break;
+		default:
+			break;
+		}
+
+		return moveBuffer;
 	}
 }
 
-ValidMoves ChessRules::getValidPositions(const ChessPosition & selectedPosition, const ChessBoard& board)
+ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, ChessBoard& board)
 {
-	ChessPiece pieceValue = board.getPiece(selectedPosition);
-	sf::Vector2i position(selectedPosition.x(), selectedPosition.y());
+	sf::Clock c; c.restart();
+	PieceType type = board.getPiece(selectedPosition).getType();
+	sf::Vector2i pos(selectedPosition.x(), selectedPosition.y());
 
-	switch (pieceValue.getType())
+	ValidMoves allMoves = getAllPositions(pos, type, board);
+	ValidMoves validMoves; validMoves.reserve(allMoves.size());
+
+	for (auto item : allMoves)
 	{
-	case PieceType::Pawn:
-		return getPawnPositions(position, board);
-	case PieceType::Rook:
-		return getRookPositions(position, board);
-	case PieceType::Knight:
-		return getKnightPositions(position, board);
-	case PieceType::Bishop:
-		return getBishopPositions(position, board);
-	case PieceType::Queen:
-		return getQueenPositions(position, board);
-	case PieceType::King:
-		return getKingPositions(position, board);
-	default:
-		break;
+		ChessMove nextMove(selectedPosition, item);
+		if (board.simulateMove(nextMove, false) != ActionType::None)
+			validMoves.emplace_back(item.x(), item.y());
 	}
 
-	return ValidMoves();
+	auto time = c.getElapsedTime().asMicroseconds();
+	std::cout << "Time to calculate valid moves: " << time << "us\n";
+
+	return validMoves;
 }
 
 bool ChessRules::isPromotion(const ChessMove & move, const ChessPiece& piece, const ChessBoard & board)
@@ -304,12 +317,26 @@ bool ChessRules::isCastling(const ChessMove & move, const ChessPiece& piece, con
 
 bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 {
-	//Pretend the King is every piece (Pawn/Rook/Knight/Bishop/Queen/King) 
-	//and check if that same enemy piece is at any of the possible locations
+	PieceColour kingColour = board.getPiece(king).getColour();
+	sf::Vector2i pos(king.x(), king.y());
 
-	//If so, King is in Check
-	//If the King is in Check, Check for CheckMate.
+	for (char i = 0; i < 6; i++)
+	{
+		ValidMoves allMoves = getAllPositions(pos, pieceTypes[i], board);
 
+		for (auto item : allMoves)
+		{
+			ChessPiece piece = board.getPiece(item);
+			if (piece.getType() == pieceTypes[i] && piece.getColour() != kingColour)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+bool ChessRules::isCheckMate(const ChessPosition & king, const ChessBoard & board)
+{
 	return false;
 }
 

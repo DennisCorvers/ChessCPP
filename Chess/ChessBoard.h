@@ -30,12 +30,12 @@ private:
 	std::map<PieceColour, ChessPosition> m_kingMap;
 	int m_moveNumber = 0;
 
-	inline ChessPiece& getPiece(char x, char y) {
+	inline ChessPiece& getPieceRef(char x, char y) {
 		return m_board[y * 8 + x];
 	}
 
-	inline ChessPiece& getPiece(const ChessPosition position) {
-		return getPiece(position.x(), position.y());
+	inline ChessPiece& getPieceRef(const ChessPosition position) {
+		return getPieceRef(position.x(), position.y());
 	}
 
 	static void applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece & piece);
@@ -46,11 +46,11 @@ public:
 	ChessBoard(const ChessBoard& board);
 	virtual ~ChessBoard();
 
-	inline const ChessPiece& getPiece(char x, char y) const {
+	inline const ChessPiece getPiece(char x, char y) const {
 		return m_board[y * 8 + x];
 	}
 
-	inline const ChessPiece& getPiece(const ChessPosition position) const {
+	inline const ChessPiece getPiece(const ChessPosition position) const {
 		return getPiece(position.x(), position.y());
 	}
 
@@ -65,7 +65,7 @@ public:
 	ActionType simulateMove(const ChessMove& newMove, bool tryApplyMove);
 	void resetBoard();
 
-	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const {
+	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) {
 		return ChessRules::getValidPositions(selectedPosition, *this);
 	}
 };

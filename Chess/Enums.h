@@ -10,6 +10,7 @@ enum struct PieceColour : char
 
 enum struct PieceType : char
 {
+	None = 0,
 	Pawn = 1,
 	Rook = 2,
 	Knight = 3,
