@@ -17,6 +17,7 @@ public:
 	ChessPosition moveTo;
 	ChessPieceEntity* movingPiece;
 	std::vector<ChessPosition> validPositions;
+	char selectCount;
 
 	inline void setMoving(bool state) {
 		m_isMoving = state;
@@ -25,6 +26,13 @@ public:
 	inline void reset() {
 		m_isMoving = false;
 		movingPiece = nullptr;
+		selectCount = 0;
+	}
+
+	inline void newSelection(ChessPosition moveFrom, ChessPieceEntity* movingPiece) {
+		this->moveFrom = moveFrom;
+		this->movingPiece = movingPiece;
+		selectCount = 0;
 	}
 
 	inline bool hasSelection()
@@ -82,6 +90,7 @@ private:
 	ChessPieceEntity* m_chessPieces[PIECECOUNT];
 	sf::FloatRect m_boardSizes;
 	sf::FloatRect m_boardCollider;
+	sf::Vector2f m_lastScreenPosition;
 
 	std::unique_ptr<MoveMarkerContainer> m_markerContainer;
 	sf::RectangleShape m_selectionMarker;
@@ -101,8 +110,6 @@ private:
 public:
 	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures);
 	virtual ~ChessPieceManager() override;
-
-	bool isPieceMoving();
 
 	virtual void update(const float& deltaTime) override;
 	virtual void render(sf::RenderTarget* const target) override;

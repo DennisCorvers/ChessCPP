@@ -21,11 +21,6 @@ BoardManager::~BoardManager()
 
 }
 
-bool BoardManager::isPieceMoving()
-{
-	return m_pieceManager->isPieceMoving();
-}
-
 sf::Vector2f BoardManager::getBoardCenter()
 {
 	return m_pieceManager->getCenter();

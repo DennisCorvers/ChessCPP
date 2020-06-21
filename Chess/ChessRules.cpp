@@ -351,6 +351,14 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 	return false;
 }
 
+bool ChessRules::hasMoves(const ChessBoard& board, PieceColour player) {
+	//Check && !HasMoves == CheckMate
+	//!Check && !HasMoves == StaleMate
+
+	//If the only 2 pieces able to move are kings, Draw
+	return true;
+}
+
 //https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
 
 

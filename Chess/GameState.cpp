@@ -93,10 +93,8 @@ void GameState::update(const float & deltaTime)
 {
 	updateInput(deltaTime);
 
-	if (m_boardManager->isPieceMoving()) {
-		sf::Vector2f position = EventManager::GetPixelPosition(*stateData->window, view);
-		m_boardManager->updateMousePosition(position);
-	}
+	sf::Vector2f position = EventManager::GetPixelPosition(*stateData->window, view);
+	m_boardManager->updateMousePosition(position);
 
 	if (!m_moveBuffer.empty()) {
 		m_boardManager->inputMove(m_moveBuffer.front(), true);

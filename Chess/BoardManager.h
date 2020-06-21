@@ -40,7 +40,6 @@ public:
 	BoardManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, std::map <AssetFlags, sf::SoundBuffer>& sounds);
 	~BoardManager();
 
-	bool isPieceMoving();
 	sf::Vector2f getBoardCenter();
 
 	void resetGame();

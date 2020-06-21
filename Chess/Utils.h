@@ -8,4 +8,7 @@ namespace Math {
 	int limit(int value, int upper);
 
 	float clamp(float value, float lower, float upper);
+
+	float distance(sf::Vector2f v1, sf::Vector2f v2);
 }
+

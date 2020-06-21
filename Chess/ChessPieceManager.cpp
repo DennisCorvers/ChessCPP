@@ -30,11 +30,6 @@ ChessPieceManager::~ChessPieceManager()
 		delete m_chessPieces[i];
 }
 
-bool ChessPieceManager::isPieceMoving()
-{
-	return m_moveAction.isMoving();
-}
-
 void ChessPieceManager::syncPieces(const ChessBoard& Board, bool animate)
 {
 	m_moveAction.reset();
@@ -127,8 +122,7 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessB
 		if (m_moveAction.hasSelection() && piece->getColour() != m_moveAction.movingPiece->getColour())
 			return;
 
-		m_moveAction.moveFrom = newChessPos;
-		m_moveAction.movingPiece = piece;
+		m_moveAction.newSelection(newChessPos, piece);
 		m_moveAction.setMoving(true);
 		m_moveAction.validPositions = board.getValidPositions(m_moveAction.moveFrom);
 
@@ -142,11 +136,14 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessB
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
 {
-	if (m_moveAction.isMoving())
-	{
-		auto clampedMouse = clampToBoard(screenPosition);
-		m_moveAction.movingPiece->setCenter(clampedMouse.x, clampedMouse.y);
+	if (Math::distance(screenPosition, m_lastScreenPosition) > 0.15f) {
+		if (m_moveAction.isMoving())
+		{
+			auto clampedMouse = clampToBoard(screenPosition);
+			m_moveAction.movingPiece->setCenter(clampedMouse.x, clampedMouse.y);
+		}
 	}
+	m_lastScreenPosition = screenPosition;
 }
 
 bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMove& outMove)
@@ -160,8 +157,13 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 
 	snapEntityToBoard(m_moveAction.moveFrom, m_moveAction.movingPiece);
 	//Reset entity if the same position is selected.
-	if (m_moveAction.moveFrom == m_moveAction.moveTo)
+	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
+		m_moveAction.selectCount++;
+		if (m_moveAction.selectCount > 1)
+			m_moveAction.reset();
+
 		return false;
+	}
 
 	bool isValidMove = false;
 	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)
