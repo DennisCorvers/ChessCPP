@@ -8,7 +8,7 @@ This project was a motivation to use C++ in a game development setting. The proj
 - Preview of all possible moves for a selected piece
 - Partial history of previous states
 - Sounds for moves: Normal, Take, Check/Checkmate
-- Basic chess rules for pieces
+- All chess rules for pieces
 - End-game via Check ~~Checkmate Stalemate Draw~~
 
 ### ToDo
