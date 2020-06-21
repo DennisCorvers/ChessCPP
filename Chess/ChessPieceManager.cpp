@@ -4,13 +4,13 @@
 #include "ChessMove.h"
 #include "ChessBoard.h"
 
-ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures)
+ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation)
 {
 	m_boardSizes = boardSizes;
 	m_sprite.setTexture(textures[AssetFlags::t_board]);
 
-	m_moveAction.movingPiece = NULL;
-	m_moveAction.setMoving(false);
+	m_moveAction.reset();
+	m_viewOrientation = orientation;
 
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
@@ -30,7 +30,21 @@ ChessPieceManager::~ChessPieceManager()
 		delete m_chessPieces[i];
 }
 
-void ChessPieceManager::syncPieces(const ChessBoard& Board, bool animate)
+void ChessPieceManager::flipBoard(const ChessBoard& board, const PieceColour orientation)
+{
+	if (m_viewOrientation != orientation) {
+		m_viewOrientation = orientation;
+		refreshBoard(board);
+	}
+}
+
+void ChessPieceManager::flipBoard(const ChessBoard & board)
+{
+	m_viewOrientation = m_viewOrientation == PieceColour::Black ? PieceColour::White : PieceColour::Black;
+	refreshBoard(board);
+}
+
+void ChessPieceManager::refreshBoard(const ChessBoard& board)
 {
 	m_moveAction.reset();
 
@@ -39,8 +53,7 @@ void ChessPieceManager::syncPieces(const ChessBoard& Board, bool animate)
 	{
 		for (char y = 0; y < 8; y++)
 		{
-			int i = x * 8 + y;
-			ChessPiece val = Board.getPiece(x, y);
+			ChessPiece val = board.getPiece(x, y);
 			if (val.isEmpty())
 				continue;
 
@@ -102,7 +115,7 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 
 void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessBoard& board)
 {
-	if (!boundsContains(screenPosition.x, screenPosition.y))
+	if (!m_boardCollider.contains(screenPosition.x, screenPosition.y))
 		return;
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
@@ -186,11 +199,6 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	return true;
 }
 
-const bool ChessPieceManager::boundsContains(float x, float y) const
-{
-	return m_boardCollider.contains(x, y);
-}
-
 void ChessPieceManager::snapEntityToBoard(const ChessPosition newPosition, Entity* const piece)
 {
 	sf::Vector2i boardPos(newPosition.x(), newPosition.y());
@@ -229,14 +237,16 @@ sf::Vector2i ChessPieceManager::screenToBoard(const sf::Vector2f mousePosition) 
 	int xPos = (int)((mousePos.x - m_boardSizes.left) / m_boardSizes.width);
 	int yPos = (int)((mousePos.y - m_boardSizes.top) / m_boardSizes.height);
 
-	return sf::Vector2i(Math::limit(xPos, 7), Math::limit(yPos, 7));
+	sf::Vector2i clamped(Math::limit(xPos, 7), Math::limit(yPos, 7));
+	return transformVector(clamped);
 }
 
 sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) const
 {
+	sf::Vector2i boardPos = transformVector(boardPosition);
 	sf::Vector2f pos(
-		m_boardSizes.left + m_boardSizes.width / 2 + m_boardSizes.width * boardPosition.x,
-		m_boardSizes.top + m_boardSizes.height / 2 + m_boardSizes.height * boardPosition.y
+		m_boardSizes.left + m_boardSizes.width / 2 + m_boardSizes.width * boardPos.x,
+		m_boardSizes.top + m_boardSizes.height / 2 + m_boardSizes.height * boardPos.y
 	);
 	return pos;
 }

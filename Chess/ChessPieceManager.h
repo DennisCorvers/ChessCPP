@@ -4,6 +4,7 @@
 #include "AssetFlags.h"
 
 struct ChessMove;
+struct ChessAction;
 class ChessBoard;
 class ChessPieceEntity;
 class Entity;
@@ -86,11 +87,13 @@ class ChessPieceManager : public Entity
 {
 private:
 	const static int PIECECOUNT = 32;
-	MoveAction m_moveAction;
 	ChessPieceEntity* m_chessPieces[PIECECOUNT];
+
+	MoveAction m_moveAction;
 	sf::FloatRect m_boardSizes;
 	sf::FloatRect m_boardCollider;
 	sf::Vector2f m_lastScreenPosition;
+	PieceColour m_viewOrientation;
 
 	std::unique_ptr<MoveMarkerContainer> m_markerContainer;
 	sf::RectangleShape m_selectionMarker;
@@ -103,12 +106,17 @@ private:
 	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
 	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
 	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
+	inline sf::Vector2i transformVector(const sf::Vector2i position) const {
+		if (m_viewOrientation == PieceColour::Black)
+			return sf::Vector2i(7 - position.x, 7 - position.y);
+		return position;
+	}
 
 	void selectChessPiece(const MoveAction& moveData, const ChessBoard& board);
 	void initMarkers();
 
 public:
-	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures);
+	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation);
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;
@@ -118,7 +126,9 @@ public:
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
-	const bool boundsContains(float x, float y) const;
-	void syncPieces(const ChessBoard& Board, bool animate);
+	void flipBoard(const ChessBoard & board, const PieceColour orientation);
+	void flipBoard(const ChessBoard & board);
+	void refreshBoard(const ChessBoard & board);
+	void inputMove(const ChessAction& newAction, bool animate = false);
 };
 

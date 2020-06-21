@@ -86,6 +86,10 @@ void GameState::updateInput(const float & deltaTime)
 		if (nextEvent.eventType == MyEventType::KeyUp && nextEvent.keyCode == sf::Keyboard::R) {
 			m_boardManager->resetGame();
 		}
+
+		if (nextEvent.eventType == MyEventType::KeyUp && nextEvent.keyCode == sf::Keyboard::F) {
+			m_boardManager->flipBoard();
+		}
 	}
 }
 

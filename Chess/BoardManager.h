@@ -37,12 +37,18 @@ private:
 	bool validateMove(const ChessMove move) const;
 
 public:
-	BoardManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, std::map <AssetFlags, sf::SoundBuffer>& sounds);
+	BoardManager(const sf::FloatRect boardSizes, 
+		std::map<AssetFlags, sf::Texture>& textures, 
+		std::map <AssetFlags, sf::SoundBuffer>& sounds,
+		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();
 
 	sf::Vector2f getBoardCenter();
 
 	void resetGame();
+
+	void flipBoard(PieceColour orientation);
+	void flipBoard();
 
 	bool inputMove(const ChessMove move, bool animate);
 
