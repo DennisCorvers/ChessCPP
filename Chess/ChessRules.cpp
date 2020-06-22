@@ -5,6 +5,9 @@
 namespace {
 	using MoveSet = std::vector<sf::Vector2i>;
 	using ValidMoves = std::vector<ChessPosition>;
+	static ChessBoard m_stateBuffer;
+	static ValidMoves m_checkBuffer;
+	static ValidMoves m_moveBuffer;
 
 	const static MoveSet kingMoves{
 		sf::Vector2i(-1,1),
@@ -73,7 +76,7 @@ namespace {
 			//Only check the squares the King is moving through
 			if (i < 3) {
 				ChessMove newMove(move.getPositionFrom(), newPos);
-				if (ChessBoard::simulateMove(board, newMove, false)->getLastAction().actionType == ActionType::None)
+				if (board.simulateMove(m_stateBuffer, newMove, false) == ActionType::None)
 					return false;
 			}
 		}
@@ -137,7 +140,7 @@ namespace {
 		}
 	}
 
-	void getPawnPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool verifyCheck) {
+	void getPawnPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool simulate) {
 		ChessPiece piece = board.getPiece(pos.x, pos.y);
 		int mod = piece.getColour() == PieceColour::White ? -1 : 1;
 
@@ -171,7 +174,7 @@ namespace {
 
 		//En Passant
 		//Do not validate "Check" postitions for EnPassant
-		if (verifyCheck) {
+		if (simulate) {
 			ChessPosition posFrom(pos.x, pos.y);
 			for (char i = -1; i <= 1; i += 2)
 			{
@@ -198,12 +201,12 @@ namespace {
 		addOrthogonal(pos, board, validMoves);
 		addDiagonal(pos, board, validMoves);
 	}
-	void getKingPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool verifyCheck) {
+	void getKingPositions(sf::Vector2i pos, ValidMoves& validMoves, const ChessBoard& board, bool simulate) {
 
 		addMoveset(pos, board, validMoves, kingMoves);
 
 		//Castling moves
-		if (verifyCheck) { //Don't double check castling!
+		if (simulate) { //Don't double check castling!
 
 			//Can't castle while in check!
 			if (ChessRules::isCheck(ChessPosition(pos.x, pos.y), board))
@@ -223,58 +226,58 @@ namespace {
 		}
 	}
 
-	ValidMoves getAllPositions(const sf::Vector2i pos, const PieceType pieceType, const ChessBoard& board, bool verifyCheck = true) {
-
-		ValidMoves moveBuffer;
-		moveBuffer.reserve(16);
+	void getAllPositions(const sf::Vector2i pos, ValidMoves& validMoves, const PieceType pieceType, const ChessBoard& board, bool simulate) {
 
 		switch (pieceType)
 		{
 		case PieceType::Pawn:
-			getPawnPositions(pos, moveBuffer, board, verifyCheck);
+			getPawnPositions(pos, validMoves, board, simulate);
 			break;
 		case PieceType::Rook:
-			getRookPositions(pos, moveBuffer, board);
+			getRookPositions(pos, validMoves, board);
 			break;
 		case PieceType::Knight:
-			getKnightPositions(pos, moveBuffer, board);
+			getKnightPositions(pos, validMoves, board);
 			break;
 		case PieceType::Bishop:
-			getBishopPositions(pos, moveBuffer, board);
+			getBishopPositions(pos, validMoves, board);
 			break;
 		case PieceType::Queen:
-			getQueenPositions(pos, moveBuffer, board);
+			getQueenPositions(pos, validMoves, board);
 			break;
 		case PieceType::King:
-			getKingPositions(pos, moveBuffer, board, verifyCheck);
+			getKingPositions(pos, validMoves, board, simulate);
 			break;
 		default:
 			break;
 		}
-
-		return moveBuffer;
 	}
+
+	float timeTotal;
+	int count;
 }
 
 ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, const ChessBoard& board)
 {
 	sf::Clock c; c.restart();
+
 	PieceType type = board.getPiece(selectedPosition).getType();
 	sf::Vector2i pos(selectedPosition.x(), selectedPosition.y());
 
-	ValidMoves allMoves = getAllPositions(pos, type, board);
-	ValidMoves validMoves; validMoves.reserve(allMoves.size());
+	m_moveBuffer.clear();
+	getAllPositions(pos, m_moveBuffer, type, board, true);
+	ValidMoves validMoves; validMoves.reserve(m_moveBuffer.size());
 
-	for (auto item : allMoves)
+	for (auto item : m_moveBuffer)
 	{
 		ChessMove nextMove(selectedPosition, item);
-		auto nextState = ChessBoard::simulateMove(board, nextMove, false);
-		if (nextState->getLastAction().actionType != ActionType::None)
+		if (board.simulateMove(m_stateBuffer, nextMove, false) != ActionType::None)
 			validMoves.emplace_back(item.x(), item.y());
 	}
 
-	auto time = c.getElapsedTime().asMicroseconds();
-	std::cout << "Time to calculate valid moves: " << time << "us\n";
+	timeTotal += c.getElapsedTime().asMicroseconds();
+	count++;
+	std::cout << "Average time: " << timeTotal/count << "us\n";
 
 	return validMoves;
 }
@@ -339,9 +342,10 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 
 	for (char i = 0; i < 6; i++)
 	{
-		ValidMoves allMoves = getAllPositions(pos, pieceTypes[i], board, false);
+		m_checkBuffer.clear();
+		getAllPositions(pos, m_checkBuffer, pieceTypes[i], board, false);
 
-		for (auto item : allMoves)
+		for (auto item : m_checkBuffer)
 		{
 			ChessPiece piece = board.getPiece(item);
 			if (piece.getType() == pieceTypes[i] && piece.getColour() != kingColour)

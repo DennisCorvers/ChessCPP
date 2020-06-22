@@ -11,9 +11,7 @@ ChessBoard::ChessBoard()
 
 ChessBoard::ChessBoard(const ChessBoard & board)
 {
-	for (char i = 0; i < BOARDSIZE; i++)
-		m_board[i] = board.m_board[i];
-
+	std::memcpy(this->m_board, board.m_board, BOARDSIZE * sizeof(ChessPiece));
 	m_kingMap = board.m_kingMap;
 	m_lastMove = board.m_lastMove;
 	m_moveNumber = board.m_moveNumber;
@@ -40,30 +38,29 @@ void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 	}
 }
 
-std::unique_ptr<ChessBoard> ChessBoard::simulateMove(const ChessBoard & thisState, const ChessMove & newMove, bool validateCheckmate)
+ActionType ChessBoard::simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateCheckmate) const
 {
-	ChessPiece pieceFrom = thisState.getPiece(newMove.getPositionFrom());
-	ChessPiece pieceTo = thisState.getPiece(newMove.getPositionTo());
+	ChessPiece pieceFrom = this->getPiece(newMove.getPositionFrom());
+	ChessPiece pieceTo = this->getPiece(newMove.getPositionTo());
 	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
 	//Simulate the input move on a copy of the board.
-	std::unique_ptr<ChessBoard> nextState = std::make_unique<ChessBoard>(thisState);
-	newAction.actionType = applyMove(*nextState, newAction, pieceFrom);
+	nextState = ChessBoard(*this);
+	newAction.actionType = applyMove(nextState, newAction, pieceFrom);
 
-	if (ChessRules::isCheck(nextState->m_kingMap[pieceFrom.getColour()], *nextState)) {
+	if (ChessRules::isCheck(nextState.m_kingMap[pieceFrom.getColour()], nextState)) {
 		newAction.actionType = ActionType::None;
 	}
 	else if (validateCheckmate) {
 		PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-		if (ChessRules::isCheck(nextState->m_kingMap[enemyColour], *nextState)) {
+		if (ChessRules::isCheck(nextState.m_kingMap[enemyColour], nextState)) {
 			newAction.actionType = newAction.actionType | ActionType::Check;
 			//Check for checkmate?
 		}
 	}
 
-
-	nextState->m_lastMove = newAction;
-	return nextState;
+	nextState.m_lastMove = newAction;
+	return newAction.actionType;
 }
 
 ActionType ChessBoard::applyMove(ChessBoard & board, const ChessAction& action, const ChessPiece & piece)

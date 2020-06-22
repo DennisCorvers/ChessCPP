@@ -53,7 +53,7 @@ public:
 	/**
 	Apply the input to the board to create the next game state.
 	*/
-	static std::unique_ptr<ChessBoard> simulateMove(const ChessBoard& thisState, const ChessMove& newMove, bool validateCheckmate);
+	ActionType simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateCheckmate) const;
 	void resetBoard(const char(&boardData)[BOARDSIZE]);
 
 	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) {
