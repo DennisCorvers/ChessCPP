@@ -24,7 +24,7 @@ private:
 		return getPieceRef(position.x(), position.y());
 	}
 
-	static void applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece & piece);
+	static ActionType applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece & piece);
 
 public:
 

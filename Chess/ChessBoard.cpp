@@ -46,76 +46,43 @@ std::unique_ptr<ChessBoard> ChessBoard::simulateMove(const ChessBoard & thisStat
 	ChessPiece pieceTo = thisState.getPiece(newMove.getPositionTo());
 	ChessAction newAction(pieceFrom, pieceTo, newMove);
 
-	if (!pieceTo.isEmpty())
-	{
-		if (pieceTo.getType() == PieceType::King) {
-			newAction.actionType = ActionType::None;
-		}
-		else {
-			newAction.actionType = ActionType::Take;
-		}
-	}
-	else {
-		newAction.actionType = ActionType::Normal;
-	}
-
-	if (pieceFrom.getType() == PieceType::King && !pieceFrom.hasMoved() && newMove.distance().x() == 2)
-		newAction.actionType = ActionType::Castling;
-
-	if (ChessRules::isPromotion(newMove, pieceFrom, thisState))
-		newAction.actionType = ActionType::Promotion;
-
-	if (ChessRules::isEnpassant(newMove, pieceFrom, thisState))
-		newAction.actionType = ActionType::EnPassant;
-
 	//Simulate the input move on a copy of the board.
 	std::unique_ptr<ChessBoard> nextState = std::make_unique<ChessBoard>(thisState);
-	applyMove(*nextState, newAction, pieceFrom);
+	newAction.actionType = applyMove(*nextState, newAction, pieceFrom);
 
 	if (ChessRules::isCheck(nextState->m_kingMap[pieceFrom.getColour()], *nextState)) {
 		newAction.actionType = ActionType::None;
 	}
-	else {
-		if (validateCheckmate) {
-			PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-			if (ChessRules::isCheck(nextState->m_kingMap[enemyColour], *nextState)) {
-				newAction.actionType = ActionType::Check;
-				//Check for checkmate?
-			}
+	else if (validateCheckmate) {
+		PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
+		if (ChessRules::isCheck(nextState->m_kingMap[enemyColour], *nextState)) {
+			newAction.actionType = newAction.actionType | ActionType::Check;
+			//Check for checkmate?
 		}
 	}
+
 
 	nextState->m_lastMove = newAction;
 	return nextState;
 }
 
-void ChessBoard::applyMove(ChessBoard & board, const ChessAction & action, const ChessPiece & piece)
+ActionType ChessBoard::applyMove(ChessBoard & board, const ChessAction& action, const ChessPiece & piece)
 {
-	if (action.actionType == ActionType::None)
-		return;
-
 	if (piece.getType() == PieceType::King)
 		board.m_kingMap[piece.getColour()] = action.moveTo;
 
 	ChessMove move(action.moveFrom, action.moveTo);
 	ChessPiece& pieceFrom = board.getPieceRef(action.moveFrom);
-	auto c = pieceFrom.getColour();
 	ChessPiece& pieceTo = board.getPieceRef(action.moveTo);
 
-	switch (action.actionType) {
+	board.m_moveNumber++;;
 
-	case ActionType::EnPassant:
-	{
-		char mod = pieceFrom.getColour() == PieceColour::Black ? -1 : 1;
-		ChessPiece& passantPiece = board.getPieceRef(move.getPositionTo().x(), move.getPositionTo().y() + mod);
-		passantPiece.reset();
+	//Do NOT take a king!
+	if (pieceTo.getType() == PieceType::King)
+		return ActionType::None;
 
-		pieceTo.setTo(pieceFrom);
-		pieceFrom.reset();
-		break;
-	}
-	case ActionType::Castling:
-	{
+	//CASTLING
+	if (pieceFrom.getType() == PieceType::King && !pieceFrom.hasMoved() && move.distance().x() == 2) {
 		bool castleLeft = action.moveTo.x() < 5;
 		char yPos = action.moveFrom.y();
 		char xPos = castleLeft ? 0 : 7;
@@ -128,22 +95,45 @@ void ChessBoard::applyMove(ChessBoard & board, const ChessAction & action, const
 		ChessPiece& rookTo = board.getPieceRef(action.moveTo.x() + xMod, yPos);
 		rookTo.setTo(rook);
 		rook.reset();
-		break;
+
+		return ActionType::Castling | ActionType::Normal;
 	}
-	case ActionType::Promotion:
-	{
+
+	//EN PASSANT
+	if (ChessRules::isEnpassant(move, pieceFrom, board)) {
+		char mod = pieceFrom.getColour() == PieceColour::Black ? -1 : 1;
+		ChessPiece& passantPiece = board.getPieceRef(move.getPositionTo().x(), move.getPositionTo().y() + mod);
+		passantPiece.reset();
+
+		pieceTo.setTo(pieceFrom);
+		pieceFrom.reset();
+
+		return ActionType::EnPassant | ActionType::Take;
+	}
+
+	//PROMOTION
+	if (ChessRules::isPromotion(move, pieceFrom, board)) {
+		ActionType actionResult = ActionType::Promotion;
+		if (!pieceTo.isEmpty())
+			actionResult = actionResult | ActionType::Take;
+		else
+			actionResult = actionResult | ActionType::Normal;
+
 		pieceTo.setTo(pieceFrom);
 		pieceTo.setTo(PieceType::Queen);
 		pieceFrom.reset();
-		break;
-	}
-	default:
-	{
-		pieceTo.setTo(pieceFrom);
-		pieceFrom.reset();
-		break;
-	}
+
+		return actionResult;
 	}
 
-	board.m_moveNumber++;
+
+	//NORMAL MOVES
+	bool isTake = !pieceTo.isEmpty();
+	pieceTo.setTo(pieceFrom);
+	pieceFrom.reset();
+
+	if (isTake)
+		return ActionType::Take;
+	else
+		return ActionType::Normal;
 }

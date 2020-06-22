@@ -30,6 +30,9 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{384928f6-a999-47bf-af03-4569f890c42a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{8f900627-ff1e-43e4-ac03-138a2927aecb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -144,6 +147,9 @@
     </ClInclude>
     <ClInclude Include="ChessBoard.h">
       <Filter>Source Files\Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorComponent.h">
+      <Filter>Source Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

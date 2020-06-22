@@ -172,6 +172,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatorComponent.h" />
     <ClInclude Include="AssetFlags.h" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />

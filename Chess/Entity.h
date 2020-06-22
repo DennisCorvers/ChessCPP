@@ -28,10 +28,13 @@ public:
 	virtual const bool boundsContains(float x, float y) const;
 
 	virtual void setPosition(const float x, const float y);
+	virtual void setPosition(const sf::Vector2f& position);
 	virtual void setCenter(const float x, const float y);
+	virtual void setCenter(const sf::Vector2f& position);
 	virtual void setScale(const float x, const float y);
+	virtual void setScale(const sf::Vector2f& position);
 
-	virtual void move(const float dt, const float x, const float y);
+	virtual void move(const sf::Vector2f& position);
 
 	virtual void update(const float& dt);
 	virtual void lateUpdate(const float& dt);

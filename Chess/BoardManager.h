@@ -26,9 +26,7 @@ private:
 	std::unique_ptr<ChessPieceManager> m_pieceManager;
 	std::unique_ptr<ChessBoard> m_board;
 
-	sf::Sound m_soundPieceTake;
-	sf::Sound m_soundPieceCheck;
-	sf::Sound m_soundPieceMove;
+	std::map<ActionType, sf::Sound> m_soundMap;
 
 	bool m_hasCachedMove = false;
 	ChessMove m_cachedMove;

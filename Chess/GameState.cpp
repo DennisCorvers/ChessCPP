@@ -27,6 +27,9 @@ void GameState::initSounds() {
 
 	if (!sounds[AssetFlags::s_piece_take].loadFromFile("Assets\\Sounds\\piece_take.ogg"))
 		throw std::exception("Unable to load piece_take.ogg");
+
+	if (!sounds[AssetFlags::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
+		throw std::exception("Unable to load piece_castle.ogg");
 }
 
 void GameState::initGame()
@@ -104,6 +107,8 @@ void GameState::update(const float & deltaTime)
 		m_boardManager->inputMove(m_moveBuffer.front(), true);
 		m_moveBuffer.pop();
 	}
+
+	m_boardManager->update(deltaTime);
 }
 
 void GameState::render(sf::RenderTarget * target)

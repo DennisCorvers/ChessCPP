@@ -22,15 +22,23 @@ enum struct PieceType : char
 
 
 enum struct ActionType : char {
-	None = -1,
-	Normal = 0,
-	Check = 1,
-	Checkmate = 2,
-	Take = 3,
-	EnPassant = 4,
-	Castling = 5,
-	Promotion = 6
+	None = 0,
+	Normal = 1,
+	Check = 2,
+	Checkmate = 4,
+	Take = 8,
+	EnPassant = 16,
+	Castling = 32,
+	Promotion = 64
 };
+
+inline ActionType operator|(ActionType a, ActionType b) {
+	return static_cast<ActionType>(static_cast<char>(a) | static_cast<char>(b));
+}
+
+inline char operator&(ActionType a, ActionType b) {
+	return static_cast<char>(a) & static_cast<char>(b);
+}
 
 enum struct SessionState : char {
 	None = 0,

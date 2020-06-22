@@ -6,15 +6,16 @@
 
 BoardManager::BoardManager(const sf::FloatRect boardSizes,
 	std::map<AssetFlags, sf::Texture>& textures,
-	std::map <AssetFlags, sf::SoundBuffer>& sounds,
+	std::map<AssetFlags, sf::SoundBuffer>& sounds,
 	PieceColour startOrientation)
 {
 	m_board = std::make_unique<ChessBoard>();
 	m_pieceManager = std::make_unique<ChessPieceManager>(boardSizes, textures, startOrientation);
 
-	m_soundPieceCheck.setBuffer(sounds[AssetFlags::s_piece_check]);
-	m_soundPieceMove.setBuffer(sounds[AssetFlags::s_piece_move]);
-	m_soundPieceTake.setBuffer(sounds[AssetFlags::s_piece_take]);
+	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetFlags::s_piece_move]);
+	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetFlags::s_piece_check]);
+	m_soundMap[ActionType::Take] = sf::Sound(sounds[AssetFlags::s_piece_take]);
+	m_soundMap[ActionType::Castling] = sf::Sound(sounds[AssetFlags::s_piece_castle]);
 }
 
 BoardManager::~BoardManager()
@@ -53,11 +54,14 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 		m_hasCachedMove = false;
 
 	auto nextState = ChessBoard::simulateMove(*m_board, move, true);
-	auto actionResult = nextState->getLastAction().actionType;
-	if (actionResult != ActionType::None)
+	const ChessAction& lastAction = nextState->getLastAction();
+	if (lastAction.actionType != ActionType::None)
 	{
 		m_board = std::move(nextState);
-		handleSound(actionResult, true);
+		m_pieceManager->refreshBoard(*m_board);
+		handleSound(lastAction.actionType, true);
+	}
+	else {
 		m_pieceManager->refreshBoard(*m_board);
 	}
 
@@ -80,26 +84,18 @@ void BoardManager::handleSound(const ActionType chessAction, bool playSound)
 	if (!playSound)
 		return;
 
-	switch (chessAction) {
-	case ActionType::Check:
-	case ActionType::Checkmate:
-		m_soundPieceCheck.play();
-		break;
+	//Play from most important to least
+	if (chessAction & ActionType::Check)
+		m_soundMap[ActionType::Check].play();
 
-	case ActionType::Castling:
-	case ActionType::Normal:
-		m_soundPieceMove.play();
-		break;
+	else if (chessAction & ActionType::Take)
+		m_soundMap[ActionType::Take].play();
 
-	case ActionType::Take:
-	case ActionType::EnPassant:
-	case ActionType::Promotion:
-		m_soundPieceTake.play();
-		break;
+	else if (chessAction & ActionType::Castling)
+		m_soundMap[ActionType::Castling].play();
 
-	default:
-		break;
-	}
+	else if (chessAction & ActionType::Normal)
+		m_soundMap[ActionType::Normal].play();
 }
 
 void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour playerColour) const

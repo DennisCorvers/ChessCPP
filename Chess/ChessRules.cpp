@@ -268,7 +268,8 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 	for (auto item : allMoves)
 	{
 		ChessMove nextMove(selectedPosition, item);
-		if (ChessBoard::simulateMove(board, nextMove, false)->getLastAction().actionType != ActionType::None)
+		auto nextState = ChessBoard::simulateMove(board, nextMove, false);
+		if (nextState->getLastAction().actionType != ActionType::None)
 			validMoves.emplace_back(item.x(), item.y());
 	}
 

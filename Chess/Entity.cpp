@@ -30,6 +30,11 @@ void Entity::setPosition(const float x, const float y)
 		m_sprite.setPosition(x, y);
 }
 
+void Entity::setPosition(const sf::Vector2f& position)
+{
+	setPosition(position.x, position.y);
+}
+
 void Entity::setCenter(const float x, const float y)
 {
 	if (isActive()) {
@@ -39,10 +44,24 @@ void Entity::setCenter(const float x, const float y)
 	}
 }
 
+void Entity::setCenter(const sf::Vector2f& position)
+{
+	setCenter(position.x, position.y);
+}
+
 void Entity::setScale(const float x, const float y)
 {
 	if (isActive())
 		m_sprite.setScale(x, y);
+}
+
+void Entity::setScale(const sf::Vector2f& position)
+{
+	setScale(position.x, position.y);
+}
+
+void Entity::move(const sf::Vector2f & position)
+{
 }
 
 const sf::Vector2f Entity::getPosition() const
@@ -69,10 +88,6 @@ const sf::FloatRect Entity::getGlobalBounds() const
 const bool Entity::boundsContains(float x, float y) const
 {
 	return m_sprite.getGlobalBounds().contains(x, y);
-}
-
-void Entity::move(const float dt, const float x, const float y)
-{
 }
 
 void Entity::update(const float& dt)
