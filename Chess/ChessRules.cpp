@@ -36,7 +36,6 @@ namespace {
 		PieceType::Rook,
 		PieceType::Knight,
 		PieceType::Bishop,
-		PieceType::Queen,
 		PieceType::King
 	};
 
@@ -277,7 +276,7 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 
 	timeTotal += c.getElapsedTime().asMicroseconds();
 	count++;
-	std::cout << "Average time: " << timeTotal/count << "us\n";
+	std::cout << "Average time: " << timeTotal / count << "us\n";
 
 	return validMoves;
 }
@@ -340,7 +339,7 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 	PieceColour kingColour = board.getPiece(king).getColour();
 	sf::Vector2i pos(king.x(), king.y());
 
-	for (char i = 0; i < 6; i++)
+	for (char i = 0; i < 5; i++)
 	{
 		m_checkBuffer.clear();
 		getAllPositions(pos, m_checkBuffer, pieceTypes[i], board, false);
@@ -348,8 +347,29 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 		for (auto item : m_checkBuffer)
 		{
 			ChessPiece piece = board.getPiece(item);
-			if (piece.getType() == pieceTypes[i] && piece.getColour() != kingColour)
-				return true;
+			PieceType pieceType = piece.getType();
+
+			//Since the Queen has the same move pattern as Rook + Bishop, the check is included there.
+			switch (pieceTypes[i]) {
+			case PieceType::Rook:
+			{
+				if ((pieceType == PieceType::Rook || pieceType == PieceType::Queen) && piece.getColour() != kingColour)
+					return true;
+				break;
+			}
+			case PieceType::Bishop:
+			{
+				if ((pieceType == PieceType::Bishop || pieceType == PieceType::Queen) && piece.getColour() != kingColour)
+					return true;
+				break;
+			}
+			default:
+			{
+				if (piece.getType() == pieceTypes[i] && piece.getColour() != kingColour)
+					return true;
+				break;
+			}
+			}
 		}
 	}
 
