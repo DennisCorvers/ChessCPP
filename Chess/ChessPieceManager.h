@@ -1,4 +1,5 @@
 #pragma once
+#include "SFML/Graphics.hpp"
 #include "ChessPosition.h"
 #include "Entity.h"
 #include "AssetFlags.h"
@@ -129,9 +130,9 @@ public:
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
-	void flipBoard(const ChessBoard & board, const PieceColour orientation);
-	void flipBoard(const ChessBoard & board);
-	void refreshBoard(const ChessBoard & board);
+	void flipBoard(const ChessBoard& board, const PieceColour orientation);
+	void flipBoard(const ChessBoard& board);
+	void refreshBoard(const ChessBoard& board);
 	void inputMove(const ChessAction& newAction, bool animate = false);
 };
 

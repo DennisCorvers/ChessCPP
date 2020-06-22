@@ -1,4 +1,5 @@
 #pragma once
+#include "Enums.h"
 #include "ChessMove.h"
 #include "AssetFlags.h"
 #include "Entity.h"

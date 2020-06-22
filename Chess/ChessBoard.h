@@ -1,4 +1,6 @@
 #pragma once
+#include "Enums.h"
+#include "ChessPosition.h"
 #include "ChessPiece.h"
 #include "ChessAction.h"
 #include "ChessRules.h"
@@ -24,7 +26,7 @@ private:
 		return getPieceRef(position.x(), position.y());
 	}
 
-	static ActionType applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece & piece);
+	static ActionType applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece& piece);
 
 public:
 

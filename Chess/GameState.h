@@ -1,6 +1,6 @@
 #pragma once
+#include "SFML/Graphics.hpp"
 #include <queue>
-
 #include "State.h"
 #include "ChessMove.h"
 
