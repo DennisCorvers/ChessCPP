@@ -251,9 +251,6 @@ namespace {
 			break;
 		}
 	}
-
-	float timeTotal;
-	int count;
 }
 
 ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, const ChessBoard& board)
@@ -274,9 +271,7 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 			validMoves.emplace_back(item.x(), item.y());
 	}
 
-	timeTotal += c.getElapsedTime().asMicroseconds();
-	count++;
-	std::cout << "Average time: " << timeTotal / count << "us\n";
+	std::cout << "Average time: " << c.getElapsedTime().asMicroseconds() << "us\n";
 
 	return validMoves;
 }

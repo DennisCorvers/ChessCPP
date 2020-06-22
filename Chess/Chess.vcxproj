@@ -150,6 +150,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatorSystem.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="BoardManager.cpp" />
     <ClCompile Include="ChessPiece.cpp" />
@@ -172,7 +173,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimatorComponent.h" />
+    <ClInclude Include="AnimatorSystem.h" />
     <ClInclude Include="AssetFlags.h" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />

@@ -53,7 +53,7 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	else
 		m_hasCachedMove = false;
 
-	ChessBoard nextState; 
+	ChessBoard nextState;
 	m_board->simulateMove(nextState, move, true);
 	auto lastAction = nextState.getLastAction();
 	if (lastAction.actionType != ActionType::None)
@@ -65,6 +65,12 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	else {
 		m_pieceManager->refreshBoard(*m_board);
 	}
+
+	if (lastAction.actionType & ActionType::Check)
+		std::cout << "Opponent in Check\n";
+
+	if (lastAction.actionType & ActionType::Checkmate)
+		std::cout << "Opponent in Checkmate\n";
 
 	return true;
 }

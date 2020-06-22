@@ -8,30 +8,12 @@ namespace {
 ChessPieceEntity::ChessPieceEntity(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet)
 {
 	m_sprite.setTexture(textureSheet);
-	m_animator = std::make_unique<AnimatorComponent>(this);
 
 	transform(colour, type);
 }
 
 ChessPieceEntity::~ChessPieceEntity()
 {
-}
-
-void ChessPieceEntity::update(const float & deltaTime)
-{
-	if (isActive())
-		m_animator->update(deltaTime);
-}
-
-void ChessPieceEntity::move(const sf::Vector2f & position)
-{
-	if (isActive())
-		m_animator->start(position, TIMETOTARGET);
-}
-
-void ChessPieceEntity::stopAnimator()
-{
-	m_animator->stop();
 }
 
 void ChessPieceEntity::transform(const PieceColour colour, const PieceType type)

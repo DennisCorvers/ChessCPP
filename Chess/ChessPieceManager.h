@@ -3,7 +3,6 @@
 #include "ChessPosition.h"
 #include "Entity.h"
 #include "AssetFlags.h"
-#include "AnimatorComponent.h"
 
 struct ChessMove;
 struct ChessAction;

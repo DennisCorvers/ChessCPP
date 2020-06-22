@@ -3,6 +3,7 @@
 #include "ChessPieceEntity.h"
 #include "ChessMove.h"
 #include "ChessBoard.h"
+#include "AnimatorSystem.h"
 
 ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation)
 {
@@ -58,7 +59,6 @@ void ChessPieceManager::refreshBoard(const ChessBoard& board)
 				continue;
 
 			ChessPieceEntity* piece = m_chessPieces[pieceCount];
-			piece->stopAnimator();
 			piece->setActive(true);
 			piece->transform(val.getColour(), val.getType());
 			piece->xPos = x;
