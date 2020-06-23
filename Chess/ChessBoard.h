@@ -56,7 +56,7 @@ public:
 	ActionType simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateCheckmate) const;
 	void resetBoard(const char(&boardData)[BOARDSIZE]);
 
-	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) {
+	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const {
 		return ChessRules::getValidPositions(selectedPosition, *this);
 	}
 };

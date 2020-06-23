@@ -11,7 +11,7 @@ private:
 	bool m_isAnimating;
 
 public:
-	AnimatorComponent(Entity& target, sf::Vector2f targetPosition, float timeToTarget);
+	AnimatorComponent(Entity& target, sf::Vector2f targetPosition, float timeToTarget = .15f);
 	virtual ~AnimatorComponent();
 
 	inline bool isAnimating() {
@@ -27,20 +27,20 @@ public:
 class AnimatorSystem
 {
 private:
-	typedef void(*animatorCallback)();
+	typedef std::function<void()> AnimatorCallback;
 
-	std::vector<AnimatorComponent> m_components;
-	animatorCallback m_callback;
+	std::vector<AnimatorComponent*> m_components;
+	AnimatorCallback m_callback;
 
 public:
 
-	AnimatorSystem(animatorCallback callback);
+	AnimatorSystem(AnimatorCallback callback);
 	virtual ~AnimatorSystem();
 
 	int pendingAnimations() const;
 	bool isAnimating() const;
 
-	void queueAnimation(AnimatorComponent& newAnimation);
+	void queueAnimation(AnimatorComponent* newAnimation);
 	void stopAnimations();
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget* const target);

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <array>
+#include <functional>
 
 //SFML
 #include "SFML/Audio.hpp"

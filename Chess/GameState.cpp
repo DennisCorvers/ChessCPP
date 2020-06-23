@@ -104,7 +104,8 @@ void GameState::update(const float & deltaTime)
 	m_boardManager->updateMousePosition(position);
 
 	if (!m_moveBuffer.empty()) {
-		m_boardManager->inputMove(m_moveBuffer.front(), true);
+		//Animate only enemy moves.
+		m_boardManager->inputMove(m_moveBuffer.front(), false);
 		m_moveBuffer.pop();
 	}
 

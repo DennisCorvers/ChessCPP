@@ -6,6 +6,7 @@ AnimatorComponent::AnimatorComponent(Entity& target, sf::Vector2f targetPosition
 	m_target = &target;
 	m_targetPosition = targetPosition;
 	m_timeToTarget = timeToTarget;
+	m_t = 0;
 }
 
 AnimatorComponent::~AnimatorComponent() {
@@ -14,8 +15,8 @@ AnimatorComponent::~AnimatorComponent() {
 
 void AnimatorComponent::start()
 {
-	m_isAnimating = true;
 	m_startPosition = m_target->getCenter();
+	m_isAnimating = true;
 }
 
 void AnimatorComponent::update(const float & deltaTime)
@@ -32,7 +33,7 @@ void AnimatorComponent::update(const float & deltaTime)
 
 void AnimatorComponent::render(sf::RenderTarget * const target)
 {
-
+	m_target->render(target);
 }
 
 void AnimatorComponent::stop() {
@@ -41,8 +42,7 @@ void AnimatorComponent::stop() {
 	m_t = 0;
 }
 
-
-AnimatorSystem::AnimatorSystem(animatorCallback callback)
+AnimatorSystem::AnimatorSystem(AnimatorCallback callback)
 {
 	m_callback = callback;
 	m_components.reserve(2);
@@ -50,13 +50,14 @@ AnimatorSystem::AnimatorSystem(animatorCallback callback)
 
 AnimatorSystem::~AnimatorSystem()
 {
+	stopAnimations();
 }
 
 int AnimatorSystem::pendingAnimations() const
 {
 	int count = 0;
-	for (auto it : m_components) {
-		if (it.isAnimating())
+	for (auto& it : m_components) {
+		if (it->isAnimating())
 			count++;
 	}
 	return 0;
@@ -67,29 +68,33 @@ bool AnimatorSystem::isAnimating() const
 	return m_components.size() > 0;
 }
 
-void AnimatorSystem::queueAnimation(AnimatorComponent& newAnimation)
+void AnimatorSystem::queueAnimation(AnimatorComponent* newAnimation)
 {
-	m_components.push_back(newAnimation);
-	newAnimation.start();
+	m_components.push_back(std::move(newAnimation));
+	newAnimation->start();
 }
 
 void AnimatorSystem::stopAnimations()
 {
-	for (auto it : m_components)
-		it.stop();
+	for (auto it : m_components) {
+		it->stop();
+		delete it;
+	}
 
 	m_components.clear();
 }
 
 void AnimatorSystem::update(const float & deltaTime)
 {
-	for (auto it = m_components.begin(); it < m_components.end();) {
-		if (!it->isAnimating()) {
-			m_components.erase(it);
-			std::cout << "Removed animation component" << std::endl;
+	for (auto it = m_components.begin(); it != m_components.end();) {
+		if (!(*it)->isAnimating()) {
+			m_callback();
+
+			delete *it;
+			it = m_components.erase(it);
 		}
 		else {
-			it->update(deltaTime);
+			(*it)->update(deltaTime);
 			++it;
 		}
 	}
@@ -97,5 +102,8 @@ void AnimatorSystem::update(const float & deltaTime)
 
 void AnimatorSystem::render(sf::RenderTarget * const target)
 {
-
+	//Double rendering to ensure moving piece is on top.
+	for (auto it : m_components) {
+		it->render(target);
+	}
 }

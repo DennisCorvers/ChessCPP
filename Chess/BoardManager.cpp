@@ -35,11 +35,11 @@ void BoardManager::resetGame()
 }
 
 void BoardManager::flipBoard(PieceColour orientation) {
-	m_pieceManager->flipBoard(*m_board, orientation);
+	m_pieceManager->flipBoard(orientation);
 }
 
 void BoardManager::flipBoard() {
-	m_pieceManager->flipBoard(*m_board);
+	m_pieceManager->flipBoard();
 }
 
 bool BoardManager::inputMove(const ChessMove move, bool animate)
@@ -59,11 +59,11 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	if (lastAction.actionType != ActionType::None)
 	{
 		m_board = std::make_unique<ChessBoard>(nextState);
-		m_pieceManager->refreshBoard(*m_board);
+		m_pieceManager->inputMove(*m_board, lastAction, animate);
 		handleSound(lastAction.actionType, true);
 	}
 	else {
-		m_pieceManager->refreshBoard(*m_board);
+		m_pieceManager->refreshBoard();
 	}
 
 	if (lastAction.actionType & ActionType::Check)
@@ -107,7 +107,7 @@ void BoardManager::handleSound(const ActionType chessAction, bool playSound)
 
 void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour playerColour) const
 {
-	m_pieceManager->startSelection(screenPosition, *m_board);
+	m_pieceManager->startSelection(screenPosition);
 }
 
 void BoardManager::updateMousePosition(const sf::Vector2f screenPosition) const

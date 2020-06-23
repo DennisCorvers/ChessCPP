@@ -9,8 +9,9 @@ This project was a motivation to use C++ in a game development setting. The proj
 - Partial history of previous states
 - Sounds for moves: Normal, Take, Check/Checkmate
 - All chess rules for pieces
-- End-game via Check ~~Checkmate Stalemate Draw~~
+- End-game via Check, ~~Checkmate, Stalemate, Draw~~
 - Board mirroring
+- Piece animations
 
 ### ToDo
 
@@ -18,7 +19,6 @@ This project was a motivation to use C++ in a game development setting. The proj
 - In-game Menu
 - Client-Host multiplayer
 - Client validation/rollback of inputs
-- Piece animations
 
 ## Extra Notes
 In order to structurize the project/files better, post-build events are used.

@@ -13,6 +13,9 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<As
 	m_moveAction.reset();
 	m_viewOrientation = orientation;
 
+	auto func = std::bind(&ChessPieceManager::animationCallback, this);
+	m_animatorSystem = std::make_unique<AnimatorSystem>(func);
+
 	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
 
 	for (char i = 0; i < PIECECOUNT; i++) {
@@ -31,21 +34,32 @@ ChessPieceManager::~ChessPieceManager()
 		delete m_chessPieces[i];
 }
 
-void ChessPieceManager::flipBoard(const ChessBoard& board, const PieceColour orientation)
+void ChessPieceManager::flipBoard(const PieceColour orientation)
 {
 	if (m_viewOrientation != orientation) {
 		m_viewOrientation = orientation;
-		refreshBoard(board);
+		refreshBoard();
 	}
 }
 
-void ChessPieceManager::flipBoard(const ChessBoard & board)
+void ChessPieceManager::flipBoard()
 {
 	m_viewOrientation = m_viewOrientation == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-	refreshBoard(board);
+	refreshBoard();
 }
 
-void ChessPieceManager::refreshBoard(const ChessBoard& board)
+void ChessPieceManager::updateBoard(const ChessBoard& board)
+{
+	m_board = &board;
+}
+
+void ChessPieceManager::refreshBoard(const ChessBoard & board)
+{
+	updateBoard(board);
+	refreshBoard();
+}
+
+void ChessPieceManager::refreshBoard()
 {
 	m_moveAction.reset();
 
@@ -54,7 +68,7 @@ void ChessPieceManager::refreshBoard(const ChessBoard& board)
 	{
 		for (char y = 0; y < 8; y++)
 		{
-			ChessPiece val = board.getPiece(x, y);
+			ChessPiece val = m_board->getPiece(x, y);
 			if (val.isEmpty())
 				continue;
 
@@ -75,41 +89,40 @@ void ChessPieceManager::refreshBoard(const ChessBoard& board)
 		m_chessPieces[pieceCount]->setActive(false);
 }
 
+void ChessPieceManager::inputMove(const ChessBoard & board, const ChessAction & newAction, bool animate)
+{
+	updateBoard(board);
+	inputMove(newAction, animate);
+}
+
 void ChessPieceManager::inputMove(const ChessAction & newAction, bool animate)
 {
-	//TODO
-	//- Start Animations for affected pieces
-	//- Once animations are done (via vector<> ?) play relevant sounds
-	//- Refresh the entire board.
+	if (animate) {
+		sf::Vector2i boardPosition(newAction.moveTo.x(), newAction.moveTo.y());
+		sf::Vector2f newPosition = boardToScreen(boardPosition);
+		auto pieceFrom = getClickedPiece(newAction.moveFrom);
 
-	auto pieceFrom = getClickedPiece(newAction.moveFrom);
-	auto pieceTo = getClickedPiece(newAction.moveTo);
-	switch (newAction.actionType) {
+		auto animation = new AnimatorComponent(*pieceFrom, newPosition);
 
-	case ActionType::EnPassant:
-	{
+		//Castling moves 2 pieces...
+		if (newAction.actionType & ActionType::Castling) {
+			bool castleLeft = newAction.moveTo.x() < 5;
+			char yPos = newAction.moveFrom.y();
+			char xPos = castleLeft ? 0 : 7;
+			char xMod = castleLeft ? 1 : -1;
 
-		break;
+			auto rookPiece = getClickedPiece(ChessPosition(xPos, yPos));
+			sf::Vector2i rookBoardPosition(newAction.moveTo.x() + xMod, yPos);
+			sf::Vector2f newRookPosition = boardToScreen(rookBoardPosition);
+
+			auto rookAnimation = new AnimatorComponent(*rookPiece, newRookPosition);
+			m_animatorSystem->queueAnimation(rookAnimation);
+		}
+		m_animatorSystem->queueAnimation(animation);
+
 	}
-	case ActionType::Castling:
-	{
-		break;
-	}
-	case ActionType::Promotion:
-	{
-		pieceFrom->transform(pieceFrom->getColour(), PieceType::Queen);
-	}
-	default:
-	{
-		if (pieceTo)
-			pieceTo->setActive(false);
-
-		pieceFrom->xPos = newAction.moveTo.x();
-		pieceFrom->yPos = newAction.moveTo.y();
-		snapPieceToBoard(newAction.moveTo, *pieceFrom, animate);
-
-		break;
-	}
+	else {
+		animationCallback();
 	}
 }
 
@@ -127,10 +140,14 @@ void ChessPieceManager::initMarkers()
 	m_markerContainer = std::make_unique<MoveMarkerContainer>(moveMarker);
 }
 
+void ChessPieceManager::animationCallback()
+{
+	refreshBoard();
+}
+
 void ChessPieceManager::update(const float & deltaTime)
 {
-	for (char i = 0; i < PIECECOUNT; i++)
-		m_chessPieces[i]->update(deltaTime);
+	m_animatorSystem->update(deltaTime);
 }
 
 void ChessPieceManager::render(sf::RenderTarget* const target)
@@ -151,11 +168,16 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 	//Render again to ensure it's always on top.
 	if (m_moveAction.isMoving())
 		m_moveAction.movingPiece->render(target);
+
+	m_animatorSystem->render(target);
 }
 
-void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessBoard& board)
+void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
 {
 	if (!m_boardCollider.contains(screenPosition.x, screenPosition.y))
+		return;
+
+	if (m_animatorSystem->isAnimating())
 		return;
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
@@ -174,9 +196,9 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, ChessB
 
 		m_moveAction.newSelection(newChessPos, piece);
 		m_moveAction.setMoving(true);
-		m_moveAction.validPositions = board.getValidPositions(m_moveAction.moveFrom);
+		m_moveAction.validPositions = m_board->getValidPositions(m_moveAction.moveFrom);
 
-		selectChessPiece(m_moveAction, board);
+		selectChessPiece(m_moveAction);
 	}
 	else {
 		if (!m_moveAction.hasSelection())
@@ -311,7 +333,7 @@ sf::Vector2f ChessPieceManager::clampToBoard(const sf::Vector2f mousePosition) c
 	);
 }
 
-void ChessPieceManager::selectChessPiece(const MoveAction & moveData, const ChessBoard & board)
+void ChessPieceManager::selectChessPiece(const MoveAction & moveData)
 {
 	snapMarkerToBoard(m_moveAction.moveFrom, m_selectionMarker);
 	for (auto it = m_moveAction.validPositions.begin(); it != m_moveAction.validPositions.end(); ++it)

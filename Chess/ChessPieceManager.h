@@ -6,6 +6,7 @@
 
 struct ChessMove;
 struct ChessAction;
+class AnimatorSystem;
 class ChessBoard;
 class ChessPieceEntity;
 class Entity;
@@ -89,6 +90,7 @@ class ChessPieceManager : public Entity
 private:
 	const static int PIECECOUNT = 32;
 	ChessPieceEntity* m_chessPieces[PIECECOUNT];
+	const ChessBoard* m_board;
 
 	MoveAction m_moveAction;
 	sf::FloatRect m_boardSizes;
@@ -96,6 +98,7 @@ private:
 	sf::Vector2f m_lastScreenPosition;
 	PieceColour m_viewOrientation;
 
+	std::unique_ptr<AnimatorSystem> m_animatorSystem;
 	std::unique_ptr<MoveMarkerContainer> m_markerContainer;
 	sf::RectangleShape m_selectionMarker;
 	sf::RectangleShape m_warningMarker;
@@ -115,8 +118,10 @@ private:
 		return position;
 	}
 
-	void selectChessPiece(const MoveAction& moveData, const ChessBoard& board);
+	void selectChessPiece(const MoveAction& moveData);
 	void initMarkers();
+
+	void animationCallback();
 
 public:
 	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation);
@@ -125,13 +130,16 @@ public:
 	virtual void update(const float& deltaTime) override;
 	virtual void render(sf::RenderTarget* const target) override;
 
-	void startSelection(const sf::Vector2f screenPosition, ChessBoard& board);
+	void startSelection(const sf::Vector2f screenPosition);
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
-	void flipBoard(const ChessBoard& board, const PieceColour orientation);
-	void flipBoard(const ChessBoard& board);
+	void flipBoard(const PieceColour orientation);
+	void flipBoard();
+	void updateBoard(const ChessBoard& board);
 	void refreshBoard(const ChessBoard& board);
+	void refreshBoard();
+	void inputMove(const ChessBoard& board, const ChessAction& newAction, bool animate = false);
 	void inputMove(const ChessAction& newAction, bool animate = false);
 };
 
