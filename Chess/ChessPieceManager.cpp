@@ -89,10 +89,10 @@ void ChessPieceManager::refreshBoard()
 		m_chessPieces[pieceCount]->setActive(false);
 }
 
-void ChessPieceManager::inputMove(const ChessBoard & board, const ChessAction & newAction, bool animate)
+void ChessPieceManager::inputMove(const ChessBoard & board, bool animate)
 {
 	updateBoard(board);
-	inputMove(newAction, animate);
+	inputMove(board.getLastAction(), animate);
 }
 
 void ChessPieceManager::inputMove(const ChessAction & newAction, bool animate)
@@ -191,6 +191,9 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
 	}
 
 	if (piece) {
+		if (piece->xPos != pos.x || piece->yPos != pos.y)
+			return;
+
 		if (m_moveAction.hasSelection() && piece->getColour() != m_moveAction.movingPiece->getColour())
 			return;
 
@@ -227,7 +230,7 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	m_moveAction.moveTo = ChessPosition(pos.x, pos.y);
 	m_moveAction.setMoving(false);
 
-	snapPieceToBoard(m_moveAction.moveFrom, *m_moveAction.movingPiece, false);
+	snapPieceToBoard(m_moveAction.moveFrom, *m_moveAction.movingPiece);
 	//Reset entity if the same position is selected.
 	if (m_moveAction.moveFrom == m_moveAction.moveTo) {
 		m_moveAction.selectCount++;
@@ -258,15 +261,12 @@ bool ChessPieceManager::endSelection(const sf::Vector2f screenPosition, ChessMov
 	return true;
 }
 
-void ChessPieceManager::snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece, bool animate)
+void ChessPieceManager::snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece)
 {
 	sf::Vector2i boardPos(newPosition.x(), newPosition.y());
 	sf::Vector2f newPos(boardToScreen(boardPos));
 
-	if (animate)
-		piece.move(newPos);
-	else
-		piece.setCenter(newPos);
+	piece.setCenter(newPos);
 }
 
 void ChessPieceManager::snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker)

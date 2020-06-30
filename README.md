@@ -9,7 +9,7 @@ This project was a motivation to use C++ in a game development setting. The proj
 - Partial history of previous states
 - Sounds for moves: Normal, Take, Check/Checkmate
 - All chess rules for pieces
-- End-game via Check, ~~Checkmate, Stalemate, Draw~~
+- End-game via Check, Checkmate, Stalemate and Draw
 - Board mirroring
 - Piece animations
 

@@ -75,7 +75,7 @@ namespace {
 			//Only check the squares the King is moving through
 			if (i < 3) {
 				ChessMove newMove(move.getPositionFrom(), newPos);
-				if (board.simulateMove(m_stateBuffer, newMove, false) == ActionType::None)
+				if (board.simulateMove(m_stateBuffer, newMove) == ActionType::None)
 					return false;
 			}
 		}
@@ -255,8 +255,6 @@ namespace {
 
 ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, const ChessBoard& board)
 {
-	sf::Clock c; c.restart();
-
 	PieceType type = board.getPiece(selectedPosition).getType();
 	sf::Vector2i pos(selectedPosition.x(), selectedPosition.y());
 
@@ -267,11 +265,9 @@ ValidMoves ChessRules::getValidPositions(const ChessPosition& selectedPosition, 
 	for (auto item : m_moveBuffer)
 	{
 		ChessMove nextMove(selectedPosition, item);
-		if (board.simulateMove(m_stateBuffer, nextMove, false) != ActionType::None)
+		if (board.simulateMove(m_stateBuffer, nextMove) != ActionType::None)
 			validMoves.emplace_back(item.x(), item.y());
 	}
-
-	std::cout << "Average time: " << c.getElapsedTime().asMicroseconds() << "us\n";
 
 	return validMoves;
 }
@@ -370,16 +366,6 @@ bool ChessRules::isCheck(const ChessPosition & king, const ChessBoard & board)
 
 	return false;
 }
-
-bool ChessRules::hasMoves(const ChessBoard& board, PieceColour player) {
-	//Check && !HasMoves == CheckMate
-	//!Check && !HasMoves == StaleMate
-
-	//If the only 2 pieces able to move are kings, Draw
-	return true;
-}
-
-//https://github.com/bdidemus/chess/blob/master/project/Chess/LegalMoveSet.cs
 
 
 

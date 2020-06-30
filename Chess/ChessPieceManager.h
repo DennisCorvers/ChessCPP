@@ -103,7 +103,7 @@ private:
 	sf::RectangleShape m_selectionMarker;
 	sf::RectangleShape m_warningMarker;
 
-	void snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece, bool animate);
+	void snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece);
 	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
 	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
 	ChessPieceEntity* getClickedPiece(const ChessPosition chessPosition) const;
@@ -139,7 +139,7 @@ public:
 	void updateBoard(const ChessBoard& board);
 	void refreshBoard(const ChessBoard& board);
 	void refreshBoard();
-	void inputMove(const ChessBoard& board, const ChessAction& newAction, bool animate = false);
+	void inputMove(const ChessBoard& board, bool animate = false);
 	void inputMove(const ChessAction& newAction, bool animate = false);
 };
 

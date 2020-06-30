@@ -54,23 +54,28 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 		m_hasCachedMove = false;
 
 	ChessBoard nextState;
-	m_board->simulateMove(nextState, move, true);
-	auto lastAction = nextState.getLastAction();
-	if (lastAction.actionType != ActionType::None)
+	ActionType moveResult = m_board->simulateMove(nextState, move, true);
+	if (moveResult != ActionType::None)
 	{
 		m_board = std::make_unique<ChessBoard>(nextState);
-		m_pieceManager->inputMove(*m_board, lastAction, animate);
-		handleSound(lastAction.actionType, true);
+		m_pieceManager->inputMove(*m_board, animate);
+		handleSound(moveResult, true);
 	}
 	else {
 		m_pieceManager->refreshBoard();
 	}
 
-	if (lastAction.actionType & ActionType::Check)
-		std::cout << "Opponent in Check\n";
+	if (moveResult & ActionType::Checkmate)
+		std::cout << "Checkmate\n";
 
-	if (lastAction.actionType & ActionType::Checkmate)
-		std::cout << "Opponent in Checkmate\n";
+	if (moveResult & ActionType::Check)
+		std::cout << "Check\n";
+
+	if (moveResult & ActionType::Stalemate)
+		std::cout << "Stalemate\n";
+
+	if (moveResult & ActionType::Draw)
+		std::cout << "Draw\n";
 
 	return true;
 }
@@ -92,7 +97,7 @@ void BoardManager::handleSound(const ActionType chessAction, bool playSound)
 		return;
 
 	//Play from most important to least
-	if (chessAction & ActionType::Check)
+	if (chessAction & ActionType::Check || chessAction & ActionType::Checkmate)
 		m_soundMap[ActionType::Check].play();
 
 	else if (chessAction & ActionType::Take)

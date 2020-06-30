@@ -17,6 +17,7 @@ private:
 
 	std::map<PieceColour, ChessPosition> m_kingMap;
 	int m_moveNumber = 0;
+	int m_drawMoves = 0;
 
 	inline ChessPiece& getPieceRef(char x, char y) {
 		return m_board[y * 8 + x];
@@ -26,7 +27,9 @@ private:
 		return getPieceRef(position.x(), position.y());
 	}
 
-	static ActionType applyMove(ChessBoard& board, const ChessAction& action, const ChessPiece& piece);
+	bool hasMoves(const PieceColour colour) const;
+
+	static ActionType applyMove(ChessBoard& board, const ChessAction& action);
 
 public:
 
@@ -50,14 +53,13 @@ public:
 		return m_moveNumber % 2 == 0 ? PieceColour::White : PieceColour::Black;
 	}
 
-	/**
-	Apply the input to the board to create the next game state.
-	*/
-	ActionType simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateCheckmate) const;
+	ActionType simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateBoardState = false) const;
 	void resetBoard(const char(&boardData)[BOARDSIZE]);
 
 	inline std::vector<ChessPosition> getValidPositions(const ChessPosition& selectedPosition) const {
 		return ChessRules::getValidPositions(selectedPosition, *this);
 	}
+
+	ActionType getBoardState(const PieceColour colour) const;
 };
 

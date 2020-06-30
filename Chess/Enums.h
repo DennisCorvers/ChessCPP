@@ -8,7 +8,7 @@ enum struct PieceColour : char
 
 
 
-enum struct PieceType : char
+enum struct PieceType : unsigned char
 {
 	None = 0,
 	Pawn = 1,
@@ -21,7 +21,7 @@ enum struct PieceType : char
 
 
 
-enum struct ActionType : char {
+enum struct ActionType : unsigned short {
 	None = 0,
 	Normal = 1,
 	Check = 2,
@@ -29,15 +29,21 @@ enum struct ActionType : char {
 	Take = 8,
 	EnPassant = 16,
 	Castling = 32,
-	Promotion = 64
+	Promotion = 64,
+	Draw = 128,
+	Stalemate = 256
 };
 
 inline ActionType operator|(ActionType a, ActionType b) {
-	return static_cast<ActionType>(static_cast<char>(a) | static_cast<char>(b));
+	return static_cast<ActionType>(static_cast<int>(a) | static_cast<int>(b));
 }
 
-inline char operator&(ActionType a, ActionType b) {
-	return static_cast<char>(a) & static_cast<char>(b);
+inline int operator&(ActionType a, ActionType b) {
+	return static_cast<int>(a) & static_cast<int>(b);
+}
+
+inline ActionType& operator|=(ActionType& a, ActionType b) {
+	a = a | b;	return a;
 }
 
 enum struct SessionState : char {

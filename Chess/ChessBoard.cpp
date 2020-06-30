@@ -15,6 +15,7 @@ ChessBoard::ChessBoard(const ChessBoard & board)
 	m_kingMap = board.m_kingMap;
 	m_lastMove = board.m_lastMove;
 	m_moveNumber = board.m_moveNumber;
+	m_drawMoves = board.m_drawMoves;
 }
 
 ChessBoard::~ChessBoard()
@@ -38,7 +39,53 @@ void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 	}
 }
 
-ActionType ChessBoard::simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateCheckmate) const
+ActionType ChessBoard::getBoardState(const PieceColour colour) const
+{
+	if (m_drawMoves >= 50)
+		return ActionType::Draw;
+
+	const ChessPosition king = m_kingMap.at(colour);
+	if (ChessRules::isCheck(king, *this)) {
+		bool canKingMove = ChessRules::getValidPositions(king, *this).size() > 0;
+
+		if (canKingMove)
+			return ActionType::Check;
+
+		if (hasMoves(colour))
+			return ActionType::Check;
+		else
+			return ActionType::Checkmate;
+	}
+	else {
+		if (!hasMoves(colour))
+			return ActionType::Stalemate;
+	}
+	//If the only 2 pieces able to move are kings, Draw
+
+	return ActionType::None;
+}
+
+bool ChessBoard::hasMoves(const PieceColour colour) const
+{
+	for (char y = 0; y < 8; y++)
+	{
+		for (char x = 0; x < 8; x++)
+		{
+			int index = x + y * 8;
+			auto piece = m_board[index];
+			if (piece.isEmpty() || piece.getColour() != colour)
+				continue;
+
+			auto positions = ChessRules::getValidPositions(ChessPosition(x, y), *this);
+			if (positions.size() > 0) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+ActionType ChessBoard::simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateBoardState) const
 {
 	ChessPiece pieceFrom = this->getPiece(newMove.getPositionFrom());
 	ChessPiece pieceTo = this->getPiece(newMove.getPositionTo());
@@ -46,33 +93,35 @@ ActionType ChessBoard::simulateMove(ChessBoard& nextState, const ChessMove& newM
 
 	//Simulate the input move on a copy of the board.
 	nextState = ChessBoard(*this);
-	newAction.actionType = applyMove(nextState, newAction, pieceFrom);
+	newAction.actionType = applyMove(nextState, newAction);
 
 	if (ChessRules::isCheck(nextState.m_kingMap[pieceFrom.getColour()], nextState)) {
 		newAction.actionType = ActionType::None;
 	}
-	else if (validateCheckmate) {
+	else if (validateBoardState) {
 		PieceColour enemyColour = pieceFrom.getColour() == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-		if (ChessRules::isCheck(nextState.m_kingMap[enemyColour], nextState)) {
-			newAction.actionType = newAction.actionType | ActionType::Check;
-			//Check for checkmate?
-		}
+		newAction.actionType |= nextState.getBoardState(enemyColour);
+	}
+
+	if (newAction.pieceFrom.getType() == PieceType::Pawn || newAction.actionType & ActionType::Take) {
+		nextState.m_drawMoves = 0;
 	}
 
 	nextState.m_lastMove = newAction;
 	return newAction.actionType;
 }
 
-ActionType ChessBoard::applyMove(ChessBoard & board, const ChessAction& action, const ChessPiece & piece)
+ActionType ChessBoard::applyMove(ChessBoard & board, const ChessAction& action)
 {
-	if (piece.getType() == PieceType::King)
-		board.m_kingMap[piece.getColour()] = action.moveTo;
-
 	ChessMove move(action.moveFrom, action.moveTo);
 	ChessPiece& pieceFrom = board.getPieceRef(action.moveFrom);
 	ChessPiece& pieceTo = board.getPieceRef(action.moveTo);
 
-	board.m_moveNumber++;;
+	if (pieceFrom.getType() == PieceType::King)
+		board.m_kingMap[pieceFrom.getColour()] = action.moveTo;
+
+	board.m_moveNumber++;
+	board.m_drawMoves++;
 
 	//Do NOT take a king!
 	if (pieceTo.getType() == PieceType::King)
@@ -112,9 +161,9 @@ ActionType ChessBoard::applyMove(ChessBoard & board, const ChessAction& action, 
 	if (ChessRules::isPromotion(move, pieceFrom, board)) {
 		ActionType actionResult = ActionType::Promotion;
 		if (!pieceTo.isEmpty())
-			actionResult = actionResult | ActionType::Take;
+			actionResult |= ActionType::Take;
 		else
-			actionResult = actionResult | ActionType::Normal;
+			actionResult |= ActionType::Normal;
 
 		pieceTo.setTo(pieceFrom);
 		pieceTo.setTo(PieceType::Queen);
