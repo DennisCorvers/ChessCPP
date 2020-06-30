@@ -11,7 +11,7 @@ Game::Game()
 	initVariables();
 	initWindow();
 
-	
+
 	initStateDate();
 
 	m_state = new GameState(&m_stateData);
@@ -34,7 +34,8 @@ void Game::initWindow()
 	m_window = new sf::RenderWindow(
 		sf::VideoMode(windowWidth, windowHeight, 32),
 		"Chess",
-		sf::Style::Titlebar | sf::Style::Close);
+		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
+		sf::ContextSettings(0, 0, 16));
 
 	m_window->setFramerateLimit(60);
 	m_window->setVerticalSyncEnabled(true);

@@ -7,8 +7,8 @@
 class Game {
 
 private:
-	const int windowWidth = 1024;
-	const int windowHeight = 576;
+	const int windowWidth = 1280;
+	const int windowHeight = 720;
 
 	StateData m_stateData;
 	sf::RenderWindow* m_window;

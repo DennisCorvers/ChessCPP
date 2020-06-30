@@ -37,3 +37,4 @@ bool Math::approx(const sf::Vector2f & a, const sf::Vector2f & b, const sf::Vect
 bool Math::approx(float a, float b, float epsilon) {
 	return std::abs(a - b) < epsilon;
 }
+

@@ -93,8 +93,7 @@ private:
 	const ChessBoard* m_board;
 
 	MoveAction m_moveAction;
-	sf::FloatRect m_boardSizes;
-	sf::FloatRect m_boardCollider;
+	sf::Vector2f m_squareSize;
 	sf::Vector2f m_lastScreenPosition;
 	PieceColour m_viewOrientation;
 
@@ -124,7 +123,7 @@ private:
 	void animationCallback();
 
 public:
-	ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation);
+	ChessPieceManager(std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation);
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;

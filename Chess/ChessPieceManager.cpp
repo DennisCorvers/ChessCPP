@@ -5,9 +5,11 @@
 #include "ChessBoard.h"
 #include "AnimatorSystem.h"
 
-ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation)
+ChessPieceManager::ChessPieceManager(std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation)
 {
-	m_boardSizes = boardSizes;
+	auto textureSize = textures[AssetFlags::t_board].getSize();
+	//TODO handle different size boards...
+	m_squareSize = sf::Vector2f(textureSize.x / (float)8, textureSize.y / (float)8);
 	m_sprite.setTexture(textures[AssetFlags::t_board]);
 
 	m_moveAction.reset();
@@ -16,11 +18,13 @@ ChessPieceManager::ChessPieceManager(const sf::FloatRect boardSizes, std::map<As
 	auto func = std::bind(&ChessPieceManager::animationCallback, this);
 	m_animatorSystem = std::make_unique<AnimatorSystem>(func);
 
-	m_boardCollider = sf::FloatRect(boardSizes.left, boardSizes.top, 8 * boardSizes.width, 8 * boardSizes.height);
+	auto pieceTSize = textures[AssetFlags::t_pieces].getSize();
+	auto pieceScale = m_squareSize / sf::Vector2f(static_cast<float>(pieceTSize.x / 6), static_cast<float>(pieceTSize.y / 2));
+	pieceScale = pieceScale * .9f;
 
 	for (char i = 0; i < PIECECOUNT; i++) {
 		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures[AssetFlags::t_pieces]);
-		m_chessPieces[i]->setScale(0.95f, 0.95f);
+		m_chessPieces[i]->setScale(pieceScale);
 
 		m_chessPieces[i]->setActive(false);
 	}
@@ -128,15 +132,16 @@ void ChessPieceManager::inputMove(const ChessAction & newAction, bool animate)
 
 void ChessPieceManager::initMarkers()
 {
-	m_selectionMarker.setFillColor(sf::Color(246, 248, 121, 255));
-	m_selectionMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
+	m_selectionMarker.setFillColor(sf::Color(200, 200, 121, 150));
+	m_selectionMarker.setSize(m_squareSize);
 
-	m_warningMarker.setFillColor(sf::Color(200, 0, 0, 255));
-	m_warningMarker.setSize(sf::Vector2f(m_boardSizes.width, m_boardSizes.height));
+	m_warningMarker.setFillColor(sf::Color(200, 0, 0, 100));
+	m_warningMarker.setSize(m_squareSize);
 
 	sf::CircleShape moveMarker;
 	moveMarker.setFillColor(sf::Color(0, 200, 0, 100));
-	moveMarker.setRadius(m_boardSizes.width / 3);
+	moveMarker.setRadius(m_squareSize.x / 2);
+	moveMarker.setScale(.45f, .45f);
 	m_markerContainer = std::make_unique<MoveMarkerContainer>(moveMarker);
 }
 
@@ -174,7 +179,7 @@ void ChessPieceManager::render(sf::RenderTarget* const target)
 
 void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
 {
-	if (!m_boardCollider.contains(screenPosition.x, screenPosition.y))
+	if (!boundsContains(screenPosition.x, screenPosition.y))
 		return;
 
 	if (m_animatorSystem->isAnimating())
@@ -308,8 +313,8 @@ sf::Vector2i ChessPieceManager::screenToBoard(const sf::Vector2f mousePosition) 
 {
 	auto mousePos = clampToBoard(mousePosition);
 
-	int xPos = (int)((mousePos.x - m_boardSizes.left) / m_boardSizes.width);
-	int yPos = (int)((mousePos.y - m_boardSizes.top) / m_boardSizes.height);
+	int xPos = (int)((mousePos.x) / m_squareSize.x);
+	int yPos = (int)((mousePos.y) / m_squareSize.y);
 
 	sf::Vector2i clamped(Math::limit(xPos, 7), Math::limit(yPos, 7));
 	return transformVector(clamped);
@@ -319,8 +324,8 @@ sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) 
 {
 	sf::Vector2i boardPos = transformVector(boardPosition);
 	sf::Vector2f pos(
-		m_boardSizes.left + m_boardSizes.width / 2 + m_boardSizes.width * boardPos.x,
-		m_boardSizes.top + m_boardSizes.height / 2 + m_boardSizes.height * boardPos.y
+		m_squareSize.x / 2 + m_squareSize.x * boardPos.x,
+		m_squareSize.y / 2 + m_squareSize.y * boardPos.y
 	);
 	return pos;
 }
@@ -328,8 +333,8 @@ sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) 
 sf::Vector2f ChessPieceManager::clampToBoard(const sf::Vector2f mousePosition) const
 {
 	return sf::Vector2f(
-		Math::clamp(mousePosition.x, m_boardSizes.left, m_boardCollider.width + m_boardCollider.left),
-		Math::clamp(mousePosition.y, m_boardSizes.top, m_boardCollider.height + m_boardCollider.top)
+		Math::clamp(mousePosition.x, 0, m_squareSize.x * 8),
+		Math::clamp(mousePosition.y, 0, m_squareSize.y * 8)
 	);
 }
 

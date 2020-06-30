@@ -36,7 +36,7 @@ private:
 	bool validateMove(const ChessMove move) const;
 
 public:
-	BoardManager(const sf::FloatRect boardSizes, 
+	BoardManager(
 		std::map<AssetFlags, sf::Texture>& textures, 
 		std::map <AssetFlags, sf::SoundBuffer>& sounds,
 		PieceColour startOrientation = PieceColour::White);

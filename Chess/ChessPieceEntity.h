@@ -5,6 +5,7 @@
 class ChessPieceEntity : public Entity
 {
 private:
+	static int SIZE;
 	char m_pieceData;
 
 public:

@@ -1,14 +1,9 @@
 #include "pch.h"
 #include "ChessPieceEntity.h"
 
-namespace {
-	const static float TIMETOTARGET = .15f;
-}
-
 ChessPieceEntity::ChessPieceEntity(const PieceColour colour, const PieceType type, const sf::Texture& textureSheet)
 {
 	m_sprite.setTexture(textureSheet);
-
 	transform(colour, type);
 }
 
@@ -26,7 +21,7 @@ void ChessPieceEntity::transform(const PieceColour colour, const PieceType type)
 		m_pieceData *= -1;
 	}
 
-	int size = 56;
+	int size = m_sprite.getTexture()->getSize().x / 6;
 	int yPos = colour == PieceColour::White ? 1 : 0;
 	int xPos = 0;
 

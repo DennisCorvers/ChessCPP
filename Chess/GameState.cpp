@@ -10,6 +10,8 @@ void GameState::initTextures()
 
 	if (!textures[AssetFlags::t_pieces].loadFromFile("Assets\\Sprites\\Pieces.png"))
 		throw std::exception("Unable to load Pieces texture");
+	else
+		textures[AssetFlags::t_pieces].setSmooth(true);
 }
 
 void GameState::initFonts()
@@ -34,8 +36,7 @@ void GameState::initSounds() {
 
 void GameState::initGame()
 {
-	sf::FloatRect boardSizes(28, 28, 56, 56);
-	m_boardManager = new BoardManager(boardSizes, textures, sounds);
+	m_boardManager = new BoardManager(textures, sounds);
 	m_boardManager->resetGame();
 }
 
