@@ -19,7 +19,6 @@ private:
 	State* m_state;
 	EventManager* m_eventManager;
 
-	void initVariables();
 	void initWindow();
 	void initStateDate();
 

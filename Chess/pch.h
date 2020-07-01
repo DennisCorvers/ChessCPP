@@ -1,4 +1,5 @@
 #pragma once
+//#define NDEBUG
 
 //std
 #include <memory>
@@ -11,6 +12,8 @@
 #include <stdexcept>
 #include <array>
 #include <functional>
+#include <stack>
+#include <cassert>
 
 //SFML
 #include "SFML/Audio.hpp"

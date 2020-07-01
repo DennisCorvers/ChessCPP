@@ -154,5 +154,11 @@
     <ClInclude Include="AnimatorSystem.h">
       <Filter>Source Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="States.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,10 +8,7 @@ float Game::FPS() const {
 
 Game::Game()
 {
-	initVariables();
 	initWindow();
-
-
 	initStateDate();
 
 	m_state = new GameState(&m_stateData);
@@ -21,12 +18,6 @@ Game::~Game() {
 	delete m_window;
 	delete m_eventManager;
 	delete m_state;
-}
-
-void Game::initVariables()
-{
-	m_window = NULL;
-	m_deltaTime = 0.f;
 }
 
 void Game::initWindow()
