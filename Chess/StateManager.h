@@ -3,7 +3,6 @@
 #include "SharedContext.h"
 
 class BaseState;
-
 class StateManager : private sf::NonCopyable
 {
 private:

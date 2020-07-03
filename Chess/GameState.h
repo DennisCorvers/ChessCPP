@@ -5,7 +5,6 @@
 #include "AssetFlags.h"
 
 class BoardManager;
-class StateManager;
 
 class GameState : public BaseState
 {

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 #include "GameState.h"
+#include "SMainMenu.h"
 #include "States.h"
 
 float Game::getFPS() const {
@@ -34,12 +35,13 @@ void Game::initWindow()
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 16));
 
-	m_window.setFramerateLimit(60);
+	//m_window.setFramerateLimit(60);
 	m_window.setVerticalSyncEnabled(true);
 }
 
 void Game::registerStates() {
 	m_stateManager.registerState<GameState>(States::Sandbox);
+	m_stateManager.registerState<SMainMenu>(States::MainMenu);
 }
 
 void Game::update()
