@@ -1,5 +1,5 @@
 #pragma once
-//#define NDEBUG
+#define NDEBUG
 
 //std
 #include <memory>

@@ -1,12 +1,8 @@
 #pragma once
-#include "BaseState.h"
 #include "States.h"
-#include <stack>
+#include "SharedContext.h"
 
-
-struct SharedContext {
-
-};
+class BaseState;
 
 class StateManager : private sf::NonCopyable
 {
@@ -20,22 +16,21 @@ private:
 	SharedContext* m_sharedContext;
 
 	void createState(const States stateID);
-	void remove(const States stateID) {
-		m_toRemove.emplace_back(stateID);
-	}
+	void removeInternal(const States stateID);
 
 public:
 	StateManager(SharedContext& context);
 	~StateManager();
 
-	void update(float deltaTime);
-	void render();
-	void handleEvent(const sf::Event& event);
+	void update(float deltaTime) const;
+	void render() const;
+	void handleEvent(const sf::Event& event) const;
 
 	void lateUpdate();
 
-	SharedContext* getContext();
-	bool hasState(const States stateID);
+	SharedContext* getContext() const;
+	bool hasState(const States stateID) const;
+	bool isEmpty() const;
 
 	void switchState(const States stateID);
 	void removeState(const States stateID);
@@ -43,7 +38,7 @@ public:
 	template <typename T>
 	void registerState(States stateID) {
 		m_factories[stateID] = [this]() {
-			return BaseState::state_ptr(new T(*this));
+			return std::make_unique<T>(*this);
 		};
 	}
 };

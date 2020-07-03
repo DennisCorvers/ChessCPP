@@ -1,86 +1,81 @@
 #include "pch.h"
 #include "Game.h"
 #include "GameState.h"
+#include "States.h"
 
-float Game::FPS() const {
+float Game::getFPS() const {
 	return 1 / m_deltaTime;
 }
 
-Game::Game()
+const sf::RenderWindow& Game::getWindow() const {
+	return m_window;
+}
+
+Game::Game() :
+	m_stateManager(m_context)
 {
 	initWindow();
-	initStateDate();
+	registerStates();
 
-	m_state = new GameState(&m_stateData);
+	m_context.window = &m_window;
+
+	m_stateManager.switchState(States::Sandbox);
 }
 
 Game::~Game() {
-	delete m_window;
-	delete m_eventManager;
-	delete m_state;
+	m_deltaTime = 0;
 }
 
 void Game::initWindow()
 {
-	m_window = new sf::RenderWindow(
+	m_window.create(
 		sf::VideoMode(windowWidth, windowHeight, 32),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 16));
 
-	m_window->setFramerateLimit(60);
-	m_window->setVerticalSyncEnabled(true);
-
-	m_eventManager = new EventManager();
+	m_window.setFramerateLimit(60);
+	m_window.setVerticalSyncEnabled(true);
 }
 
-void Game::initStateDate()
+void Game::registerStates() {
+	m_stateManager.registerState<GameState>(States::Sandbox);
+}
+
+void Game::update()
 {
-	m_stateData.window = m_window;
-	m_stateData.eventManager = m_eventManager;
-}
-
-void Game::update() {
+	if (m_stateManager.isEmpty())
+		m_window.close();
 
 	sf::Event event;
-	while (m_window->pollEvent(event)) {
+	while (m_window.pollEvent(event)) {
 
 		switch (event.type) {
 
 		case sf::Event::Closed:
-			m_window->close();
+			m_window.close();
 			break;
 		}
 
-		m_eventManager->handleEvent(event);
+		m_stateManager.handleEvent(event);
 	}
-	m_eventManager->update();
-	m_state->update(m_deltaTime);
+
+	m_stateManager.update(m_deltaTime);
 }
 
-void Game::render() {
-	m_window->clear(sf::Color::Black);
+void Game::render()
+{
+	m_window.clear(sf::Color::Black);
 
-	m_state->render(m_window);
+	m_stateManager.render();
 
-	m_window->display();
+	m_window.display();
 }
 
-void Game::lateUpdate() {
-
+void Game::lateUpdate()
+{
+	m_stateManager.lateUpdate();
 	m_deltaTime = m_clock.restart().asSeconds();
 }
-
-void Game::run()
-{
-	m_deltaTime = 0;
-
-	while (m_window->isOpen()) {
-		update();
-		render();
-		lateUpdate();
-	}
-}
-
 
 

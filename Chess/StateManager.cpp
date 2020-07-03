@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "StateManager.h"
+#include "BaseState.h"
+
 
 StateManager::StateManager(SharedContext& context) :
 	m_sharedContext(&context)
 {
-	//TODO Register all states here?
+
 }
 
 StateManager::~StateManager()
@@ -14,7 +16,7 @@ StateManager::~StateManager()
 	}
 }
 
-void StateManager::update(float deltaTime)
+void StateManager::update(float deltaTime) const
 {
 	for (auto itr = m_states.rbegin(); itr != m_states.rend(); ++itr) {
 		if (!itr->second->update(deltaTime))
@@ -22,17 +24,17 @@ void StateManager::update(float deltaTime)
 	}
 }
 
-void StateManager::render()
+void StateManager::render() const
 {
-	for (auto itr = m_states.rbegin(); itr != m_states.rend(); ++itr) {
+	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr) {
 		if (!itr->second->isTransparent()) {
-			//TODO Set view to window?
+			//m_sharedContext->window->setView(itr->second->getView());
 			itr->second->render();
 		}
 	}
 }
 
-void StateManager::handleEvent(const sf::Event & event)
+void StateManager::handleEvent(const sf::Event & event) const
 {
 	for (auto itr = m_states.rbegin(); itr != m_states.rend(); ++itr) {
 		if (!itr->second->handleEvent(event))
@@ -43,14 +45,34 @@ void StateManager::handleEvent(const sf::Event & event)
 void StateManager::lateUpdate()
 {
 	while (m_toRemove.begin() != m_toRemove.end()) {
-		removeState(*m_toRemove.begin());
+		removeInternal(*m_toRemove.begin());
 		m_toRemove.erase(m_toRemove.begin());
 	}
 
 }
 
-SharedContext * StateManager::getContext() {
+SharedContext* StateManager::getContext() const {
 	return m_sharedContext;
+}
+
+bool StateManager::hasState(const States stateID) const
+{
+	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr)
+	{
+		if (itr->first == stateID) {
+			auto removed = std::find(m_toRemove.begin(), m_toRemove.end(), stateID);
+			if (removed == m_toRemove.end())
+				return true;
+			else
+				return false;
+		}
+	}
+	return false;
+
+}
+
+bool StateManager::isEmpty() const {
+	return m_states.size() < 1;
 }
 
 void StateManager::createState(States stateID)
@@ -59,13 +81,14 @@ void StateManager::createState(States stateID)
 	assert(factoryFunction != m_factories.end());
 
 	auto newState = factoryFunction->second();
-	//TODO set default view for state?
+	auto statePtr = newState.get();
 
+	m_sharedContext->window->setView(newState->getView());
 	m_states.emplace_back(stateID, std::move(newState));
-	newState->onCreate();
+	statePtr->onCreate();
 }
 
-void StateManager::removeState(const States stateID)
+void StateManager::removeInternal(const States stateID)
 {
 	for (auto it = m_states.begin(); it != m_states.end(); ++it) {
 		if (it->first != stateID)
@@ -75,5 +98,37 @@ void StateManager::removeState(const States stateID)
 		m_states.erase(it);
 		return;
 	}
-
 }
+
+void StateManager::switchState(const States stateID)
+{
+	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr)
+	{
+		if (itr->first == stateID) {
+			m_states.back().second->deactivate();
+
+			States stateid = itr->first;
+			auto& state = itr->second;
+
+			m_states.erase(itr);
+			m_states.emplace_back(stateID, std::move(state));
+
+			state->activate();
+			m_sharedContext->window->setView(state->getView());
+			return;
+		}
+	}
+
+	if (!m_states.empty())
+		m_states.back().second->deactivate();
+
+	createState(stateID);
+	m_states.back().second->activate();
+	m_sharedContext->window->setView(m_states.back().second->getView());
+}
+
+void StateManager::removeState(const States stateID) {
+	m_toRemove.emplace_back(stateID);
+}
+
+

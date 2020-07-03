@@ -1,7 +1,6 @@
 #pragma once
 #include "States.h"
 
-
 class StateManager;
 class BaseState
 {
@@ -26,7 +25,6 @@ public:
 	bool isTransparent() const {
 		return m_isTransparent;
 	}
-
 
 	const sf::View& getView() const {
 		return m_view;

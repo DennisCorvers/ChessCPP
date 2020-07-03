@@ -1,34 +1,40 @@
 #pragma once
-#include "SFML/Graphics.hpp"
 #include <queue>
-#include "State.h"
+#include "BaseState.h"
 #include "ChessMove.h"
+#include "AssetFlags.h"
 
 class BoardManager;
+class StateManager;
 
-class GameState : public State
+class GameState : public BaseState
 {
-private:
-	sf::View view;
-	BoardManager* m_boardManager;
+protected:
+	using EType = sf::Event::EventType;
+
+	sf::RenderWindow* m_window;
+
+	std::unique_ptr<BoardManager> m_boardManager;
 	sf::Font m_font;
-
-	void initTextures();
-	void initFonts();
-	void initSounds();
-	void initGame();
-	void initView();
-
 	std::queue<ChessMove> m_moveBuffer;
 
+	std::map<AssetFlags, sf::Texture> textures;
+	std::map<AssetFlags, sf::SoundBuffer> sounds;
+
+	void loadAssets();
+
 public:
-	GameState(StateData* data);
+	GameState(StateManager& stateManager);
 	~GameState();
 
-	void updateView(const float& deltaTime);
+	virtual void onCreate() override;
+	virtual void onDestroy() override;
 
-	void updateInput(const float& deltaTime) override;
-	void update(const float& deltaTime) override;
-	void render(sf::RenderTarget* target) override;
+	virtual void activate() override;
+	virtual void deactivate() override;
+
+	virtual void render() override;
+	virtual bool update(float deltaTime) override;
+	virtual bool handleEvent(const sf::Event & event) override;
 };
 
