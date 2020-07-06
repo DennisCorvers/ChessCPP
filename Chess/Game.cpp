@@ -20,7 +20,7 @@ Game::Game() :
 
 	m_context.window = &m_window;
 
-	m_stateManager.switchState(States::Sandbox);
+	m_stateManager.switchState(States::MainMenu);
 }
 
 Game::~Game() {

@@ -98,9 +98,8 @@ void Entity::lateUpdate(const float& dt)
 {
 }
 
-void Entity::render(sf::RenderTarget* const target)
+void Entity::render(sf::RenderTarget & target)
 {
 	if (isActive())
-		target->draw(m_sprite);
+		target.draw(m_sprite);
 }
-

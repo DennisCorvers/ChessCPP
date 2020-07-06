@@ -155,14 +155,14 @@ void ChessPieceManager::update(const float & deltaTime)
 	m_animatorSystem->update(deltaTime);
 }
 
-void ChessPieceManager::render(sf::RenderTarget* const target)
+void ChessPieceManager::render(sf::RenderTarget& target)
 {
-	target->draw(m_sprite);
+	target.draw(m_sprite);
 
 	//Render overlays for possible moves etc...
 	if (m_moveAction.hasSelection())
 	{
-		target->draw(m_selectionMarker);
+		target.draw(m_selectionMarker);
 		m_markerContainer->render(target);
 	}
 

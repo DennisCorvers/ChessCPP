@@ -60,7 +60,7 @@ void GameState::deactivate() {
 }
 
 void GameState::render() {
-	m_boardManager->render(m_window);
+	m_boardManager->render(*m_window);
 }
 
 bool GameState::update(float deltaTime)

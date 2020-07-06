@@ -31,7 +31,7 @@ void AnimatorComponent::update(const float & deltaTime)
 		stop();
 }
 
-void AnimatorComponent::render(sf::RenderTarget * const target)
+void AnimatorComponent::render(sf::RenderTarget& target)
 {
 	m_target->render(target);
 }
@@ -100,7 +100,7 @@ void AnimatorSystem::update(const float & deltaTime)
 	}
 }
 
-void AnimatorSystem::render(sf::RenderTarget * const target)
+void AnimatorSystem::render(sf::RenderTarget& target)
 {
 	//Double rendering to ensure moving piece is on top.
 	for (auto it : m_components) {

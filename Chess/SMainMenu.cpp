@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SMainMenu.h"
+#include "Event.h"
 
 SMainMenu::SMainMenu(StateManager & stateManager)
 	:BaseState(stateManager)
@@ -10,6 +11,7 @@ SMainMenu::~SMainMenu()
 
 void SMainMenu::onCreate()
 {
+
 }
 
 void SMainMenu::onDestroy()
@@ -30,6 +32,7 @@ void SMainMenu::render()
 
 bool SMainMenu::update(float deltaTime)
 {
+
 	return false;
 }
 

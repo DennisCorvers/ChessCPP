@@ -136,7 +136,7 @@ void BoardManager::update(const float & deltaTime)
 	m_pieceManager->update(deltaTime);
 }
 
-void BoardManager::render(sf::RenderTarget * const target)
+void BoardManager::render(sf::RenderTarget& target)
 {
 	m_pieceManager->render(target);
 }

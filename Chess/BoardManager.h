@@ -56,6 +56,6 @@ public:
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
 	void update(const float& deltaTime);
-	void render(sf::RenderTarget* const target);
+	void render(sf::RenderTarget& target);
 };
 

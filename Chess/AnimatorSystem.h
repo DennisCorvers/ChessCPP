@@ -20,7 +20,7 @@ public:
 
 	void start();
 	void update(const float& deltaTime);
-	void render(sf::RenderTarget* const target);
+	void render(sf::RenderTarget& target);
 	void stop();
 };
 
@@ -43,6 +43,6 @@ public:
 	void queueAnimation(AnimatorComponent* newAnimation);
 	void stopAnimations();
 	void update(const float& deltaTime);
-	void render(sf::RenderTarget* const target);
+	void render(sf::RenderTarget& target);
 };
 

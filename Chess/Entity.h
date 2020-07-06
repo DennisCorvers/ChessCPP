@@ -38,7 +38,7 @@ public:
 
 	virtual void update(const float& dt);
 	virtual void lateUpdate(const float& dt);
-	virtual void render(sf::RenderTarget* const target);
+	virtual void render(sf::RenderTarget& target);
 
 	inline virtual void setActive(bool state) {
 		m_isActive = state;

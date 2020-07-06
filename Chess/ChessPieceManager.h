@@ -38,9 +38,8 @@ public:
 		selectCount = 0;
 	}
 
-	inline bool hasSelection()
-	{
-		return movingPiece;
+	inline bool hasSelection() {
+		return movingPiece != nullptr;
 	}
 
 	inline bool isMoving() {
@@ -76,9 +75,9 @@ public:
 		index = 0;
 	}
 
-	void render(sf::RenderTarget* const target) {
+	void render(sf::RenderTarget& target) {
 		for (size_t i = 0; i < renderCount; i++)
-			target->draw(m_moveMarkers[i]);
+			target.draw(m_moveMarkers[i]);
 	}
 };
 
@@ -127,7 +126,7 @@ public:
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;
-	virtual void render(sf::RenderTarget* const target) override;
+	virtual void render(sf::RenderTarget& target) override;
 
 	void startSelection(const sf::Vector2f screenPosition);
 	void updateSelection(const sf::Vector2f screenPosition);
