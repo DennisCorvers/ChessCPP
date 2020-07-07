@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Game.h"
-
+#define NDEBUG
 
 int main()
 {

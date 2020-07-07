@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "GameState.h"
+#include "SGame.h"
 #include "EventManager.h"
 #include "BoardManager.h"
 #include "BaseState.h"
 #include "StateManager.h"
 
-void GameState::loadAssets()
+void SGame::loadAssets()
 {
 	if (!textures[AssetFlags::t_board].loadFromFile("Assets\\Sprites\\Board.png"))
 		throw std::exception("Unable to load Board texture");
@@ -27,7 +27,7 @@ void GameState::loadAssets()
 		throw std::exception("Unable to load OpenSans-Regular font!");
 }
 
-GameState::GameState(StateManager& stateManager)
+SGame::SGame(StateManager& stateManager)
 	:BaseState(stateManager)
 {
 	m_window = stateManager.getContext()->window;
@@ -43,27 +43,27 @@ GameState::GameState(StateManager& stateManager)
 	m_view.setCenter(m_boardManager->getBoardCenter());
 }
 
-GameState::~GameState()
+SGame::~SGame()
 {}
 
-void GameState::onCreate() {
+void SGame::onCreate() {
 	m_boardManager->resetGame();
 }
 
-void GameState::onDestroy() {
+void SGame::onDestroy() {
 }
 
-void GameState::activate() {
+void SGame::activate() {
 }
 
-void GameState::deactivate() {
+void SGame::deactivate() {
 }
 
-void GameState::render() {
+void SGame::render() {
 	m_boardManager->render(*m_window);
 }
 
-bool GameState::update(float deltaTime)
+bool SGame::update(float deltaTime)
 {
 	sf::Vector2f position = EventManager::GetPixelPosition(*m_window, m_view);
 	m_boardManager->updateMousePosition(position);
@@ -78,7 +78,7 @@ bool GameState::update(float deltaTime)
 	return true;
 }
 
-bool GameState::handleEvent(const sf::Event & event)
+bool SGame::handleEvent(const sf::Event & event)
 {
 	EType eType = event.type;
 	if (event.mouseButton.button == sf::Mouse::Left) {

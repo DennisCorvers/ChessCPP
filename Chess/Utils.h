@@ -25,4 +25,3 @@ inline sf::Vector2f operator/(const sf::Vector2f& a, const sf::Vector2f& b) {
 }
 
 
-

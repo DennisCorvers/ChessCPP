@@ -131,4 +131,10 @@ void StateManager::removeState(const States stateID) {
 	m_toRemove.emplace_back(stateID);
 }
 
+void StateManager::clearStates()
+{
+	for (auto& item : m_states)
+		removeState(item.first);
+}
+
 

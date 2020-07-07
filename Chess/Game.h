@@ -3,6 +3,7 @@
 #include "StateManager.h"
 #include "EventManager.h"
 #include "SharedContext.h"
+#include "DebugOverlay.h"
 
 class Game {
 
@@ -30,8 +31,17 @@ public:
 	void render();
 	void lateUpdate();
 
-	float getFPS() const;
+
+	inline float getFPS() const {
+		return 1 / m_deltaTime;
+	}
 	const sf::RenderWindow& getWindow() const;
+
+	//Debug Info
+#ifdef NDEBUG
+private:
+	DebugOverlay m_debugOverlay;
+#endif
 };
 
 

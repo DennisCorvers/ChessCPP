@@ -20,6 +20,9 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Window.hpp"
 
+//TGUI
+#include "TGUI/TGUI.hpp"
+
 //Self
 #include "Utils.h"
 #include "Enums.h"

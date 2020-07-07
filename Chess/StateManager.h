@@ -34,6 +34,8 @@ public:
 	void switchState(const States stateID);
 	void removeState(const States stateID);
 
+	void clearStates();
+
 	template <typename T>
 	void registerState(States stateID) {
 		m_factories[stateID] = [this]() {

@@ -8,7 +8,6 @@ public:
 	SMainMenu(StateManager& stateManager);
 	virtual ~SMainMenu();
 
-	// Inherited via BaseState
 	virtual void onCreate() override;
 
 	virtual void onDestroy() override;
@@ -23,5 +22,9 @@ public:
 
 	virtual bool handleEvent(const sf::Event & event) override;
 
+private:
+	tgui::Gui m_gui;
+
+	void initializeUI();
 };
 

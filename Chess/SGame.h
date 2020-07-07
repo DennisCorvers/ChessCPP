@@ -6,7 +6,7 @@
 
 class BoardManager;
 
-class GameState : public BaseState
+class SGame : public BaseState
 {
 protected:
 	using EType = sf::Event::EventType;
@@ -23,8 +23,8 @@ protected:
 	void loadAssets();
 
 public:
-	GameState(StateManager& stateManager);
-	~GameState();
+	SGame(StateManager& stateManager);
+	~SGame();
 
 	virtual void onCreate() override;
 	virtual void onDestroy() override;

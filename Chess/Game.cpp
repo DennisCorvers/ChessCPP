@@ -1,12 +1,8 @@
 #include "pch.h"
 #include "Game.h"
-#include "GameState.h"
+#include "SGame.h"
 #include "SMainMenu.h"
 #include "States.h"
-
-float Game::getFPS() const {
-	return 1 / m_deltaTime;
-}
 
 const sf::RenderWindow& Game::getWindow() const {
 	return m_window;
@@ -40,7 +36,7 @@ void Game::initWindow()
 }
 
 void Game::registerStates() {
-	m_stateManager.registerState<GameState>(States::Sandbox);
+	m_stateManager.registerState<SGame>(States::Sandbox);
 	m_stateManager.registerState<SMainMenu>(States::MainMenu);
 }
 
@@ -63,6 +59,11 @@ void Game::update()
 	}
 
 	m_stateManager.update(m_deltaTime);
+
+
+#ifdef NDEBUG
+	m_debugOverlay.update(m_deltaTime);
+#endif
 }
 
 void Game::render()
@@ -70,6 +71,10 @@ void Game::render()
 	m_window.clear(sf::Color::Black);
 
 	m_stateManager.render();
+
+#ifdef NDEBUG
+	m_debugOverlay.draw(m_window);
+#endif
 
 	m_window.display();
 }
