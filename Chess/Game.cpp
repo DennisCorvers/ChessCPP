@@ -16,7 +16,7 @@ Game::Game() :
 
 	m_context.window = &m_window;
 
-	m_stateManager.switchState(States::MainMenu);
+	m_stateManager.switchState(States::Sandbox);
 }
 
 Game::~Game() {
@@ -26,7 +26,7 @@ Game::~Game() {
 void Game::initWindow()
 {
 	m_window.create(
-		sf::VideoMode(windowWidth, windowHeight, 32),
+		sf::VideoMode(windowWidth, windowHeight, 0),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 16));

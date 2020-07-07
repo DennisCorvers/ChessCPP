@@ -32,7 +32,6 @@ public:
 		m_lastDebugTime(0)
 	{
 		m_fpsLabel = tgui::Label::create("FpsLabel");
-		m_fpsLabel->setPosition(0, 0);
 		m_fpsLabel->getRenderer()->setTextColor(tgui::Color().Green);
 		m_fpsLabel->getRenderer()->setTextOutlineColor(tgui::Color().White);
 		m_fpsLabel->getRenderer()->setTextOutlineThickness(.2f);
@@ -47,8 +46,9 @@ public:
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) {
 
+		target.setView(target.getDefaultView());
 		if (m_lastDebugTime > 0.25f) {
-			m_fpsLabel->setText("fps: " + m_fpsString.toString(m_framecount / m_lastDebugTime, 1));
+			m_fpsLabel->setText("FPS: " + m_fpsString.toString(m_framecount / m_lastDebugTime, 1));
 			m_lastDebugTime = 0;
 			m_framecount = 0;
 		}

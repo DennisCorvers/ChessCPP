@@ -28,7 +28,7 @@ void StateManager::render() const
 {
 	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr) {
 		if (!itr->second->isTransparent()) {
-			//m_sharedContext->window->setView(itr->second->getView());
+			m_sharedContext->window->setView(itr->second->getView());
 			itr->second->render();
 		}
 	}
