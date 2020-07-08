@@ -33,6 +33,9 @@
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{9e8b2f71-e398-4a64-9a06-b818d07d1f07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Managers\Resources">
+      <UniqueIdentifier>{8ea4f40d-a945-4be6-81ce-655968bb4362}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -168,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="DebugOverlay.h">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Source Files\Managers\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

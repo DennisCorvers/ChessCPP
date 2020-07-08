@@ -3,14 +3,18 @@
 #include "ChessPieceManager.h"
 #include "ChessBoard.h"
 #include "ChessAction.h"
+#include "TextureManager.h"
 
 BoardManager::BoardManager(
-	std::map<AssetFlags, sf::Texture>& textures,
+	TextureManager& textureManager,
 	std::map<AssetFlags, sf::SoundBuffer>& sounds,
 	PieceColour startOrientation)
 {
 	m_board = std::make_unique<ChessBoard>();
-	m_pieceManager = std::make_unique<ChessPieceManager>(textures, startOrientation);
+
+	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
+	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
+	m_pieceManager = std::make_unique<ChessPieceManager>(boardTexture, pieceTexture, startOrientation);
 
 	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetFlags::s_piece_move]);
 	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetFlags::s_piece_check]);

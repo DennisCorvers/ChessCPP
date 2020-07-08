@@ -122,7 +122,7 @@ private:
 	void animationCallback();
 
 public:
-	ChessPieceManager(std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation);
+	ChessPieceManager(sf::Texture& boardTexture, sf::Texture& pieceTexture, PieceColour orientation);
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;

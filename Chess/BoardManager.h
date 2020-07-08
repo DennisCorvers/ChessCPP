@@ -17,6 +17,7 @@ namespace BoardSettings {
 	};
 }
 
+class TextureManager;
 class ChessPieceManager;
 class ChessBoard;
 struct ChessAction;
@@ -37,7 +38,7 @@ private:
 
 public:
 	BoardManager(
-		std::map<AssetFlags, sf::Texture>& textures, 
+		TextureManager& textureManager,
 		std::map <AssetFlags, sf::SoundBuffer>& sounds,
 		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();

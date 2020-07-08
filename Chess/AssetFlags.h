@@ -1,6 +1,6 @@
 #pragma once
 
-enum struct AssetFlags : int {
+enum struct AssetFlags : unsigned int {
 	t_pieces,
 	t_board,
 	s_piece_take,

@@ -15,6 +15,7 @@ Game::Game() :
 	registerStates();
 
 	m_context.window = &m_window;
+	m_context.textureManager = &m_textureManager;
 
 	m_stateManager.switchState(States::Sandbox);
 }

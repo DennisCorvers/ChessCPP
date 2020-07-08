@@ -5,12 +5,12 @@
 #include "ChessBoard.h"
 #include "AnimatorSystem.h"
 
-ChessPieceManager::ChessPieceManager(std::map<AssetFlags, sf::Texture>& textures, PieceColour orientation)
+ChessPieceManager::ChessPieceManager(sf::Texture& boardTexture, sf::Texture& pieceTexture, PieceColour orientation)
 {
-	auto textureSize = textures[AssetFlags::t_board].getSize();
+	auto textureSize = boardTexture.getSize();
 	//TODO handle different size boards...
 	m_squareSize = sf::Vector2f(textureSize.x / (float)8, textureSize.y / (float)8);
-	m_sprite.setTexture(textures[AssetFlags::t_board]);
+	m_sprite.setTexture(boardTexture);
 
 	m_moveAction.reset();
 	m_viewOrientation = orientation;
@@ -18,12 +18,12 @@ ChessPieceManager::ChessPieceManager(std::map<AssetFlags, sf::Texture>& textures
 	auto func = std::bind(&ChessPieceManager::animationCallback, this);
 	m_animatorSystem = std::make_unique<AnimatorSystem>(func);
 
-	auto pieceTSize = textures[AssetFlags::t_pieces].getSize();
+	auto pieceTSize = pieceTexture.getSize();
 	auto pieceScale = m_squareSize / sf::Vector2f(static_cast<float>(pieceTSize.x / 6), static_cast<float>(pieceTSize.y / 2));
 	pieceScale = pieceScale * .9f;
 
 	for (char i = 0; i < PIECECOUNT; i++) {
-		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, textures[AssetFlags::t_pieces]);
+		m_chessPieces[i] = new ChessPieceEntity(PieceColour::Black, PieceType::Pawn, pieceTexture);
 		m_chessPieces[i]->setScale(pieceScale);
 
 		m_chessPieces[i]->setActive(false);

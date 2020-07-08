@@ -19,6 +19,7 @@ private:
 
 	StateManager m_stateManager;
 	EventManager m_eventManager;
+	TextureManager m_textureManager;
 
 	void initWindow();
 	void registerStates();

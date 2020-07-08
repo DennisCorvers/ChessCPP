@@ -7,12 +7,9 @@
 
 void SGame::loadAssets()
 {
-	if (!textures[AssetFlags::t_board].loadFromFile("Assets\\Sprites\\Board.png"))
-		throw std::exception("Unable to load Board texture");
-	textures[AssetFlags::t_board].setSmooth(true);
-	if (!textures[AssetFlags::t_pieces].loadFromFile("Assets\\Sprites\\Pieces.png"))
-		throw std::exception("Unable to load Pieces texture");
-	textures[AssetFlags::t_pieces].setSmooth(true);
+	auto* textureManager = m_stateManager->getContext()->textureManager;
+	textureManager->aquireResource(States::Hotseat, AssetFlags::t_board, "Assets\\Sprites\\Board.png");
+	textureManager->aquireResource(States::Hotseat, AssetFlags::t_pieces, "Assets\\Sprites\\Pieces.png");
 
 	if (!sounds[AssetFlags::s_piece_check].loadFromFile("Assets\\Sounds\\piece_check.ogg"))
 		throw std::exception("Unable to load piece_check.ogg");
@@ -33,7 +30,11 @@ SGame::SGame(StateManager& stateManager)
 	m_window = stateManager.getContext()->window;
 	loadAssets();
 
-	m_boardManager = std::unique_ptr<BoardManager>(new BoardManager(textures, sounds));
+	m_boardManager = std::unique_ptr<BoardManager>(
+		new BoardManager(
+			*stateManager.getContext()->textureManager,
+			sounds
+		));
 
 	auto context = stateManager.getContext();
 	float x = static_cast<float>(m_window->getSize().x);
@@ -51,6 +52,7 @@ void SGame::onCreate() {
 }
 
 void SGame::onDestroy() {
+	m_stateManager->getContext()->textureManager->releaseResources(States::Hotseat);
 }
 
 void SGame::activate() {

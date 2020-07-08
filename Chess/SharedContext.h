@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "TextureManager.h"
 
 struct SharedContext {
 	SharedContext() :
@@ -7,4 +8,5 @@ struct SharedContext {
 	{}
 
 	sf::RenderWindow* window;
+	TextureManager* textureManager;
 };
