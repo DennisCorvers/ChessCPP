@@ -9,6 +9,8 @@
 #include "TextureManager.h"
 #include "SharedContext.h"
 
+#include "DebugOverlay.h"
+
 
 Game::Game()
 {
@@ -16,6 +18,7 @@ Game::Game()
 	m_stateManager = std::make_unique<StateManager>(*m_context);
 	m_textureManager = std::make_unique<TextureManager>(true);
 	m_fontManager = std::make_unique<FontManager>();
+	m_debugOverlay = std::make_unique<DebugOverlay>();
 
 	initWindow();
 	registerStates();
@@ -24,15 +27,7 @@ Game::Game()
 	m_context->textureManager = m_textureManager.get();
 	m_context->fontManager = m_fontManager.get();
 
-	//Set background application-wide
-	auto& bgtx = *m_textureManager->aquireAndGet(States::MainMenu, AssetFlags::t_background, "Assets\\Sprites\\backdrop.jpg");
-	bgtx.setSmooth(false);
-	m_backdrop.setTexture(bgtx, true);
-	auto& view = m_window->getView();
-	m_backdrop.setScale(
-		view.getSize().x / m_backdrop.getLocalBounds().width,
-		view.getSize().y / m_backdrop.getLocalBounds().height
-	);
+	initUI();
 
 	m_stateManager->switchState(States::Sandbox);
 }
@@ -51,14 +46,32 @@ Game::~Game() {
 
 void Game::initWindow()
 {
+	m_defaultView = std::make_unique<sf::View>(
+		sf::FloatRect(0.f, 0.f, windowWidth, windowHeight));
+
 	m_window = std::make_unique<sf::RenderWindow>(
 		sf::VideoMode(windowWidth, windowHeight, 0),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 0));
 
+	m_window->setView(*m_defaultView);
+
 	//m_window.setFramerateLimit(60);
 	m_window->setVerticalSyncEnabled(true);
+}
+
+void Game::initUI()
+{
+	//Set background application-wide
+	auto& bgtx = *m_textureManager->aquireAndGet(States::MainMenu, AssetFlags::t_background, "Assets\\Sprites\\backdrop.jpg");
+	bgtx.setSmooth(false);
+	m_backdrop.setTexture(bgtx, true);
+	auto& view = m_window->getView();
+	m_backdrop.setScale(
+		view.getSize().x / m_backdrop.getLocalBounds().width,
+		view.getSize().y / m_backdrop.getLocalBounds().height
+	);
 }
 
 void Game::registerStates() {
@@ -79,6 +92,10 @@ void Game::update()
 		case sf::Event::Closed:
 			m_window->close();
 			break;
+
+		case sf::Event::Resized:
+			Graphics::applyResize(*m_defaultView, event.size.width, event.size.height);
+			break;
 		}
 
 		m_stateManager->handleEvent(event);
@@ -86,9 +103,8 @@ void Game::update()
 
 	m_stateManager->update(m_deltaTime);
 
-
 #ifdef NDEBUG
-	m_debugOverlay.update(m_deltaTime);
+	m_debugOverlay->update(m_deltaTime);
 #endif
 }
 
@@ -96,15 +112,15 @@ void Game::render()
 {
 	m_window->clear(sf::Color::Black);
 
-	m_window->setView(m_window->getDefaultView());
+	m_window->setView(*m_defaultView);
 	m_window->draw(m_backdrop);
 
 	m_stateManager->render();
 
 #ifdef NDEBUG
-	m_debugOverlay.draw(*m_window);
+	m_window->setView(*m_defaultView);
+	m_debugOverlay->draw(*m_window);
 #endif
-
 	m_window->display();
 }
 

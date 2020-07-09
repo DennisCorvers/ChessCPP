@@ -40,6 +40,7 @@ public:
 	BoardManager(
 		TextureManager& textureManager,
 		std::map <AssetFlags, sf::SoundBuffer>& sounds,
+		int pixelSize,
 		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();
 

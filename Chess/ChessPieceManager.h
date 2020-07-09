@@ -123,7 +123,7 @@ private:
 	void animationCallback();
 
 public:
-	ChessPieceManager(TextureManager& textureManager, PieceColour orientation);
+	ChessPieceManager(TextureManager& textureManager, int pixelSize, PieceColour orientation);
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;

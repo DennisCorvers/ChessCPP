@@ -1,11 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
-#ifdef NDEBUG 
-#include "DebugOverlay.h"
-#endif
-
-
 struct SharedContext;
 class TextureManager;
 class FontManager;
@@ -16,8 +11,8 @@ class DebugOverlay;
 class Game {
 
 private:
-	const int windowWidth = 1280;
-	const int windowHeight = 720;
+	const int windowWidth = sf::VideoMode::getDesktopMode().width;
+	const int windowHeight = sf::VideoMode::getDesktopMode().height;
 
 	sf::Clock m_clock;
 	float m_deltaTime;
@@ -31,6 +26,7 @@ private:
 
 
 	void initWindow();
+	void initUI();
 	void registerStates();
 
 public:
@@ -44,12 +40,8 @@ public:
 	bool isRunning() const;
 
 	sf::Sprite m_backdrop;
-
-	//Debug Info
-#ifdef NDEBUG
-private:
-	DebugOverlay m_debugOverlay;
-#endif
+	std::unique_ptr<sf::View> m_defaultView;
+	std::unique_ptr<DebugOverlay> m_debugOverlay;
 };
 
 

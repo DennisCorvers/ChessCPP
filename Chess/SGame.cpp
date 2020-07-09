@@ -31,7 +31,8 @@ SGame::SGame(StateManager& stateManager)
 	m_boardManager = std::unique_ptr<BoardManager>(
 		new BoardManager(
 			*stateManager.getContext()->textureManager,
-			sounds
+			sounds,
+			static_cast<int>(m_window->getSize().y * .85f)
 		));
 
 	auto context = stateManager.getContext();
@@ -83,6 +84,10 @@ bool SGame::update(float deltaTime)
 bool SGame::handleEvent(const sf::Event & event)
 {
 	EType eType = event.type;
+	if (eType == sf::Event::Resized)
+		Graphics::applyResize(m_view, event);
+
+
 	if (event.mouseButton.button == sf::Mouse::Left) {
 		sf::Vector2f mousePos = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window), m_view);
 

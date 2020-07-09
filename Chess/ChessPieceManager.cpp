@@ -6,14 +6,17 @@
 #include "AnimatorSystem.h"
 #include "TextureManager.h"
 
-ChessPieceManager::ChessPieceManager(TextureManager& textureManager, PieceColour orientation)
+ChessPieceManager::ChessPieceManager(TextureManager& textureManager, int pixelSize, PieceColour orientation)
 {
 	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
 	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
+
+	//Scale board
 	auto textureSize = boardTexture.getSize();
-	//TODO handle different size boards...
-	m_squareSize = sf::Vector2f(textureSize.x / (float)8, textureSize.y / (float)8);
+	auto textureScale = sf::Vector2f((float)pixelSize / textureSize.x, (float)pixelSize / textureSize.y);
+
 	m_sprite.setTexture(boardTexture);
+	setScale(textureScale);
 
 	m_moveAction.reset();
 	m_viewOrientation = orientation;
@@ -21,8 +24,10 @@ ChessPieceManager::ChessPieceManager(TextureManager& textureManager, PieceColour
 	auto func = std::bind(&ChessPieceManager::animationCallback, this);
 	m_animatorSystem = std::make_unique<AnimatorSystem>(func);
 
+	//Scale pieces
+	m_squareSize = sf::Vector2f(getGlobalBounds().width / (float)8, getGlobalBounds().height / (float)8);
 	auto pieceTSize = pieceTexture.getSize();
-	auto pieceScale = m_squareSize / sf::Vector2f(static_cast<float>(pieceTSize.x / 6), static_cast<float>(pieceTSize.y / 2));
+	auto pieceScale = m_squareSize / sf::Vector2f(pieceTSize.x / (float)6, pieceTSize.y / (float)2);
 	pieceScale = pieceScale * .9f;
 
 	for (char i = 0; i < PIECECOUNT; i++) {
