@@ -31,6 +31,8 @@ public:
 		return res ? res->first : nullptr;
 	}
 
+
+
 	bool aquireResource(const AssetFlags assetFlag, const std::string& path)
 	{
 		auto res = findResource(assetFlag);
@@ -60,6 +62,19 @@ public:
 		}
 
 		return false;
+	}
+
+	std::shared_ptr<T> aquireAndGet(const AssetFlags assetFlag, const std::string& path) {
+		if (aquireResource(assetFlag, path))
+			return getResource(assetFlag);
+
+		return nullptr;
+	}
+	std::shared_ptr<T> aquireAndGet(const States state, const AssetFlags assetFlag, const std::string& path) {
+		if (aquireResource(state, assetFlag, path))
+			return getResource(assetFlag);
+
+		return nullptr;
 	}
 
 	bool releaseResources(const AssetFlags assetFlag) {

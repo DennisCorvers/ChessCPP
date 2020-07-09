@@ -27,7 +27,9 @@ public:
 
 	void lateUpdate();
 
-	SharedContext* getContext() const;
+	inline SharedContext* getContext() const {
+		return m_sharedContext;
+	}
 	bool hasState(const States stateID) const;
 	bool isEmpty() const;
 

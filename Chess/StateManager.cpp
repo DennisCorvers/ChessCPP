@@ -51,10 +51,6 @@ void StateManager::lateUpdate()
 
 }
 
-SharedContext* StateManager::getContext() const {
-	return m_sharedContext;
-}
-
 bool StateManager::hasState(const States stateID) const
 {
 	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr)

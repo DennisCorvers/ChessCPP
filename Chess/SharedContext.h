@@ -1,6 +1,8 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+
 class TextureManager;
+class FontManager;
 
 struct SharedContext {
 	SharedContext() :
@@ -11,4 +13,5 @@ struct SharedContext {
 
 	sf::RenderWindow* window;
 	TextureManager* textureManager;
+	FontManager* fontManager;
 };

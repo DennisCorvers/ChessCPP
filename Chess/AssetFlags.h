@@ -4,6 +4,7 @@ enum struct AssetFlags : unsigned int {
 	//TEXTURES
 	t_pieces,
 	t_board,
+	t_background,
 
 
 	//SOUNDS
@@ -18,7 +19,7 @@ enum struct AssetFlags : unsigned int {
 
 
 	//FONTS
-	f_opensans_reg;
+	f_opensans_reg
 
 
 };

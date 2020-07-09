@@ -43,6 +43,8 @@ public:
 
 	bool isRunning() const;
 
+	sf::Sprite m_backdrop;
+
 	//Debug Info
 #ifdef NDEBUG
 private:

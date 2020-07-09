@@ -14,7 +14,6 @@ protected:
 	sf::RenderWindow* m_window;
 
 	std::unique_ptr<BoardManager> m_boardManager;
-	sf::Font m_font;
 	std::queue<ChessMove> m_moveBuffer;
 
 	std::map<AssetFlags, sf::SoundBuffer> sounds;

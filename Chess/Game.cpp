@@ -22,10 +22,19 @@ Game::Game()
 
 	m_context->window = m_window.get();
 	m_context->textureManager = m_textureManager.get();
+	m_context->fontManager = m_fontManager.get();
+
+	//Set background application-wide
+	auto& bgtx = *m_textureManager->aquireAndGet(States::MainMenu, AssetFlags::t_background, "Assets\\Sprites\\backdrop.jpg");
+	bgtx.setSmooth(false);
+	m_backdrop.setTexture(bgtx, true);
+	auto& view = m_window->getView();
+	m_backdrop.setScale(
+		view.getSize().x / m_backdrop.getLocalBounds().width,
+		view.getSize().y / m_backdrop.getLocalBounds().height
+	);
 
 	m_stateManager->switchState(States::Sandbox);
-
-	m_fontManager->aquireResource(AssetFlags::f_opensans_reg, "Assets\\Fonts\\OpenSans-Regular.ttf");
 }
 
 Game::~Game() {
@@ -46,7 +55,7 @@ void Game::initWindow()
 		sf::VideoMode(windowWidth, windowHeight, 0),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
-		sf::ContextSettings(0, 0, 16));
+		sf::ContextSettings(0, 0, 0));
 
 	//m_window.setFramerateLimit(60);
 	m_window->setVerticalSyncEnabled(true);
@@ -86,6 +95,9 @@ void Game::update()
 void Game::render()
 {
 	m_window->clear(sf::Color::Black);
+
+	m_window->setView(m_window->getDefaultView());
+	m_window->draw(m_backdrop);
 
 	m_stateManager->render();
 

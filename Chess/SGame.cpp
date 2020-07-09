@@ -9,8 +9,8 @@
 void SGame::loadAssets()
 {
 	auto* textureManager = m_stateManager->getContext()->textureManager;
-	textureManager->aquireResource(States::Hotseat, AssetFlags::t_board, "Assets\\Sprites\\Board.png");
-	textureManager->aquireResource(States::Hotseat, AssetFlags::t_pieces, "Assets\\Sprites\\Pieces.png");
+	textureManager->aquireResource(States::Sandbox, AssetFlags::t_board, "Assets\\Sprites\\Board.png");
+	textureManager->aquireResource(States::Sandbox, AssetFlags::t_pieces, "Assets\\Sprites\\Pieces.png");
 
 	if (!sounds[AssetFlags::s_piece_check].loadFromFile("Assets\\Sounds\\piece_check.ogg"))
 		throw std::exception("Unable to load piece_check.ogg");
@@ -20,9 +20,6 @@ void SGame::loadAssets()
 		throw std::exception("Unable to load piece_take.ogg");
 	if (!sounds[AssetFlags::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
 		throw std::exception("Unable to load piece_castle.ogg");
-
-	//if (!m_font.loadFromFile(""))
-	//	throw std::exception("Unable to load OpenSans-Regular font!");
 }
 
 SGame::SGame(StateManager& stateManager)
@@ -64,6 +61,7 @@ void SGame::deactivate() {
 }
 
 void SGame::render() {
+
 	m_boardManager->render(*m_window);
 }
 

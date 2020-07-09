@@ -143,8 +143,8 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r
-xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
+      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r /d
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
