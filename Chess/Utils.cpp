@@ -1,15 +1,24 @@
 #include "pch.h"
 
 namespace Math {
+	int limit(int value, int upper) {
+		return value > upper ? upper : value;
+	}
+
+	int clamp(int value, int lower, int upper) {
+		return value < lower ? lower : value > upper ? upper : value;
+	}
+
+	int clip(int value, int lower) {
+		return value < lower ? lower : value;
+	}
+}
+namespace Mathf {
 	float clip(float value, float lower) {
 		return value < lower ? lower : value;
 	}
 
 	float limit(float value, float upper) {
-		return value > upper ? upper : value;
-	}
-
-	int limit(int value, int upper) {
 		return value > upper ? upper : value;
 	}
 
@@ -69,5 +78,17 @@ namespace Graphics {
 
 	void applyResize(sf::View & view, const sf::Event & event) {
 		applyResize(view, event.size.width, event.size.height);
+	}
+
+	sf::Vector2u clampWindow(sf::RenderWindow & window, sf::Vector2i minSize)
+	{
+		auto& a = window;
+		sf::Vector2u newSize;
+
+		newSize.x = Math::clip(window.getSize().x, minSize.x);
+		newSize.y = Math::clip(window.getSize().y, minSize.y);
+
+		window.setSize(newSize);
+		return window.getSize();
 	}
 }

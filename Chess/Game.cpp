@@ -47,10 +47,10 @@ Game::~Game() {
 void Game::initWindow()
 {
 	m_defaultView = std::make_unique<sf::View>(
-		sf::FloatRect(0.f, 0.f, windowWidth, windowHeight));
+		sf::FloatRect(0, 0, DEFAULT_SIZE.x, DEFAULT_SIZE.y));
 
 	m_window = std::make_unique<sf::RenderWindow>(
-		sf::VideoMode(windowWidth, windowHeight, 0),
+		sf::VideoMode(DEFAULT_SIZE.x, DEFAULT_SIZE.y, 0),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 0));
@@ -94,7 +94,8 @@ void Game::update()
 			break;
 
 		case sf::Event::Resized:
-			Graphics::applyResize(*m_defaultView, event.size.width, event.size.height);
+			auto newSize = Graphics::clampWindow(*m_window, MIN_SIZE);
+			Graphics::applyResize(*m_defaultView, newSize.x, newSize.y);
 			break;
 		}
 

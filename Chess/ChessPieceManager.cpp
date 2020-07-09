@@ -224,7 +224,7 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
 {
-	if (Math::distance(screenPosition, m_lastScreenPosition) > 0.15f) {
+	if (Mathf::distance(screenPosition, m_lastScreenPosition) > 0.15f) {
 		if (m_moveAction.isMoving())
 		{
 			auto clampedMouse = clampToBoard(screenPosition);

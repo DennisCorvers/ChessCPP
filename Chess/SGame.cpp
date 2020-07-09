@@ -85,7 +85,7 @@ bool SGame::handleEvent(const sf::Event & event)
 {
 	EType eType = event.type;
 	if (eType == sf::Event::Resized)
-		Graphics::applyResize(m_view, event);
+		Graphics::applyResize(m_view, m_window->getSize().x, m_window->getSize().y);
 
 
 	if (event.mouseButton.button == sf::Mouse::Left) {
