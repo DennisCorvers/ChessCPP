@@ -189,6 +189,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="FontManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SGame.h" />

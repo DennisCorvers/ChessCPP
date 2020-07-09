@@ -4,62 +4,78 @@
 #include "SMainMenu.h"
 #include "States.h"
 
-const sf::RenderWindow& Game::getWindow() const {
-	return m_window;
-}
+#include "StateManager.h"
+#include "FontManager.h"
+#include "TextureManager.h"
+#include "SharedContext.h"
 
-Game::Game() :
-	m_stateManager(m_context)
+
+Game::Game()
 {
+	m_context = std::make_unique<SharedContext>();
+	m_stateManager = std::make_unique<StateManager>(*m_context);
+	m_textureManager = std::make_unique<TextureManager>(true);
+	m_fontManager = std::make_unique<FontManager>();
+
 	initWindow();
 	registerStates();
 
-	m_context.window = &m_window;
-	m_context.textureManager = &m_textureManager;
+	m_context->window = m_window.get();
+	m_context->textureManager = m_textureManager.get();
 
-	m_stateManager.switchState(States::Sandbox);
+	m_stateManager->switchState(States::Sandbox);
+
+	m_fontManager->aquireResource(AssetFlags::f_opensans_reg, "Assets\\Fonts\\OpenSans-Regular.ttf");
 }
 
 Game::~Game() {
 	m_deltaTime = 0;
+
+	//Force correct order of destruction
+	m_stateManager.reset();
+	m_textureManager.reset();
+	m_fontManager.reset();
+
+	m_window.reset();
+	m_context.reset();
 }
 
 void Game::initWindow()
 {
-	m_window.create(
+	m_window = std::make_unique<sf::RenderWindow>(
 		sf::VideoMode(windowWidth, windowHeight, 0),
 		"Chess",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 16));
 
 	//m_window.setFramerateLimit(60);
-	m_window.setVerticalSyncEnabled(true);
+	m_window->setVerticalSyncEnabled(true);
 }
 
 void Game::registerStates() {
-	m_stateManager.registerState<SGame>(States::Sandbox);
-	m_stateManager.registerState<SMainMenu>(States::MainMenu);
+	m_stateManager->registerState<SGame>(States::Sandbox);
+	m_stateManager->registerState<SMainMenu>(States::MainMenu);
 }
 
 void Game::update()
 {
-	if (m_stateManager.isEmpty())
-		m_window.close();
+	if (m_stateManager->isEmpty())
+		m_window->close();
 
 	sf::Event event;
-	while (m_window.pollEvent(event)) {
+	while (m_window->pollEvent(event)) {
 
 		switch (event.type) {
 
 		case sf::Event::Closed:
-			m_window.close();
+			m_window->close();
 			break;
 		}
 
-		m_stateManager.handleEvent(event);
+		m_stateManager->handleEvent(event);
 	}
 
-	m_stateManager.update(m_deltaTime);
+	m_stateManager->update(m_deltaTime);
 
 
 #ifdef NDEBUG
@@ -69,21 +85,25 @@ void Game::update()
 
 void Game::render()
 {
-	m_window.clear(sf::Color::Black);
+	m_window->clear(sf::Color::Black);
 
-	m_stateManager.render();
+	m_stateManager->render();
 
 #ifdef NDEBUG
-	m_debugOverlay.draw(m_window);
+	m_debugOverlay.draw(*m_window);
 #endif
 
-	m_window.display();
+	m_window->display();
 }
 
 void Game::lateUpdate()
 {
-	m_stateManager.lateUpdate();
+	m_stateManager->lateUpdate();
 	m_deltaTime = m_clock.restart().asSeconds();
+}
+
+bool Game::isRunning() const {
+	return m_window->isOpen();
 }
 
 

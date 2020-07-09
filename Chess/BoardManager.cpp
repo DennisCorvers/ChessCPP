@@ -12,9 +12,7 @@ BoardManager::BoardManager(
 {
 	m_board = std::make_unique<ChessBoard>();
 
-	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
-	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
-	m_pieceManager = std::make_unique<ChessPieceManager>(boardTexture, pieceTexture, startOrientation);
+	m_pieceManager = std::make_unique<ChessPieceManager>(textureManager, startOrientation);
 
 	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetFlags::s_piece_move]);
 	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetFlags::s_piece_check]);

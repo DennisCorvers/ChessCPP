@@ -17,7 +17,6 @@ protected:
 	sf::Font m_font;
 	std::queue<ChessMove> m_moveBuffer;
 
-	std::map<AssetFlags, sf::Texture*> textures;
 	std::map<AssetFlags, sf::SoundBuffer> sounds;
 
 	void loadAssets();

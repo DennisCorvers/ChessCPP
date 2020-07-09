@@ -4,9 +4,12 @@
 #include "ChessMove.h"
 #include "ChessBoard.h"
 #include "AnimatorSystem.h"
+#include "TextureManager.h"
 
-ChessPieceManager::ChessPieceManager(sf::Texture& boardTexture, sf::Texture& pieceTexture, PieceColour orientation)
+ChessPieceManager::ChessPieceManager(TextureManager& textureManager, PieceColour orientation)
 {
+	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
+	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
 	auto textureSize = boardTexture.getSize();
 	//TODO handle different size boards...
 	m_squareSize = sf::Vector2f(textureSize.x / (float)8, textureSize.y / (float)8);

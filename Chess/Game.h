@@ -1,9 +1,17 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "StateManager.h"
-#include "EventManager.h"
-#include "SharedContext.h"
+
+#ifdef NDEBUG 
 #include "DebugOverlay.h"
+#endif
+
+
+struct SharedContext;
+class TextureManager;
+class FontManager;
+class StateManager;
+
+class DebugOverlay;
 
 class Game {
 
@@ -14,12 +22,13 @@ private:
 	sf::Clock m_clock;
 	float m_deltaTime;
 
-	SharedContext m_context;
-	sf::RenderWindow m_window;
+	std::unique_ptr<SharedContext> m_context;
+	std::unique_ptr<sf::RenderWindow> m_window;
 
-	StateManager m_stateManager;
-	EventManager m_eventManager;
-	TextureManager m_textureManager;
+	std::unique_ptr<StateManager> m_stateManager;
+	std::unique_ptr<TextureManager> m_textureManager;
+	std::unique_ptr<FontManager> m_fontManager;
+
 
 	void initWindow();
 	void registerStates();
@@ -32,11 +41,7 @@ public:
 	void render();
 	void lateUpdate();
 
-
-	inline float getFPS() const {
-		return 1 / m_deltaTime;
-	}
-	const sf::RenderWindow& getWindow() const;
+	bool isRunning() const;
 
 	//Debug Info
 #ifdef NDEBUG

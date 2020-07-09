@@ -4,6 +4,7 @@
 #include "BoardManager.h"
 #include "BaseState.h"
 #include "StateManager.h"
+#include "TextureManager.h"
 
 void SGame::loadAssets()
 {
@@ -20,8 +21,8 @@ void SGame::loadAssets()
 	if (!sounds[AssetFlags::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
 		throw std::exception("Unable to load piece_castle.ogg");
 
-	if (!m_font.loadFromFile("Assets\\Fonts\\OpenSans-Regular.ttf"))
-		throw std::exception("Unable to load OpenSans-Regular font!");
+	//if (!m_font.loadFromFile(""))
+	//	throw std::exception("Unable to load OpenSans-Regular font!");
 }
 
 SGame::SGame(StateManager& stateManager)
@@ -52,7 +53,8 @@ void SGame::onCreate() {
 }
 
 void SGame::onDestroy() {
-	m_stateManager->getContext()->textureManager->releaseResources(States::Hotseat);
+	TextureManager* txm = m_stateManager->getContext()->textureManager;
+	txm->releaseResources(States::Sandbox);
 }
 
 void SGame::activate() {

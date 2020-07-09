@@ -178,5 +178,8 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Source Files\Managers\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

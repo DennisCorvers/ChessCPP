@@ -1,11 +1,13 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "TextureManager.h"
+class TextureManager;
 
 struct SharedContext {
 	SharedContext() :
 		window(nullptr)
 	{}
+
+	virtual ~SharedContext() {}
 
 	sf::RenderWindow* window;
 	TextureManager* textureManager;

@@ -8,10 +8,9 @@ class ResourceManager {
 private:
 	template<typename K, typename V>
 	using map = std::unordered_map<K, V>;
-	using sPtr = std::shared_ptr<T>;
 
 	/*Keeps track of all loaded resources*/
-	map<AssetFlags, std::pair<sPtr, unsigned int>> m_resources;
+	map<AssetFlags, std::pair<std::shared_ptr<T>, unsigned int>> m_resources;
 	/*Keeps track of all resources owned by a state*/
 	map<States, std::set<AssetFlags>> m_stateResources;
 
@@ -26,7 +25,7 @@ public:
 		freeAllResources();
 	}
 
-	sPtr getResource(const AssetFlags assetFlag)
+	std::shared_ptr<T> getResource(const AssetFlags assetFlag)
 	{
 		auto res = findResource(assetFlag);
 		return res ? res->first : nullptr;
@@ -40,7 +39,7 @@ public:
 			return true;
 		}
 
-		sPtr resource = loadResource(path);
+		std::shared_ptr<T> resource = loadResource(path);
 		if (!resource)
 			return false;
 
@@ -97,10 +96,10 @@ public:
 	}
 
 protected:
-	virtual sPtr loadResource(const std::string& path) const = 0;
+	virtual std::shared_ptr<T> loadResource(const std::string& path) const = 0;
 
 private:
-	std::pair<sPtr, unsigned int>* findResource(const AssetFlags assetFlag) {
+	std::pair<std::shared_ptr<T>, unsigned int>* findResource(const AssetFlags assetFlag) {
 		auto itr = m_resources.find(assetFlag);
 		return (itr != m_resources.end() ? &itr->second : nullptr);
 	}

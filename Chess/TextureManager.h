@@ -9,6 +9,8 @@ public:
 		:ResourceManager()
 	{}
 
+	virtual ~TextureManager() {}
+
 private:
 	virtual std::shared_ptr<sf::Texture> loadResource(const std::string & path) const override {
 		auto texture = std::make_shared<sf::Texture>();

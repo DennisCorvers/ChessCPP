@@ -10,6 +10,7 @@ class AnimatorSystem;
 class ChessBoard;
 class ChessPieceEntity;
 class Entity;
+class TextureManager;
 
 struct MoveAction {
 private:
@@ -122,7 +123,7 @@ private:
 	void animationCallback();
 
 public:
-	ChessPieceManager(sf::Texture& boardTexture, sf::Texture& pieceTexture, PieceColour orientation);
+	ChessPieceManager(TextureManager& textureManager, PieceColour orientation);
 	virtual ~ChessPieceManager() override;
 
 	virtual void update(const float& deltaTime) override;
