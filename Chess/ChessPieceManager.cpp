@@ -10,6 +10,7 @@ ChessPieceManager::ChessPieceManager(TextureManager& textureManager, int pixelSi
 {
 	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
 	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
+	pieceTexture.setSmooth(true);
 
 	//Scale board
 	auto textureSize = boardTexture.getSize();

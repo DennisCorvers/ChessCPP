@@ -16,7 +16,7 @@ Game::Game()
 {
 	m_context = std::make_unique<SharedContext>();
 	m_stateManager = std::make_unique<StateManager>(*m_context);
-	m_textureManager = std::make_unique<TextureManager>(true);
+	m_textureManager = std::make_unique<TextureManager>(false);
 	m_fontManager = std::make_unique<FontManager>();
 	m_debugOverlay = std::make_unique<DebugOverlay>();
 
@@ -65,7 +65,6 @@ void Game::initUI()
 {
 	//Set background application-wide
 	auto& bgtx = *m_textureManager->aquireAndGet(States::MainMenu, AssetFlags::t_background, "Assets\\Sprites\\backdrop.jpg");
-	bgtx.setSmooth(false);
 	m_backdrop.setTexture(bgtx, true);
 	auto& view = m_window->getView();
 	m_backdrop.setScale(
