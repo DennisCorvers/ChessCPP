@@ -11,9 +11,9 @@ class DebugOverlay;
 class Game {
 
 private:
-	const sf::Vector2i DEFAULT_SIZE = sf::Vector2i(
-		sf::VideoMode::getDesktopMode().width,
-		sf::VideoMode::getDesktopMode().height);
+	const int FPS_LIMIT = 60;
+	const int FPS_INACTIVE = 15;
+	const sf::Vector2i DEFAULT_SIZE = sf::Vector2i(1920, 1027);
 	const sf::Vector2i MIN_SIZE = sf::Vector2i(DEFAULT_SIZE.x / 2, DEFAULT_SIZE.y / 2);
 
 	sf::Clock m_clock;

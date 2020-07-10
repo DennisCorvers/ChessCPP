@@ -57,8 +57,8 @@ void Game::initWindow()
 
 	m_window->setView(*m_defaultView);
 
-	//m_window.setFramerateLimit(60);
-	m_window->setVerticalSyncEnabled(true);
+	m_window->setFramerateLimit(FPS_LIMIT);
+	//m_window->setVerticalSyncEnabled(true);
 }
 
 void Game::initUI()
@@ -89,13 +89,26 @@ void Game::update()
 		switch (event.type) {
 
 		case sf::Event::Closed:
+		{
 			m_window->close();
 			break;
-
+		}
 		case sf::Event::Resized:
+		{
 			auto newSize = Graphics::clampWindow(*m_window, MIN_SIZE);
 			Graphics::applyResize(*m_defaultView, newSize.x, newSize.y);
 			break;
+		}
+		case sf::Event::LostFocus:
+		{
+			m_window->setFramerateLimit(FPS_INACTIVE);
+			continue;
+		}
+		case sf::Event::GainedFocus:
+		{
+			m_window->setFramerateLimit(FPS_LIMIT);
+			continue;
+		}
 		}
 
 		m_stateManager->handleEvent(event);
