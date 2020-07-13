@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning( disable : 4244 ) 
+
 #define NDEBUG
 
 //std
@@ -28,3 +29,21 @@
 #include "Utils.h"
 #include "Enums.h"
 #include "Event.h"
+#include "Macros.h"
+
+
+
+#ifdef NDEBUG
+#define ASSERT(Expr, Msg)
+#else
+#define ASSERT(Expr, Msg) \
+do { \
+    if(!(Expr)) \
+	{ \
+    std::cerr << "Assert failed:\t" << Msg << "\n" \
+    << "Expected:\t" << #Expr << "\n" \
+    << "Source:\t\t" << __FILE__ << ", line " << __LINE__ << "\n";    \
+    abort();    \
+    } \
+} while(0)
+#endif

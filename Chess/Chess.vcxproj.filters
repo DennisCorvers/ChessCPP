@@ -77,9 +77,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Enums.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChessBoard.cpp">
       <Filter>Source Files\Mechanics</Filter>
     </ClCompile>
@@ -91,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="SGame.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Enums.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Source Files\Managers\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,9 +142,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="AssetFlags.h">
-      <Filter>Source Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Enums.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
@@ -169,17 +169,32 @@
     <ClInclude Include="SGame.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="DebugOverlay.h">
+    <ClInclude Include="FontManager.hpp">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.hpp">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.hpp">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.hpp">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetNames.h">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.hpp">
+      <Filter>Source Files\Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOverlay.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Source Files\Managers\Resources</Filter>
+    <ClInclude Include="Macros.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Source Files\Managers\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="FontManager.h">
-      <Filter>Source Files\Managers\Resources</Filter>
+    <ClInclude Include="ResourceManagers.hpp">
+      <Filter>Source Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

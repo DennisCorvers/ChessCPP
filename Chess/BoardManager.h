@@ -1,7 +1,7 @@
 #pragma once
 #include "Enums.h"
 #include "ChessMove.h"
-#include "AssetFlags.h"
+#include "assetNames.h"
 #include "Entity.h"
 
 namespace BoardSettings {
@@ -39,7 +39,7 @@ private:
 public:
 	BoardManager(
 		TextureManager& textureManager,
-		std::map <AssetFlags, sf::SoundBuffer>& sounds,
+		std::map <AssetNames, sf::SoundBuffer>& sounds,
 		int pixelSize,
 		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();

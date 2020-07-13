@@ -2,9 +2,13 @@
 #include "SFML/Graphics.hpp"
 
 struct SharedContext;
-class TextureManager;
-class FontManager;
 class StateManager;
+
+class MyTextureManager;
+class MyFontManager;
+class MyAudioManager;
+class SoundManager;
+class EventManager;
 
 class DebugOverlay;
 
@@ -23,9 +27,13 @@ private:
 	std::unique_ptr<sf::RenderWindow> m_window;
 
 	std::unique_ptr<StateManager> m_stateManager;
-	std::unique_ptr<TextureManager> m_textureManager;
-	std::unique_ptr<FontManager> m_fontManager;
+	//std::unique_ptr<EventManager> m_eventManager;
 
+	//RESOURCE MANAGERS
+	std::unique_ptr<MyTextureManager> m_textureManager;
+	std::unique_ptr<MyFontManager> m_fontManager;
+	std::unique_ptr<MyAudioManager> m_audioManager;
+	//std::unique_ptr<SoundManager> m_soundManager;
 
 	void initWindow();
 	void initUI();

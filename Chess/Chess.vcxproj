@@ -168,12 +168,14 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SMainMenu.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatorSystem.h" />
-    <ClInclude Include="AssetFlags.h" />
+    <ClInclude Include="AssetNames.h" />
+    <ClInclude Include="AudioManager.hpp" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />
     <ClInclude Include="ChessPiece.h" />
@@ -184,22 +186,25 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="ChessPosition.h" />
     <ClInclude Include="ChessRules.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="DebugOverlay.h" />
+    <ClInclude Include="DebugOverlay.hpp" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
-    <ClInclude Include="FontManager.h" />
+    <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Macros.h" />
+    <ClInclude Include="ResourceManager.hpp" />
+    <ClInclude Include="ResourceManagers.hpp" />
     <ClInclude Include="SGame.h" />
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SharedContext.h" />
     <ClInclude Include="SMainMenu.h" />
+    <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="States.h" />
-    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TextureManager.hpp" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,7 +2,7 @@
 #include <queue>
 #include "BaseState.h"
 #include "ChessMove.h"
-#include "AssetFlags.h"
+#include "assetNames.h"
 
 class BoardManager;
 
@@ -16,7 +16,7 @@ protected:
 	std::unique_ptr<BoardManager> m_boardManager;
 	std::queue<ChessMove> m_moveBuffer;
 
-	std::map<AssetFlags, sf::SoundBuffer> sounds;
+	std::map<AssetNames, sf::SoundBuffer> sounds;
 
 	void loadAssets();
 

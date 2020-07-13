@@ -3,11 +3,11 @@
 #include "ChessPieceManager.h"
 #include "ChessBoard.h"
 #include "ChessAction.h"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 
 BoardManager::BoardManager(
 	TextureManager& textureManager,
-	std::map<AssetFlags, sf::SoundBuffer>& sounds,
+	std::map<AssetNames, sf::SoundBuffer>& sounds,
 	int pixelSize,
 	PieceColour startOrientation)
 {
@@ -15,10 +15,10 @@ BoardManager::BoardManager(
 
 	m_pieceManager = std::make_unique<ChessPieceManager>(textureManager, pixelSize, startOrientation);
 
-	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetFlags::s_piece_move]);
-	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetFlags::s_piece_check]);
-	m_soundMap[ActionType::Take] = sf::Sound(sounds[AssetFlags::s_piece_take]);
-	m_soundMap[ActionType::Castling] = sf::Sound(sounds[AssetFlags::s_piece_castle]);
+	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetNames::s_piece_move]);
+	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetNames::s_piece_check]);
+	m_soundMap[ActionType::Take] = sf::Sound(sounds[AssetNames::s_piece_take]);
+	m_soundMap[ActionType::Castling] = sf::Sound(sounds[AssetNames::s_piece_castle]);
 }
 
 BoardManager::~BoardManager()

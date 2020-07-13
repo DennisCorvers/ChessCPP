@@ -1,12 +1,14 @@
 #pragma once
-#include "SFML/Graphics.hpp"
 
+class sf::RenderWindow;
 class TextureManager;
 class FontManager;
+class AudioManager;
+class SoundManager;
+class EventManager;
 
 struct SharedContext {
-	SharedContext() :
-		window(nullptr)
+	SharedContext()
 	{}
 
 	virtual ~SharedContext() {}
@@ -14,4 +16,5 @@ struct SharedContext {
 	sf::RenderWindow* window;
 	TextureManager* textureManager;
 	FontManager* fontManager;
+	AudioManager* audioManager;
 };

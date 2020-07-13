@@ -15,16 +15,29 @@ private:
 	ChessPiece m_board[BOARDSIZE];
 	ChessAction m_lastMove;
 
-	std::map<PieceColour, ChessPosition> m_kingMap;
-	int m_moveNumber = 0;
-	int m_drawMoves = 0;
+	ChessPosition m_blackKing;
+	ChessPosition m_whiteKing;
+
+	unsigned short m_moveNumber = 0;
+	unsigned char m_drawMoves = 0;
 
 	inline ChessPiece& getPieceRef(char x, char y) {
 		return m_board[y * 8 + x];
 	}
 
-	inline ChessPiece& getPieceRef(const ChessPosition position) {
+	inline ChessPiece& getPieceRef(const ChessPosition& position) {
 		return getPieceRef(position.x(), position.y());
+	}
+
+	inline const ChessPosition& getKing(const PieceColour colour) const {
+		return colour == PieceColour::Black ? m_blackKing : m_whiteKing;
+	}
+
+	inline void setKing(const PieceColour colour, const ChessPosition& position) {
+		if (colour == PieceColour::Black)
+			m_blackKing = position;
+		else
+			m_whiteKing = position;
 	}
 
 	bool hasMoves(const PieceColour colour) const;
@@ -41,7 +54,7 @@ public:
 		return m_board[y * 8 + x];
 	}
 
-	inline const ChessPiece getPiece(const ChessPosition position) const {
+	inline const ChessPiece getPiece(const ChessPosition& position) const {
 		return getPiece(position.x(), position.y());
 	}
 

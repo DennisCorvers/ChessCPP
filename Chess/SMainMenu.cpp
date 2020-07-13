@@ -2,8 +2,8 @@
 #include "SMainMenu.h"
 #include "Event.h"
 
-#include "TextureManager.h"
-#include "FontManager.h"
+#include "TextureManager.hpp"
+#include "FontManager.hpp"
 
 SMainMenu::SMainMenu(StateManager & stateManager) :
 	BaseState(stateManager),
@@ -21,10 +21,10 @@ void SMainMenu::onCreate()
 void SMainMenu::onDestroy()
 {
 	FontManager* fontManager = m_stateManager->getContext()->fontManager;
-	fontManager->releaseResources(AssetFlags::f_opensans_reg);
+	fontManager->releaseResource(AssetNames::f_opensans_reg);
 
 	TextureManager* txManager = m_stateManager->getContext()->textureManager;
-	txManager->releaseResources(States::MainMenu);
+	txManager->releaseResource(States::MainMenu);
 }
 
 void SMainMenu::activate()
@@ -58,7 +58,7 @@ bool SMainMenu::handleEvent(const sf::Event & event)
 void SMainMenu::initializeUI()
 {
 	FontManager* fontManager = m_stateManager->getContext()->fontManager;
-	sf::Font& openSans = *fontManager->aquireAndGet(AssetFlags::f_opensans_reg, "Assets\\Fonts\\OpenSans-Regular.ttf");
+	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
 
 	tgui::Button::Ptr but = tgui::Button::create("TestButton");
 	m_gui.setFont(tgui::Font(openSans));

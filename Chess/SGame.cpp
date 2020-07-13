@@ -4,21 +4,21 @@
 #include "BoardManager.h"
 #include "BaseState.h"
 #include "StateManager.h"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 
 void SGame::loadAssets()
 {
 	auto* textureManager = m_stateManager->getContext()->textureManager;
-	textureManager->aquireResource(States::Sandbox, AssetFlags::t_board, "Assets\\Sprites\\Board.png");
-	textureManager->aquireResource(States::Sandbox, AssetFlags::t_pieces, "Assets\\Sprites\\Pieces.png");
+	textureManager->requireResource(States::Sandbox, AssetNames::t_board);
+	textureManager->requireResource(States::Sandbox, AssetNames::t_pieces);
 
-	if (!sounds[AssetFlags::s_piece_check].loadFromFile("Assets\\Sounds\\piece_check.ogg"))
+	if (!sounds[AssetNames::s_piece_check].loadFromFile("Assets\\Sounds\\piece_check.ogg"))
 		throw std::exception("Unable to load piece_check.ogg");
-	if (!sounds[AssetFlags::s_piece_move].loadFromFile("Assets\\Sounds\\piece_move.ogg"))
+	if (!sounds[AssetNames::s_piece_move].loadFromFile("Assets\\Sounds\\piece_move.ogg"))
 		throw std::exception("Unable to load piece_move.ogg");
-	if (!sounds[AssetFlags::s_piece_take].loadFromFile("Assets\\Sounds\\piece_take.ogg"))
+	if (!sounds[AssetNames::s_piece_take].loadFromFile("Assets\\Sounds\\piece_take.ogg"))
 		throw std::exception("Unable to load piece_take.ogg");
-	if (!sounds[AssetFlags::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
+	if (!sounds[AssetNames::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
 		throw std::exception("Unable to load piece_castle.ogg");
 }
 
@@ -52,7 +52,7 @@ void SGame::onCreate() {
 
 void SGame::onDestroy() {
 	TextureManager* txm = m_stateManager->getContext()->textureManager;
-	txm->releaseResources(States::Sandbox);
+	txm->releaseResource(States::Sandbox);
 }
 
 void SGame::activate() {

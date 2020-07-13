@@ -4,12 +4,12 @@
 #include "ChessMove.h"
 #include "ChessBoard.h"
 #include "AnimatorSystem.h"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 
 ChessPieceManager::ChessPieceManager(TextureManager& textureManager, int pixelSize, PieceColour orientation)
 {
-	sf::Texture& boardTexture = *textureManager.getResource(AssetFlags::t_board);
-	sf::Texture& pieceTexture = *textureManager.getResource(AssetFlags::t_pieces);
+	sf::Texture& boardTexture = *textureManager.getResource(AssetNames::t_board);
+	sf::Texture& pieceTexture = *textureManager.getResource(AssetNames::t_pieces);
 	pieceTexture.setSmooth(true);
 
 	//Scale board

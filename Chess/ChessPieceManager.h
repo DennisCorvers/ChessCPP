@@ -2,7 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "ChessPosition.h"
 #include "Entity.h"
-#include "AssetFlags.h"
+#include "assetNames.h"
 
 struct ChessMove;
 struct ChessAction;

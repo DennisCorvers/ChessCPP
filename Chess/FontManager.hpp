@@ -1,12 +1,10 @@
 #pragma once
-
-#include "ResourceManager.h"
+#include "ResourceManager.hpp"
 #include <SFML/Graphics/Font.hpp>
 
 class FontManager : public ResourceManager<FontManager, sf::Font>
 {
-
-private:
+public:
 	virtual std::shared_ptr<sf::Font> loadResource(const std::string & path) const override {
 		auto font = std::make_shared<sf::Font>();
 

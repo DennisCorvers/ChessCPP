@@ -74,7 +74,7 @@ bool StateManager::isEmpty() const {
 void StateManager::createState(States stateID)
 {
 	auto factoryFunction = m_factories.find(stateID);
-	assert(factoryFunction != m_factories.end());
+	ASSERT(factoryFunction != m_factories.end(), "State factory not found!");
 
 	auto newState = factoryFunction->second();
 	auto statePtr = newState.get();

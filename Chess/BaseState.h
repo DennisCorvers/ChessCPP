@@ -1,6 +1,6 @@
 #pragma once
 #include "States.h"
-#include "AssetFlags.h"
+#include "assetNames.h"
 
 class StateManager;
 class BaseState
