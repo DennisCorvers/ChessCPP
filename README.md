@@ -25,8 +25,8 @@ In order to structurize the project/files better, post-build events are used.
 
 The following post-build events are used:
 ```
-xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r
-xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
+xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r /d
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
 ```
 Assets contains a folder structure with textures/sounds, etc while Lib includes additional libraries (.dll's) that the executable requires.
 
