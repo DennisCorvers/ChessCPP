@@ -25,9 +25,13 @@ public:
 private:
 	tgui::Gui m_gui;
 
-	std::shared_ptr<sf::Texture> m_backdropTexture;
-	sf::Sprite m_backDrop;
-
 	void initializeUI();
+
+	void onQuitPressed();
+	void onSinglePlayerPressed();
+	void onJoinGamePressed();
+	void onHostGamePressed();
+	void onSandboxPressed();
+
 };
 

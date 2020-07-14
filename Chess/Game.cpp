@@ -6,7 +6,9 @@
 
 #include "StateManager.h"
 #include "SharedContext.h"
+
 #include "ResourceManagers.hpp"
+#include "SoundManager.hpp"
 
 #include "DebugOverlay.hpp"
 
@@ -18,8 +20,10 @@ Game::Game()
 	m_textureManager = std::make_unique<MyTextureManager>(false);
 	m_fontManager = std::make_unique<MyFontManager>();
 	m_audioManager = std::make_unique<MyAudioManager>();
-
+	m_soundManager = std::make_unique<SoundManager>(*m_audioManager);
+	m_themeManager = std::make_unique<ThemeManager>();
 	m_debugOverlay = std::make_unique<DebugOverlay>();
+
 
 	initWindow();
 
@@ -27,13 +31,14 @@ Game::Game()
 	m_context->window = m_window.get();
 	m_context->textureManager = m_textureManager.get();
 	m_context->fontManager = m_fontManager.get();
-	m_context->audioManager = m_audioManager.get();
+	m_context->soundManager = m_soundManager.get();
+	m_context->themeManager = m_themeManager.get();
 
 
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::Sandbox);
+	m_stateManager->switchState(States::MainMenu);
 }
 
 Game::~Game() {
@@ -41,6 +46,7 @@ Game::~Game() {
 
 	//Finalizes all states
 	m_stateManager.reset();
+	m_soundManager.reset();
 }
 
 void Game::initWindow()
@@ -114,6 +120,7 @@ void Game::update()
 	}
 
 	m_stateManager->update(m_deltaTime);
+	m_soundManager->update(m_deltaTime);
 
 #ifdef NDEBUG
 	m_debugOverlay->update(m_deltaTime);

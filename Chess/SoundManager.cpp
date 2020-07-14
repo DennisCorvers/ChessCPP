@@ -28,7 +28,6 @@ void SoundManager::freeAllResources()
 	m_recycledSounds.clear();
 
 	m_music.clear();
-	m_soundProperties.clear();
 
 	m_numSounds = 0;
 	m_lastID = 0;
@@ -43,8 +42,11 @@ void SoundManager::switchState(States state)
 
 void SoundManager::removeState(States state)
 {
-	auto& soundC = m_audio.find(state)->second;
-	for (auto& it : soundC)
+	auto states = m_audio.find(state);
+	if (states == m_audio.end())
+		return;
+
+	for (auto& it : states->second)
 		recycleSound(it.first, it.second);
 
 	m_audio.erase(state);

@@ -27,7 +27,7 @@ private:
 	struct AudioInfo {
 		AudioInfo() {}
 		AudioInfo(AssetNames audioName, std::unique_ptr<T>& audio) :
-			m_audioName(m_audioName),
+			m_audioName(audioName),
 			m_audio(std::move(audio)),
 			m_isManualPaused(false)
 		{}
@@ -44,8 +44,8 @@ private:
 	};
 
 public:
-	static const int MAX_SOUNDS = 150;
-	static const int SOUND_CACHE = 75;
+	static const int MAX_SOUNDS = 50;
+	static const int SOUND_CACHE = 25;
 
 private:
 	template<typename K, typename V>
@@ -54,7 +54,6 @@ private:
 	using MusicInfo = AudioInfo<sf::Music>;
 
 
-	map<AssetNames, SoundProperties> m_soundProperties;
 	map<States, map<int, SoundInfo>> m_audio;
 	map<States, MusicInfo> m_music;
 	std::vector<std::pair<int, SoundInfo>> m_recycledSounds;

@@ -2,12 +2,11 @@
 #include "SMainMenu.h"
 #include "Event.h"
 
-#include "TextureManager.hpp"
-#include "FontManager.hpp"
+#include "ResourceManagers.hpp"
 
 SMainMenu::SMainMenu(StateManager & stateManager) :
 	BaseState(stateManager),
-	m_gui(*m_stateManager->getContext()->window)
+	m_gui(*m_stateManager->getContext().window)
 {}
 
 SMainMenu::~SMainMenu()
@@ -20,11 +19,7 @@ void SMainMenu::onCreate()
 
 void SMainMenu::onDestroy()
 {
-	FontManager* fontManager = m_stateManager->getContext()->fontManager;
-	fontManager->releaseResource(AssetNames::f_opensans_reg);
 
-	TextureManager* txManager = m_stateManager->getContext()->textureManager;
-	txManager->releaseResource(States::MainMenu);
 }
 
 void SMainMenu::activate()
@@ -37,9 +32,6 @@ void SMainMenu::deactivate()
 
 void SMainMenu::render()
 {
-	auto* window = m_stateManager->getContext()->window;
-	window->draw(m_backDrop);
-
 	m_gui.draw();
 }
 
@@ -57,15 +49,64 @@ bool SMainMenu::handleEvent(const sf::Event & event)
 
 void SMainMenu::initializeUI()
 {
-	FontManager* fontManager = m_stateManager->getContext()->fontManager;
-	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
+	FontManager* fontManager = m_stateManager->getContext().fontManager;
+	sf::Font& openSans = *fontManager->requireAndGet(States::MainMenu, AssetNames::f_opensans_reg);
 
-	tgui::Button::Ptr but = tgui::Button::create("TestButton");
+	ThemeManager* themeManager = m_stateManager->getContext().themeManager;
+	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::MainMenu, AssetNames::theme_default);
+
+	SoundManager* soundManager = m_stateManager->getContext().soundManager;
+	sf::RenderWindow* window = m_stateManager->getContext().window;
+
 	m_gui.setFont(tgui::Font(openSans));
+	int xSize = 300;
+	int ySize = 60;
+	int xOffset = (window->getSize().x - xSize) / 2;
+	int yOffset = window->getSize().y / 4;
 
-	but->setPosition("10%", 10);
+	tgui::Button::Ptr buttons[5];
+	buttons[0] = tgui::Button::create("Single Player");
+	buttons[1] = tgui::Button::create("Sandbox");
+	buttons[2] = tgui::Button::create("Join Game");
+	buttons[3] = tgui::Button::create("Host Game");
+	buttons[4] = tgui::Button::create("Quit");
 
-	m_gui.add(but);
+	for (auto& button : buttons) {
+		button->setSize(xSize, ySize);
+		button->setPosition(xOffset, yOffset);
+		button->setTextSize(20);
+		button->setRenderer(defaultTheme.getRenderer("BorderlessButton"));
+		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
+		m_gui.add(button);
+		yOffset += ySize + 50;
+	}
+
+	buttons[0]->connect("pressed", &SMainMenu::onSinglePlayerPressed, this);
+	buttons[1]->connect("pressed", &SMainMenu::onSandboxPressed, this);
+	buttons[2]->connect("pressed", &SMainMenu::onJoinGamePressed, this);
+	buttons[3]->connect("pressed", &SMainMenu::onHostGamePressed, this);
+	buttons[4]->connect("pressed", &SMainMenu::onQuitPressed, this);
+
 	//https://tgui.eu/examples/0.8/many-different-widgets/
+}
 
+void SMainMenu::onQuitPressed() {
+	m_stateManager->clearStates();
+}
+
+void SMainMenu::onSinglePlayerPressed()
+{
+}
+
+void SMainMenu::onJoinGamePressed()
+{
+}
+
+void SMainMenu::onHostGamePressed()
+{
+}
+
+void SMainMenu::onSandboxPressed() {
+	m_stateManager->switchState(States::Sandbox);
+	m_stateManager->removeState(States::MainMenu);
 }

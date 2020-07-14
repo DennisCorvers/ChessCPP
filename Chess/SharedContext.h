@@ -1,20 +1,28 @@
 #pragma once
+#include "ResourceManagers.hpp"
+#include "SoundManager.hpp"
 
 class sf::RenderWindow;
-class TextureManager;
-class FontManager;
 class AudioManager;
-class SoundManager;
 class EventManager;
 
 struct SharedContext {
-	SharedContext()
-	{}
-
-	virtual ~SharedContext() {}
 
 	sf::RenderWindow* window;
 	TextureManager* textureManager;
 	FontManager* fontManager;
-	AudioManager* audioManager;
+	SoundManager* soundManager;
+	ThemeManager* themeManager;
+
+	void changeState(States state) {
+		soundManager->switchState(state);
+	}
+
+	void removeState(States state) {
+		soundManager->removeState(state);
+
+		textureManager->releaseResource(state);
+		fontManager->releaseResource(state);
+		themeManager->releaseResource(state);
+	}
 };

@@ -1,0 +1,8 @@
+BorderlessButton {
+	BackgroundColor = rgba(0, 0, 0, 140);
+	BackgroundColorHover = rgba(255, 255, 255, 140);
+	BackgroundColorDown = rgba(255, 255, 255, 100);
+	TextColor = rgba(255, 255, 255, 235);
+	TextColorHover = rgba(0, 0, 0, 235);
+	TextColorDown = rgba(0, 0, 0, 235);
+}

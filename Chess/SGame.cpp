@@ -8,7 +8,7 @@
 
 void SGame::loadAssets()
 {
-	auto* textureManager = m_stateManager->getContext()->textureManager;
+	auto* textureManager = m_stateManager->getContext().textureManager;
 	textureManager->requireResource(States::Sandbox, AssetNames::t_board);
 	textureManager->requireResource(States::Sandbox, AssetNames::t_pieces);
 
@@ -25,12 +25,12 @@ void SGame::loadAssets()
 SGame::SGame(StateManager& stateManager)
 	:BaseState(stateManager)
 {
-	m_window = stateManager.getContext()->window;
+	m_window = stateManager.getContext().window;
 	loadAssets();
 
 	m_boardManager = std::unique_ptr<BoardManager>(
 		new BoardManager(
-			*stateManager.getContext()->textureManager,
+			*stateManager.getContext().textureManager,
 			sounds,
 			static_cast<int>(m_window->getSize().y * .85f)
 		));
@@ -51,7 +51,7 @@ void SGame::onCreate() {
 }
 
 void SGame::onDestroy() {
-	TextureManager* txm = m_stateManager->getContext()->textureManager;
+	TextureManager* txm = m_stateManager->getContext().textureManager;
 	txm->releaseResource(States::Sandbox);
 }
 

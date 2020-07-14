@@ -9,6 +9,7 @@ class MyFontManager;
 class MyAudioManager;
 class SoundManager;
 class EventManager;
+class ThemeManager;
 
 class DebugOverlay;
 
@@ -33,7 +34,9 @@ private:
 	std::unique_ptr<MyTextureManager> m_textureManager;
 	std::unique_ptr<MyFontManager> m_fontManager;
 	std::unique_ptr<MyAudioManager> m_audioManager;
-	//std::unique_ptr<SoundManager> m_soundManager;
+	std::unique_ptr<SoundManager> m_soundManager;
+	std::unique_ptr<ThemeManager> m_themeManager;
+
 
 	void initWindow();
 	void initUI();

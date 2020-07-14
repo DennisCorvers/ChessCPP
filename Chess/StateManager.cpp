@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "StateManager.h"
 #include "BaseState.h"
+#include "SoundManager.hpp"
 
-
-StateManager::StateManager(SharedContext& context) :
+StateManager::StateManager(SharedContext & context) :
 	m_sharedContext(&context)
-{
-
-}
+{ }
 
 StateManager::~StateManager()
 {
@@ -92,12 +90,16 @@ void StateManager::removeInternal(const States stateID)
 
 		it->second->onDestroy();
 		m_states.erase(it);
+
+		m_sharedContext->removeState(stateID);
+
 		return;
 	}
 }
 
 void StateManager::switchState(const States stateID)
 {
+	m_sharedContext->changeState(stateID);
 	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr)
 	{
 		if (itr->first == stateID) {

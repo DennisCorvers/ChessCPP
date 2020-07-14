@@ -190,9 +190,6 @@
     <ClInclude Include="DebugOverlay.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Macros.h">
-      <Filter>Source Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceManagers.hpp">
       <Filter>Source Files\Managers</Filter>
     </ClInclude>
