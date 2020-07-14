@@ -4,7 +4,8 @@
 
 SPauseMenu::SPauseMenu(StateManager & stateManager)
 	: BaseState(stateManager),
-	m_gui(*m_stateManager->getContext().window)
+	m_gui(*m_stateManager->getContext().window),
+	m_previousState(States::Sandbox)
 {}
 
 SPauseMenu::~SPauseMenu()
@@ -51,6 +52,10 @@ bool SPauseMenu::handleEvent(const sf::Event & event)
 	return false;
 }
 
+void SPauseMenu::onPauseMenuOpen(States callingState) {
+	m_previousState = callingState;
+}
+
 void SPauseMenu::initializeUI()
 {
 	FontManager* fontManager = m_stateManager->getContext().fontManager;
@@ -85,20 +90,31 @@ void SPauseMenu::initializeUI()
 	}
 
 	buttons[0]->connect("pressed", &SPauseMenu::onResumePressed, this);
-	//buttons[1]->connect("pressed", &SMainMenu::onSandboxPressed, this);
-	//buttons[2]->connect("pressed", &SMainMenu::onJoinGamePressed, this);
+	buttons[1]->connect("pressed", &SPauseMenu::onNewGamePressed, this);
+	buttons[2]->connect("pressed", &SPauseMenu::onSwapColourPressed, this);
 	buttons[3]->connect("pressed", &SPauseMenu::onQuitGamePressed, this);
 }
 
-void SPauseMenu::onResumePressed()
+void SPauseMenu::onResumePressed() {
+	m_stateManager->switchState(m_previousState);
+}
+
+void SPauseMenu::onNewGamePressed()
 {
-	m_stateManager->switchState(States::Sandbox);
+	//Call eventmanager
+}
+
+void SPauseMenu::onSwapColourPressed()
+{
+	//Call eventmanager
 }
 
 void SPauseMenu::onQuitGamePressed()
 {
+	//Quit warning???
+	//Shut down game if networked...
 	m_stateManager->switchState(States::MainMenu);
 
-	m_stateManager->removeState(States::Sandbox);
+	m_stateManager->removeState(m_previousState);
 	m_stateManager->removeState(States::Pause);
 }

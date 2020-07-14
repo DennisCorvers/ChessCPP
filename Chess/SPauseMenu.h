@@ -22,11 +22,17 @@ public:
 
 	virtual bool handleEvent(const sf::Event & event) override;
 
+	void onPauseMenuOpen(States callingState);
+
 private:
+
+	States m_previousState;
 	tgui::Gui m_gui;
 
 	void initializeUI();
 	void onResumePressed();
+	void onNewGamePressed();
+	void onSwapColourPressed();
 	void onQuitGamePressed();
 };
 

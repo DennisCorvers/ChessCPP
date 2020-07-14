@@ -278,15 +278,16 @@ void SoundManager::unpauseAll(States state)
 std::unique_ptr<sf::Sound> SoundManager::soundFactory(int& id, AssetNames soundName)
 {
 	std::unique_ptr<sf::Sound> sound;
-	if (!m_recycledSounds.empty() && (m_numSounds >= MAX_SOUNDS || m_recycledSounds.size() >= SOUND_CACHE)) {
-		auto it = m_recycledSounds.begin();
-		while (it != m_recycledSounds.end()) {
-			if (it->second.m_audioName == soundName)
-				break;
-			else
-				++it;
-		}
-		if (it == m_recycledSounds.end()) {
+
+	auto it = m_recycledSounds.begin();
+	while (it != m_recycledSounds.end()) {
+		if (it->second.m_audioName == soundName)
+			break;
+		else
+			++it;
+	}
+	if (it == m_recycledSounds.end()) {
+		if (m_numSounds >= MAX_SOUNDS || m_recycledSounds.size() >= SOUND_CACHE) {
 			auto element = m_recycledSounds.begin();
 			id = element->first;
 			m_audioManager->releaseResource(element->second.m_audioName);
@@ -295,24 +296,29 @@ std::unique_ptr<sf::Sound> SoundManager::soundFactory(int& id, AssetNames soundN
 			sound = std::move(element->second.m_audio);
 			sound->setBuffer(*m_audioManager->getResource(soundName));
 			m_recycledSounds.erase(element);
-		}
-		else {
-			id = it->first;
-			sound = std::move(it->second.m_audio);
-			m_recycledSounds.erase(it);
-		}
-		return sound;
-	}
-	if (m_numSounds < MAX_SOUNDS) {
-		if (m_audioManager->requireResource(soundName)) {
-			sound = std::make_unique<sf::Sound>();
-			id = m_lastID;
-			++m_lastID;
-			++m_numSounds;
-			sound->setBuffer(*m_audioManager->getResource(soundName));
+
 			return sound;
 		}
+		else {
+			if (m_audioManager->requireResource(soundName)) {
+				sound = std::make_unique<sf::Sound>();
+				id = m_lastID;
+				++m_lastID;
+				++m_numSounds;
+				sound->setBuffer(*m_audioManager->getResource(soundName));
+
+				return sound;
+			}
+		}
 	}
+	else {
+		id = it->first;
+		sound = std::move(it->second.m_audio);
+		m_recycledSounds.erase(it);
+
+		return sound;
+	}
+
 	std::cerr << "SoundManager::soundFactory Failed to create sound." << std::endl;
 	return nullptr;
 }
@@ -330,6 +336,7 @@ void SoundManager::setUpSound(sf::Sound& sound, const SoundProperties& propertie
 
 void SoundManager::recycleSound(int id, SoundInfo& soundInfo)
 {
+	//std::cout << "Recycling sound: " << (int)soundInfo.m_audioName << " With ID: " << id << std::endl;
 	m_recycledSounds.emplace_back(id, std::move(soundInfo));
 }
 
