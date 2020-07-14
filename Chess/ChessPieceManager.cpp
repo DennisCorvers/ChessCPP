@@ -186,7 +186,7 @@ void ChessPieceManager::render(sf::RenderTarget& target)
 	m_animatorSystem->render(target);
 }
 
-void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
+void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, bool forceColour)
 {
 	if (!boundsContains(screenPosition.x, screenPosition.y))
 		return;
@@ -195,6 +195,11 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition)
 		return;
 
 	ChessPieceEntity* piece = getClickedPiece(screenPosition);
+
+	if (forceColour && piece != nullptr)
+		if (piece->getColour() != m_board->getPlayingColour())
+			return;
+
 	sf::Vector2i pos = screenToBoard(screenPosition);
 	ChessPosition newChessPos(pos.x, pos.y);
 

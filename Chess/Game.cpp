@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "SGame.h"
 #include "SMainMenu.h"
+#include "SPauseMenu.h"
 #include "States.h"
 
 #include "StateManager.h"
@@ -69,7 +70,7 @@ void Game::initWindow()
 void Game::initUI()
 {
 	//Set background application-wide
-	auto& bgtx = *m_textureManager->requireAndGet(States::MainMenu, AssetNames::t_background);
+	auto& bgtx = *m_textureManager->requireAndGet(AssetNames::t_background);
 	m_backdrop.setTexture(bgtx, true);
 	auto& view = m_window->getView();
 	m_backdrop.setScale(
@@ -81,6 +82,7 @@ void Game::initUI()
 void Game::registerStates() {
 	m_stateManager->registerState<SGame>(States::Sandbox);
 	m_stateManager->registerState<SMainMenu>(States::MainMenu);
+	m_stateManager->registerState<SPauseMenu>(States::Pause);
 }
 
 void Game::update()

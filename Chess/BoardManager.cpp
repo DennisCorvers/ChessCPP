@@ -4,21 +4,13 @@
 #include "ChessBoard.h"
 #include "ChessAction.h"
 #include "TextureManager.hpp"
+#include "SoundManager.hpp"
 
-BoardManager::BoardManager(
-	TextureManager& textureManager,
-	std::map<AssetNames, sf::SoundBuffer>& sounds,
-	int pixelSize,
-	PieceColour startOrientation)
+BoardManager::BoardManager(TextureManager& textureManager, SoundManager& soundManager, int pixelSize, PieceColour startOrientation) :
+	m_soundManager(soundManager),
+	m_board(std::make_unique<ChessBoard>())
 {
-	m_board = std::make_unique<ChessBoard>();
-
 	m_pieceManager = std::make_unique<ChessPieceManager>(textureManager, pixelSize, startOrientation);
-
-	m_soundMap[ActionType::Normal] = sf::Sound(sounds[AssetNames::s_piece_move]);
-	m_soundMap[ActionType::Check] = sf::Sound(sounds[AssetNames::s_piece_check]);
-	m_soundMap[ActionType::Take] = sf::Sound(sounds[AssetNames::s_piece_take]);
-	m_soundMap[ActionType::Castling] = sf::Sound(sounds[AssetNames::s_piece_castle]);
 }
 
 BoardManager::~BoardManager()
@@ -101,21 +93,21 @@ void BoardManager::handleSound(const ActionType chessAction, bool playSound)
 
 	//Play from most important to least
 	if (chessAction & ActionType::Check || chessAction & ActionType::Checkmate)
-		m_soundMap[ActionType::Check].play();
+		m_soundManager.playSound(AssetNames::s_piece_check);
 
 	else if (chessAction & ActionType::Take)
-		m_soundMap[ActionType::Take].play();
+		m_soundManager.playSound(AssetNames::s_piece_take);
 
 	else if (chessAction & ActionType::Castling)
-		m_soundMap[ActionType::Castling].play();
+		m_soundManager.playSound(AssetNames::s_piece_castle);
 
 	else if (chessAction & ActionType::Normal)
-		m_soundMap[ActionType::Normal].play();
+		m_soundManager.playSound(AssetNames::s_piece_move);
 }
 
-void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour playerColour) const
+void BoardManager::startSelection(const sf::Vector2f screenPosition, bool forceColour) const
 {
-	m_pieceManager->startSelection(screenPosition);
+	m_pieceManager->startSelection(screenPosition, forceColour);
 }
 
 void BoardManager::updateMousePosition(const sf::Vector2f screenPosition) const

@@ -2,11 +2,11 @@
 #include "BaseState.h"
 
 class StateManager;
-class SMainMenu : public BaseState
+class SPauseMenu : public BaseState
 {
 public:
-	SMainMenu(StateManager& stateManager);
-	virtual ~SMainMenu();
+	SPauseMenu(StateManager& stateManager);
+	virtual ~SPauseMenu();
 
 	virtual void onCreate() override;
 
@@ -26,11 +26,7 @@ private:
 	tgui::Gui m_gui;
 
 	void initializeUI();
-
-	void onQuitPressed();
-	void onSinglePlayerPressed();
-	void onJoinGamePressed();
-	void onHostGamePressed();
-	void onSandboxPressed();
+	void onResumePressed();
+	void onQuitGamePressed();
 };
 

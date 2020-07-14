@@ -17,8 +17,10 @@ StateManager::~StateManager()
 void StateManager::update(float deltaTime) const
 {
 	for (auto itr = m_states.rbegin(); itr != m_states.rend(); ++itr) {
-		if (!itr->second->update(deltaTime))
-			return;
+		if (itr->second->isActive()) {
+			if (!itr->second->update(deltaTime))
+				return;
+		}
 	}
 }
 
@@ -35,13 +37,20 @@ void StateManager::render() const
 void StateManager::handleEvent(const sf::Event & event) const
 {
 	for (auto itr = m_states.rbegin(); itr != m_states.rend(); ++itr) {
-		if (!itr->second->handleEvent(event))
-			return;
+		if (itr->second->isActive()) {
+			if (!itr->second->handleEvent(event))
+				return;
+		}
 	}
 }
 
 void StateManager::lateUpdate()
 {
+	while (m_toSwitch.begin() != m_toSwitch.end()) {
+		switchInternal(*m_toSwitch.begin());
+		m_toSwitch.erase(m_toSwitch.begin());
+	}
+
 	while (m_toRemove.begin() != m_toRemove.end()) {
 		removeInternal(*m_toRemove.begin());
 		m_toRemove.erase(m_toRemove.begin());
@@ -66,7 +75,7 @@ bool StateManager::hasState(const States stateID) const
 }
 
 bool StateManager::isEmpty() const {
-	return m_states.size() < 1;
+	return m_states.size() < 1 && m_toSwitch.size() < 1;
 }
 
 void StateManager::createState(States stateID)
@@ -97,7 +106,7 @@ void StateManager::removeInternal(const States stateID)
 	}
 }
 
-void StateManager::switchState(const States stateID)
+void StateManager::switchInternal(const States stateID)
 {
 	m_sharedContext->changeState(stateID);
 	for (auto itr = m_states.begin(); itr != m_states.end(); ++itr)
@@ -106,13 +115,14 @@ void StateManager::switchState(const States stateID)
 			m_states.back().second->deactivate();
 
 			States stateid = itr->first;
-			auto& state = itr->second;
+			auto state = std::move(itr->second);
 
 			m_states.erase(itr);
-			m_states.emplace_back(stateID, std::move(state));
 
 			state->activate();
 			m_sharedContext->window->setView(state->getView());
+
+			m_states.emplace_back(stateID, std::move(state));
 			return;
 		}
 	}
@@ -125,12 +135,17 @@ void StateManager::switchState(const States stateID)
 	m_sharedContext->window->setView(m_states.back().second->getView());
 }
 
+void StateManager::switchState(const States stateID) {
+	m_toSwitch.emplace_back(stateID);
+}
+
 void StateManager::removeState(const States stateID) {
 	m_toRemove.emplace_back(stateID);
 }
 
 void StateManager::clearStates()
 {
+	m_toSwitch.clear();
 	for (auto& item : m_states)
 		removeState(item.first);
 }

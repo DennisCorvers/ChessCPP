@@ -11,15 +11,6 @@ void SGame::loadAssets()
 	auto* textureManager = m_stateManager->getContext().textureManager;
 	textureManager->requireResource(States::Sandbox, AssetNames::t_board);
 	textureManager->requireResource(States::Sandbox, AssetNames::t_pieces);
-
-	if (!sounds[AssetNames::s_piece_check].loadFromFile("Assets\\Sounds\\piece_check.ogg"))
-		throw std::exception("Unable to load piece_check.ogg");
-	if (!sounds[AssetNames::s_piece_move].loadFromFile("Assets\\Sounds\\piece_move.ogg"))
-		throw std::exception("Unable to load piece_move.ogg");
-	if (!sounds[AssetNames::s_piece_take].loadFromFile("Assets\\Sounds\\piece_take.ogg"))
-		throw std::exception("Unable to load piece_take.ogg");
-	if (!sounds[AssetNames::s_piece_castle].loadFromFile("Assets\\Sounds\\piece_castle.ogg"))
-		throw std::exception("Unable to load piece_castle.ogg");
 }
 
 SGame::SGame(StateManager& stateManager)
@@ -31,7 +22,7 @@ SGame::SGame(StateManager& stateManager)
 	m_boardManager = std::unique_ptr<BoardManager>(
 		new BoardManager(
 			*stateManager.getContext().textureManager,
-			sounds,
+			*stateManager.getContext().soundManager,
 			static_cast<int>(m_window->getSize().y * .85f)
 		));
 
@@ -51,8 +42,6 @@ void SGame::onCreate() {
 }
 
 void SGame::onDestroy() {
-	TextureManager* txm = m_stateManager->getContext().textureManager;
-	txm->releaseResource(States::Sandbox);
 }
 
 void SGame::activate() {
@@ -92,7 +81,7 @@ bool SGame::handleEvent(const sf::Event & event)
 		sf::Vector2f mousePos = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window), m_view);
 
 		if (eType == sf::Event::MouseButtonPressed)
-			m_boardManager->startSelection(mousePos, PieceColour::Black);
+			m_boardManager->startSelection(mousePos, false);
 
 		if (eType == sf::Event::MouseButtonReleased) {
 			ChessMove newMove;
@@ -110,7 +99,7 @@ bool SGame::handleEvent(const sf::Event & event)
 	}
 
 	if (eType == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		m_stateManager->removeState(States::Sandbox);
+		m_stateManager->switchState(States::Pause);
 	}
 
 	return true;

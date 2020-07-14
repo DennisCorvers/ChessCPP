@@ -20,6 +20,7 @@ namespace BoardSettings {
 class TextureManager;
 class ChessPieceManager;
 class ChessBoard;
+class SoundManager;
 struct ChessAction;
 
 class BoardManager
@@ -28,7 +29,7 @@ private:
 	std::unique_ptr<ChessPieceManager> m_pieceManager;
 	std::unique_ptr<ChessBoard> m_board;
 
-	std::map<ActionType, sf::Sound> m_soundMap;
+	SoundManager& m_soundManager;
 
 	bool m_hasCachedMove = false;
 	ChessMove m_cachedMove;
@@ -39,7 +40,7 @@ private:
 public:
 	BoardManager(
 		TextureManager& textureManager,
-		std::map <AssetNames, sf::SoundBuffer>& sounds,
+		SoundManager& soundManager,
 		int pixelSize,
 		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();
@@ -53,7 +54,7 @@ public:
 
 	bool inputMove(const ChessMove move, bool animate);
 
-	void startSelection(const sf::Vector2f screenPosition, PieceColour playerColour) const;
+	void startSelection(const sf::Vector2f screenPosition, bool forceColour) const;
 	void updateMousePosition(const sf::Vector2f screenPosition) const;
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 

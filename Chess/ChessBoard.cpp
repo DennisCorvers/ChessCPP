@@ -26,6 +26,10 @@ ChessBoard::~ChessBoard()
 
 void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 {
+	m_lastMove = ChessAction();
+	m_moveNumber = 0;
+	m_drawMoves = 0;
+
 	for (char x = 0; x < 8; x++)
 	{
 		for (char y = 0; y < 8; y++)

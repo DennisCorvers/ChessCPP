@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SMainMenu.h"
-#include "Event.h"
+#include "StateManager.h"
 
 #include "ResourceManagers.hpp"
 
@@ -18,17 +18,13 @@ void SMainMenu::onCreate()
 }
 
 void SMainMenu::onDestroy()
-{
-
-}
+{}
 
 void SMainMenu::activate()
-{
-}
+{}
 
 void SMainMenu::deactivate()
-{
-}
+{}
 
 void SMainMenu::render()
 {
@@ -59,9 +55,8 @@ void SMainMenu::initializeUI()
 	sf::RenderWindow* window = m_stateManager->getContext().window;
 
 	m_gui.setFont(tgui::Font(openSans));
-	int xSize = 300;
-	int ySize = 60;
-	int xOffset = (window->getSize().x - xSize) / 2;
+	sf::Vector2f size(300, 60);
+	int xOffset = (window->getSize().x - size.x) / 2;
 	int yOffset = window->getSize().y / 4;
 
 	tgui::Button::Ptr buttons[5];
@@ -72,13 +67,13 @@ void SMainMenu::initializeUI()
 	buttons[4] = tgui::Button::create("Quit");
 
 	for (auto& button : buttons) {
-		button->setSize(xSize, ySize);
+		button->setSize(size);
 		button->setPosition(xOffset, yOffset);
 		button->setTextSize(20);
 		button->setRenderer(defaultTheme.getRenderer("BorderlessButton"));
 		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 		m_gui.add(button);
-		yOffset += ySize + 50;
+		yOffset += size.y + 50;
 	}
 
 	buttons[0]->connect("pressed", &SMainMenu::onSinglePlayerPressed, this);

@@ -169,6 +169,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     </ClCompile>
     <ClCompile Include="SMainMenu.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SPauseMenu.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -201,6 +202,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="SharedContext.h" />
     <ClInclude Include="SMainMenu.h" />
     <ClInclude Include="SoundManager.hpp" />
+    <ClInclude Include="SPauseMenu.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="States.h" />
     <ClInclude Include="TextureManager.hpp" />

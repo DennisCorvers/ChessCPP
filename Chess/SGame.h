@@ -16,8 +16,6 @@ protected:
 	std::unique_ptr<BoardManager> m_boardManager;
 	std::queue<ChessMove> m_moveBuffer;
 
-	std::map<AssetNames, sf::SoundBuffer> sounds;
-
 	void loadAssets();
 
 public:

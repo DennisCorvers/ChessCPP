@@ -95,6 +95,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Source Files\Managers\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="SPauseMenu.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -192,6 +195,9 @@
     </ClInclude>
     <ClInclude Include="ResourceManagers.hpp">
       <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SPauseMenu.h">
+      <Filter>Source Files\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

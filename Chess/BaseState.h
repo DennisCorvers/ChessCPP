@@ -7,7 +7,11 @@ class BaseState
 {
 public:
 	BaseState(StateManager& stateManager) :
-		m_stateManager(&stateManager), m_isTransparent(false) {}
+		m_stateManager(&stateManager),
+		m_isTransparent(false),
+		m_isActive(true)
+	{}
+
 	virtual ~BaseState() {}
 
 	virtual void onCreate() = 0;
@@ -27,6 +31,13 @@ public:
 		return m_isTransparent;
 	}
 
+	void setActive(bool isActive) {
+		m_isActive = isActive;
+	}
+	bool isActive() const {
+		return m_isActive;
+	}
+
 	const sf::View& getView() const {
 		return m_view;
 	}
@@ -37,6 +48,7 @@ public:
 protected:
 	StateManager* m_stateManager;
 	bool m_isTransparent;
+	bool m_isActive;
 	sf::View m_view;
 };
 

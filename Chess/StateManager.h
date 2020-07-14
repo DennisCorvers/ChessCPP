@@ -11,11 +11,13 @@ private:
 
 	std::vector<StatePair> m_states;
 	std::vector<States> m_toRemove;
+	std::vector<States> m_toSwitch;
 	std::map<States, FactoryFunc> m_factories;
 	SharedContext* m_sharedContext;
 
 	void createState(const States stateID);
 	void removeInternal(const States stateID);
+	void switchInternal(const States stateID);
 
 public:
 	StateManager(SharedContext& context);
