@@ -16,6 +16,7 @@
 #include <functional>
 #include <stack>
 #include <cassert>
+#include <cmath>
 
 //SFML
 #include "SFML/Audio.hpp"

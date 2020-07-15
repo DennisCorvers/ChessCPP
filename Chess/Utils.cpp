@@ -1,5 +1,6 @@
 #include "pch.h"
 
+
 namespace Math {
 	int limit(int value, int upper) {
 		return value > upper ? upper : value;
@@ -27,9 +28,9 @@ namespace Mathf {
 	}
 
 	float distance(sf::Vector2f v1, sf::Vector2f v2) {
-		return std::sqrtf(
-			std::powf(v1.x - v2.x, 2) +
-			std::powf(v1.y - v2.y, 2));
+		return std::sqrt(
+			std::pow(v1.x - v2.x, 2) +
+			std::pow(v1.y - v2.y, 2));
 	}
 
 	float lerp(float a, float b, float t) {

@@ -2,7 +2,8 @@
 #include "SFML/Graphics.hpp"
 #include "TGUI/Widget.hpp"
 
-namespace {
+class DebugOverlay {
+private:
 	template<int Size>
 	struct FloatBuffer {
 	private:
@@ -15,10 +16,6 @@ namespace {
 		}
 	};
 
-}
-
-class DebugOverlay {
-private:
 	int m_framecount;
 	float m_lastDebugTime;
 

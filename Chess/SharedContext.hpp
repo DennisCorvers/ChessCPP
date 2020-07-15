@@ -2,7 +2,6 @@
 #include "ResourceManagers.hpp"
 #include "SoundManager.hpp"
 
-class sf::RenderWindow;
 class AudioManager;
 class EventManager;
 
