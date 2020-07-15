@@ -45,7 +45,7 @@ public:
 		PieceColour startOrientation = PieceColour::White);
 	~BoardManager();
 
-	sf::Vector2f getBoardCenter();
+	const sf::Vector2f getBoardCenter();
 
 	void resetGame();
 
@@ -55,6 +55,7 @@ public:
 	bool inputMove(const ChessMove move, bool animate);
 
 	void startSelection(const sf::Vector2f screenPosition, bool forceColour) const;
+	void startSelection(const sf::Vector2f screenPosition, PieceColour validColour) const;
 	void updateMousePosition(const sf::Vector2f screenPosition) const;
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 

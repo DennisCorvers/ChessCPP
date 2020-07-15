@@ -89,9 +89,6 @@
     <ClCompile Include="SMainMenu.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="SGame.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="Enums.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -103,6 +100,15 @@
     </ClCompile>
     <ClCompile Include="BaseGame.cpp">
       <Filter>Source Files\States\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="URIConnector.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SGameSinglePlayer.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SGameSandbox.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,9 +175,6 @@
     <ClInclude Include="Event.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="SGame.h">
-      <Filter>Source Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="FontManager.hpp">
       <Filter>Source Files\Managers\Resources</Filter>
     </ClInclude>
@@ -213,6 +216,18 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="URIConnector.hpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SGameSinglePlayer.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SGameSandbox.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="AllStates.hpp">
+      <Filter>Source Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

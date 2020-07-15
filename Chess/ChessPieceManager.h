@@ -129,7 +129,7 @@ public:
 	virtual void update(const float& deltaTime) override;
 	virtual void render(sf::RenderTarget& target) override;
 
-	void startSelection(const sf::Vector2f screenPosition, bool forceColour = false);
+	void startSelection(const sf::Vector2f screenPosition, int forceColour = 0);
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 

@@ -2,7 +2,7 @@
 
 enum struct States : int {
 	MainMenu,
-	Hotseat,
+	SinglePlayer,
 	Sandbox,
 	Multiplayer,
 	Pause

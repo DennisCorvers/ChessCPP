@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "Game.h"
-#include "SGame.h"
-#include "SMainMenu.h"
-#include "SPauseMenu.h"
-#include "States.h"
+#include "AllStates.hpp"
 
 #include "StateManager.h"
 #include "SharedContext.hpp"
@@ -84,7 +81,9 @@ void Game::initUI()
 }
 
 void Game::registerStates() {
-	m_stateManager->registerState<SGame>(States::Sandbox);
+	m_stateManager->registerState<SGameSandbox>(States::Sandbox);
+	//m_stateManager->registerState<SGameSinglePlayer>(States::SinglePlayer);
+	//m_stateManager->registerState<???>(States::Multiplayer);
 	m_stateManager->registerState<SMainMenu>(States::MainMenu);
 	m_stateManager->registerState<SPauseMenu>(States::Pause);
 }

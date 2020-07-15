@@ -14,12 +14,9 @@ BoardManager::BoardManager(TextureManager& textureManager, SoundManager& soundMa
 }
 
 BoardManager::~BoardManager()
-{
+{}
 
-}
-
-sf::Vector2f BoardManager::getBoardCenter()
-{
+const sf::Vector2f BoardManager::getBoardCenter() {
 	return m_pieceManager->getCenter();
 }
 
@@ -107,7 +104,13 @@ void BoardManager::handleSound(const ActionType chessAction, bool playSound)
 
 void BoardManager::startSelection(const sf::Vector2f screenPosition, bool forceColour) const
 {
-	m_pieceManager->startSelection(screenPosition, forceColour);
+	int forceClr = forceColour ? static_cast<int>(m_board->getPlayingColour()) : 0;
+	m_pieceManager->startSelection(screenPosition, forceClr);
+}
+
+void BoardManager::startSelection(const sf::Vector2f screenPosition, PieceColour validColour) const
+{
+	m_pieceManager->startSelection(screenPosition, static_cast<int>(validColour));
 }
 
 void BoardManager::updateMousePosition(const sf::Vector2f screenPosition) const

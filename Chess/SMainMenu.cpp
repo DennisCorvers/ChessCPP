@@ -84,6 +84,8 @@ void SMainMenu::onQuitPressed() {
 
 void SMainMenu::onSinglePlayerPressed()
 {
+	m_stateManager->switchState(States::SinglePlayer);
+	m_stateManager->removeState(States::MainMenu);
 }
 
 void SMainMenu::onJoinGamePressed()
