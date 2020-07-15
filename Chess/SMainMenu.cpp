@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "SMainMenu.h"
-#include "StateManager.h"
-
 #include "ResourceManagers.hpp"
 
 SMainMenu::SMainMenu(StateManager & stateManager) :
-	BaseState(stateManager),
-	m_gui(*m_stateManager->getContext().window)
+	BaseMenu(stateManager)
 {}
 
 SMainMenu::~SMainMenu()
@@ -17,22 +14,17 @@ void SMainMenu::onCreate()
 	initializeUI();
 }
 
-void SMainMenu::onDestroy()
-{}
+void SMainMenu::onDestroy() {}
 
-void SMainMenu::activate()
-{}
+void SMainMenu::activate() {}
 
-void SMainMenu::deactivate()
-{}
+void SMainMenu::deactivate() {}
 
-void SMainMenu::render()
-{
+void SMainMenu::render() {
 	m_gui.draw();
 }
 
-bool SMainMenu::update(float deltaTime)
-{
+bool SMainMenu::update(float deltaTime) {
 	return false;
 }
 

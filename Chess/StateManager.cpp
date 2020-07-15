@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "StateManager.h"
-#include "BaseState.h"
-#include "SoundManager.hpp"
+#include "BaseState.hpp"
 
 StateManager::StateManager(SharedContext & context) :
 	m_sharedContext(&context)

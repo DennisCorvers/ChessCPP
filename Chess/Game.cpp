@@ -39,7 +39,7 @@ Game::Game()
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->switchState(States::Pause);
 }
 
 Game::~Game() {
@@ -57,7 +57,7 @@ void Game::initWindow()
 
 	m_window = std::make_unique<sf::RenderWindow>(
 		sf::VideoMode(DEFAULT_SIZE.x, DEFAULT_SIZE.y, 0),
-		"Chess",
+		"Chess++",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 0));
 
@@ -65,11 +65,15 @@ void Game::initWindow()
 
 	m_window->setFramerateLimit(FPS_LIMIT);
 	//m_window->setVerticalSyncEnabled(true);
+
+	sf::Image* icon = new sf::Image;
+	if (icon->loadFromFile("Assets//Sprites//icon.png"))
+		m_window->setIcon(icon->getSize().x, icon->getSize().y, icon->getPixelsPtr());
+	delete icon;
 }
 
 void Game::initUI()
 {
-	//Set background application-wide
 	auto& bgtx = *m_textureManager->requireAndGet(AssetNames::t_background);
 	m_backdrop.setTexture(bgtx, true);
 	auto& view = m_window->getView();

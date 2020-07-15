@@ -1,11 +1,11 @@
 #pragma once
-#include "BaseState.h"
+#include "BaseMenu.hpp"
 
-class StateManager;
-class SMainMenu : public BaseState
+class SMainMenu : public BaseMenu
 {
 public:
 	SMainMenu(StateManager& stateManager);
+
 	virtual ~SMainMenu();
 
 	virtual void onCreate() override;
@@ -23,9 +23,7 @@ public:
 	virtual bool handleEvent(const sf::Event & event) override;
 
 private:
-	tgui::Gui m_gui;
-
-	void initializeUI();
+	void initializeUI() override;
 
 	void onQuitPressed();
 	void onSinglePlayerPressed();

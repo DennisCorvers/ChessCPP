@@ -82,6 +82,11 @@
       <AdditionalLibraryDirectories>D:\Projects\C++ Projects\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r /d
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -99,8 +104,8 @@
       <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;sfml-audio-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;ws2_32.lib;%(AdditionalDependencies);shlwapi.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;tgui-s-d.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r
-xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
+      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r /d
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -120,6 +125,11 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-network.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Projects\C++ Projects\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /e /y /i /r /d
+xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -150,6 +160,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatorSystem.cpp" />
+    <ClCompile Include="BaseGame.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="BoardManager.cpp" />
     <ClCompile Include="ChessPiece.cpp" />
@@ -177,6 +188,8 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="AnimatorSystem.h" />
     <ClInclude Include="AssetNames.h" />
     <ClInclude Include="AudioManager.hpp" />
+    <ClInclude Include="BaseGame.h" />
+    <ClInclude Include="BaseMenu.hpp" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />
     <ClInclude Include="ChessPiece.h" />
@@ -197,7 +210,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="ResourceManagers.hpp" />
     <ClInclude Include="SGame.h" />
-    <ClInclude Include="BaseState.h" />
+    <ClInclude Include="BaseState.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SharedContext.h" />
     <ClInclude Include="SMainMenu.h" />

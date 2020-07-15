@@ -2,7 +2,7 @@
 #include "SGame.h"
 #include "EventManager.h"
 #include "BoardManager.h"
-#include "BaseState.h"
+#include "BaseState.hpp"
 #include "StateManager.h"
 #include "TextureManager.hpp"
 
@@ -26,11 +26,7 @@ SGame::SGame(StateManager& stateManager)
 			static_cast<int>(m_window->getSize().y * .85f)
 		));
 
-	auto context = stateManager.getContext();
-	float x = static_cast<float>(m_window->getSize().x);
-	float y = static_cast<float>(m_window->getSize().y);
-
-	m_view.setSize(sf::Vector2f(x, y));
+	m_view.setSize(sf::Vector2f(m_window->getSize().x, m_window->getSize().y));
 	m_view.setCenter(m_boardManager->getBoardCenter());
 }
 

@@ -1,8 +1,7 @@
 #pragma once
-#include "BaseState.h"
+#include "BaseMenu.hpp"
 
-class StateManager;
-class SPauseMenu : public BaseState
+class SPauseMenu : public BaseMenu
 {
 public:
 	SPauseMenu(StateManager& stateManager);
@@ -28,6 +27,7 @@ private:
 
 	States m_previousState;
 	tgui::Gui m_gui;
+	sf::RectangleShape m_backdrop;
 
 	void initializeUI();
 	void onResumePressed();

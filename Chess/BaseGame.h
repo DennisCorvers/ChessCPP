@@ -1,24 +1,20 @@
 #pragma once
-#include <queue>
 #include "BaseState.hpp"
-#include "ChessMove.h"
 
 class BoardManager;
-class SGame : public BaseState
+class BaseGame : public BaseState
 {
 protected:
 	using EType = sf::Event::EventType;
 
 	sf::RenderWindow* m_window;
-
 	std::unique_ptr<BoardManager> m_boardManager;
-	std::queue<ChessMove> m_moveBuffer;
 
 	void loadAssets();
 
 public:
-	SGame(StateManager& stateManager);
-	~SGame();
+	BaseGame(StateManager& stateManager);
+	~BaseGame();
 
 	virtual void onCreate() override;
 	virtual void onDestroy() override;
@@ -30,4 +26,3 @@ public:
 	virtual bool update(float deltaTime) override;
 	virtual bool handleEvent(const sf::Event & event) override;
 };
-

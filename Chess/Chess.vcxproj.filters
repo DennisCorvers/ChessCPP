@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Managers\Resources">
       <UniqueIdentifier>{8ea4f40d-a945-4be6-81ce-655968bb4362}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\States\Base">
+      <UniqueIdentifier>{f79f710a-693c-44ce-a400-a7b4347c15e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -98,6 +101,9 @@
     <ClCompile Include="SPauseMenu.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="BaseGame.cpp">
+      <Filter>Source Files\States\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -157,9 +163,6 @@
     <ClInclude Include="States.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="BaseState.h">
-      <Filter>Source Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="SharedContext.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
@@ -198,6 +201,15 @@
     </ClInclude>
     <ClInclude Include="SPauseMenu.h">
       <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMenu.hpp">
+      <Filter>Source Files\States\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseState.hpp">
+      <Filter>Source Files\States\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGame.h">
+      <Filter>Source Files\States\Base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

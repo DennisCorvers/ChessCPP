@@ -22,8 +22,8 @@ public:
 		: TextureManager(autoSmooth)
 	{
 		this->registerPath(AssetNames::t_background, "Assets\\Sprites\\backdrop.jpg");
-		this->registerPath(AssetNames::t_board, "Assets\\Sprites\\Board.png");
-		this->registerPath(AssetNames::t_pieces, "Assets\\Sprites\\Pieces.png");
+		this->registerPath(AssetNames::t_board, "Assets\\Sprites\\board.png");
+		this->registerPath(AssetNames::t_pieces, "Assets\\Sprites\\pieces.png");
 	}
 };
 
