@@ -1,6 +1,6 @@
 #pragma once
 #include "States.h"
-#include "SharedContext.h"
+#include "SharedContext.hpp"
 
 class BaseState;
 class StateManager : private sf::NonCopyable

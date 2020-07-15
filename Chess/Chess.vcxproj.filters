@@ -163,9 +163,6 @@
     <ClInclude Include="States.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="SharedContext.h">
-      <Filter>Source Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="SMainMenu.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
@@ -209,6 +206,9 @@
       <Filter>Source Files\States\Base</Filter>
     </ClInclude>
     <ClInclude Include="BaseGame.h">
+      <Filter>Source Files\States\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedContext.hpp">
       <Filter>Source Files\States\Base</Filter>
     </ClInclude>
   </ItemGroup>

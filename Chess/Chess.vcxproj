@@ -212,7 +212,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="SGame.h" />
     <ClInclude Include="BaseState.hpp" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="SharedContext.h" />
+    <ClInclude Include="SharedContext.hpp" />
     <ClInclude Include="SMainMenu.h" />
     <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="SPauseMenu.h" />

@@ -6,7 +6,7 @@
 #include "States.h"
 
 #include "StateManager.h"
-#include "SharedContext.h"
+#include "SharedContext.hpp"
 
 #include "ResourceManagers.hpp"
 #include "SoundManager.hpp"
@@ -39,7 +39,7 @@ Game::Game()
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::Pause);
+	m_stateManager->switchState(States::MainMenu);
 }
 
 Game::~Game() {

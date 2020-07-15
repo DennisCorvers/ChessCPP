@@ -81,6 +81,10 @@ public:
 	bool stopSound(int id);
 	bool pauseSound(int id);
 
+	void pauseSounds();
+	void unpauseSounds();
+	void stopSounds();
+
 	bool startMusic(AssetNames musicName, float volume = 100.f, bool loop = false);
 	bool playMusic();
 	bool stopMusic();

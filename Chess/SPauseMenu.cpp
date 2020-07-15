@@ -86,6 +86,7 @@ void SPauseMenu::initializeUI()
 		button->setTextSize(20);
 		button->setRenderer(defaultTheme.getRenderer("BorderlessButton"));
 		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
+		button->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
 		m_gui.add(button);
 		yOffset += ySize + 50;
 	}
@@ -95,13 +96,9 @@ void SPauseMenu::initializeUI()
 	buttons[2]->connect("pressed", &SPauseMenu::onSwapColourPressed, this);
 	buttons[3]->connect("pressed", &SPauseMenu::onQuitGamePressed, this);
 
-	sf::Vector2f backSize = sf::Vector2f(300, 60);//xSize + 100, yOffset + 100);
-	m_backdrop = sf::RectangleShape(backSize);
-	sf::Vector2f pos = sf::Vector2f((window->getSize().x - backSize.x) / 2, (window->getSize().y - backSize.y) / 2);
-	pos.x = 400;
-	m_backdrop.setPosition(pos);
-	//m_backdrop.setPosition(sf::Vector2f((window->getSize().x - backSize.x) / 2, (window->getSize().y - backSize.y) / 2));
-	m_backdrop.setFillColor(sf::Color(200, 200, 200, 200));
+	m_backdrop = sf::RectangleShape(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
+	m_backdrop.setPosition(sf::Vector2f((window->getSize().x - m_backdrop.getSize().x) / 2, window->getSize().y / 4 - 50));
+	m_backdrop.setFillColor(sf::Color(200, 200, 200, 250));
 }
 
 void SPauseMenu::onResumePressed() {

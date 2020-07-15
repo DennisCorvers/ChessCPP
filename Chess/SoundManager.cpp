@@ -35,8 +35,6 @@ void SoundManager::freeAllResources()
 
 void SoundManager::switchState(States state)
 {
-	pauseAll(m_currentState);
-	unpauseAll(state);
 	m_currentState = state;
 }
 
@@ -46,8 +44,10 @@ void SoundManager::removeState(States state)
 	if (states == m_audio.end())
 		return;
 
-	for (auto& it : states->second)
+	for (auto& it : states->second) {
+		it.second.m_audio->stop();
 		recycleSound(it.first, it.second);
+	}
 
 	m_audio.erase(state);
 	auto it = m_music.find(state);
@@ -55,6 +55,7 @@ void SoundManager::removeState(States state)
 		return;
 
 	m_numSounds--;
+	it->second.m_audio->stop();
 	m_music.erase(it);
 }
 
@@ -147,6 +148,42 @@ bool SoundManager::pauseSound(int id)
 	return true;
 }
 
+void SoundManager::pauseSounds()
+{
+	auto& container = m_audio[m_currentState];
+	for (auto it = container.begin(); it != container.end();) {
+		if (it->second.m_audio->getStatus() == sf::Sound::Status::Stopped) {
+			recycleSound(it->first, it->second);
+			it = container.erase(it);
+		}
+		else {
+			it->second.m_audio->pause();
+			it->second.m_isManualPaused = true;
+			++it;
+		}
+	}
+}
+
+void SoundManager::unpauseSounds()
+{
+	auto& container = m_audio[m_currentState];
+	for (auto &it : container) {
+		if (it.second.m_isManualPaused)
+			continue;
+		it.second.m_audio->play();
+	}
+}
+
+void SoundManager::stopSounds()
+{
+	auto& container = m_audio[m_currentState];
+	for (auto it = container.begin(); it != container.end();) {
+		it->second.m_audio->stop();
+		recycleSound(it->first, it->second);
+		it = container.erase(it);
+	}
+}
+
 bool SoundManager::startMusic(AssetNames musicName, float volume, bool loop)
 {
 	auto it = m_music.find(m_currentState);
@@ -211,7 +248,6 @@ bool SoundManager::pauseMusic()
 		return false;
 
 	it->second.m_audio->pause();
-	it->second.m_isManualPaused = true;
 
 	return true;
 }
@@ -240,39 +276,24 @@ bool SoundManager::isPlaying(int id)
 
 void SoundManager::pauseAll(States state)
 {
-	auto& container = m_audio[state];
-	for (auto it = container.begin(); it != container.end();) {
-		if (it->second.m_audio->getStatus() == sf::Sound::Status::Stopped) {
-			recycleSound(it->first, it->second);
-			it = container.erase(it);
-		}
-		else {
-			it->second.m_audio->pause();
-			++it;
-		}
-	}
-	auto music = m_music.find(state);
-	if (music == m_music.end())
-		return;
+	States tempState = m_currentState;
+	m_currentState = state;
 
-	music->second.m_audio->pause();
+	pauseSounds();
+	pauseMusic();
+
+	m_currentState = tempState;
 }
 
 void SoundManager::unpauseAll(States state)
 {
-	auto& container = m_audio[state];
-	for (auto &it : container) {
-		if (it.second.m_isManualPaused)
-			continue;
-		it.second.m_audio->play();
-	}
+	States tempState = m_currentState;
+	m_currentState = state;
 
-	auto music = m_music.find(state);
-	if (music == m_music.end())
-		return;
+	unpauseSounds();
+	playMusic();
 
-	if (!music->second.m_isManualPaused)
-		music->second.m_audio->play();
+	m_currentState = tempState;
 }
 
 std::unique_ptr<sf::Sound> SoundManager::soundFactory(int& id, AssetNames soundName)

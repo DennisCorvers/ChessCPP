@@ -26,10 +26,9 @@ public:
 private:
 
 	States m_previousState;
-	tgui::Gui m_gui;
 	sf::RectangleShape m_backdrop;
 
-	void initializeUI();
+	void initializeUI() override;
 	void onResumePressed();
 	void onNewGamePressed();
 	void onSwapColourPressed();

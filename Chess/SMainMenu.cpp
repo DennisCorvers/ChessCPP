@@ -64,6 +64,7 @@ void SMainMenu::initializeUI()
 		button->setTextSize(20);
 		button->setRenderer(defaultTheme.getRenderer("BorderlessButton"));
 		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
+		button->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
 		m_gui.add(button);
 		yOffset += size.y + 50;
 	}
