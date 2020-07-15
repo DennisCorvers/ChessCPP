@@ -12,13 +12,19 @@ This project was a motivation to use C++ in a game development setting. The proj
 - End-game via Check, Checkmate, Stalemate and Draw
 - Board mirroring
 - Piece animations
+- Main Menu
+- In-game Menu
 
 ### ToDo
 
-- Main Menu
-- In-game Menu
 - Client-Host multiplayer
 - Client validation/rollback of inputs
+
+## Application Preview 
+
+![Main Screen](https://i.imgur.com/xWQN6Rg.png)
+
+![Game Screen](https://i.imgur.com/58oPpwx.png)
 
 ## Extra Notes
 In order to structurize the project/files better, post-build events are used.
