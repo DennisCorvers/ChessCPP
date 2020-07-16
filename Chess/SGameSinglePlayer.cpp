@@ -7,7 +7,8 @@
 SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	BaseGame(stateManager, States::SinglePlayer)
 {
-	m_stockfish = std::make_unique<URIConnector>("stockfish.exe");
+	auto engineInfo = EngineInformation();
+	m_stockfish = std::make_unique<URIConnector>("stockfish.exe", engineInfo);
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
@@ -15,8 +16,8 @@ SGameSinglePlayer::~SGameSinglePlayer()
 
 void SGameSinglePlayer::onCreate() {
 	m_boardManager->resetGame();
-	m_stockfish->resetGame();
-	m_stockfish->requestMove("e2e4");
+	//m_stockfish->resetGame();
+	m_boardManager->getFENFormat();
 }
 
 void SGameSinglePlayer::onDestroy() {
@@ -52,7 +53,7 @@ bool SGameSinglePlayer::handleEvent(const sf::Event & event)
 		if (event.type == sf::Event::MouseButtonReleased) {
 			ChessMove newMove;
 			if (m_boardManager->endSelection(mousePos, newMove))
-				m_boardManager->inputMove(newMove, false);
+				m_boardManager->inputMove(newMove, false, false);
 		}
 	}
 

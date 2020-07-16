@@ -60,6 +60,8 @@ public:
 	{
 		return static_cast<PieceType>(m_pieceData & type_mask);
 	}
+	
+	char getFEN() const;
 };
 
 

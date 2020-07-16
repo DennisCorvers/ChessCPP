@@ -5,6 +5,12 @@
 
 //https://github.com/official-stockfish/Stockfish
 //https://gist.github.com/aliostad/f4470274f39d29b788c1b09519e67372
+//https://www.chessprogramming.org/Forsyth-Edwards_Notation#:~:text=Forsyth%2DEdwards%20Notation%20(FEN),of%20the%20Portable%20Game%20Notation%20.
+
+struct EngineInformation {
+	float pollIntervalSec = 0.1f;
+	unsigned int maxEngineTimeMs = 500;
+};
 
 class URIConnector {
 private:
@@ -23,9 +29,10 @@ private:
 
 	unsigned int m_skillLevel;
 	float m_lastUpdate;
+	EngineInformation m_info;
 
 public:
-	URIConnector(const std::string& path);
+	URIConnector(const std::string& path, EngineInformation& engineInfo);
 
 	virtual ~URIConnector();
 

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "URIConnector.hpp"
 
-URIConnector::URIConnector(const std::string & path) :
-	hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL)
+URIConnector::URIConnector(const std::string & path, EngineInformation & engineInfo) :
+	hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL),
+	m_info(engineInfo)
 {
 	char* writable = new char[path.size() + 1];
 	std::copy(path.begin(), path.end(), writable);
@@ -34,8 +35,7 @@ unsigned int URIConnector::getSkillLevel() const {
 void URIConnector::update(float deltaTime)
 {
 	m_lastUpdate += deltaTime;
-	//Only run once every 100ms.
-	if (m_lastUpdate < 0.1f)
+	if (m_lastUpdate < m_info.pollIntervalSec)
 		return;
 
 	m_lastUpdate = 0;
@@ -52,11 +52,10 @@ void URIConnector::update(float deltaTime)
 
 }
 
-void URIConnector::requestMove(const std::string& position)
+void URIConnector::requestMove(const std::string& currentBoard)
 {
-	std::string str;
-	sendCommand("position startpos moves " + position + '\n');
-	sendCommand("go\n");
+	sendCommand("position startpos moves " + currentBoard + '\n');
+	sendCommand("go movetime " + m_info.maxEngineTimeMs + '\n');
 }
 
 void URIConnector::stopEngine() {

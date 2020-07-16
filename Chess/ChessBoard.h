@@ -74,5 +74,7 @@ public:
 	}
 
 	ActionType getBoardState(const PieceColour colour) const;
+
+	std::string getFENFormat() const;
 };
 

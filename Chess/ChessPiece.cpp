@@ -2,9 +2,9 @@
 #include "ChessPiece.h"
 #include "Enums.h"
 
-ChessPiece::ChessPiece() {
-	m_pieceData = 0;
-}
+ChessPiece::ChessPiece() :
+	m_pieceData(0)
+{}
 
 ChessPiece::ChessPiece(const char pieceValue)
 {
@@ -24,6 +24,32 @@ ChessPiece::ChessPiece(PieceColour colour, PieceType pieceType)
 ChessPiece::~ChessPiece()
 {
 
+}
+
+char ChessPiece::getFEN() const
+{
+	char value = 0;
+	switch (getType()) {
+	case PieceType::Pawn:
+		value = 'P'; break;
+	case PieceType::Rook:
+		value = 'R'; break;
+	case PieceType::Knight:
+		value = 'N'; break;
+	case PieceType::Bishop:
+		value = 'B'; break;
+	case PieceType::Queen:
+		value = 'Q'; break;
+	case PieceType::King:
+		value = 'K'; break;
+	default:
+		return 0;
+	}
+
+	if (getColour() == PieceColour::Black)
+		value += 32;
+
+	return value;
 }
 
 

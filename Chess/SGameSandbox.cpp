@@ -41,7 +41,7 @@ bool SGameSandbox::handleEvent(const sf::Event & event)
 		if (event.type == sf::Event::MouseButtonReleased) {
 			ChessMove newMove;
 			if (m_boardManager->endSelection(mousePos, newMove))
-				m_boardManager->inputMove(newMove, false);
+				m_boardManager->inputMove(newMove, false, false);
 		}
 	}
 

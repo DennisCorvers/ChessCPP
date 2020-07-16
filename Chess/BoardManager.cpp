@@ -34,16 +34,12 @@ void BoardManager::flipBoard() {
 	m_pieceManager->flipBoard();
 }
 
-bool BoardManager::inputMove(const ChessMove move, bool animate)
+bool BoardManager::inputMove(const ChessMove move, bool validateMove, bool animate)
 {
-	if (!m_hasCachedMove) {
-		std::cout << "No cached move found!" << std::endl;
-
-		if (!validateMove(move))
+	if (validateMove) {
+		if (!validateNewMove(move))
 			return false;
 	}
-	else
-		m_hasCachedMove = false;
 
 	ChessBoard nextState;
 	ActionType moveResult = m_board->simulateMove(nextState, move, true);
@@ -72,7 +68,9 @@ bool BoardManager::inputMove(const ChessMove move, bool animate)
 	return true;
 }
 
-bool BoardManager::validateMove(const ChessMove move) const
+
+
+bool BoardManager::validateNewMove(const ChessMove move) const
 {
 	auto validPositions = m_board->getValidPositions(move.getPositionFrom());
 	for (auto it = validPositions.begin(); it != validPositions.end(); ++it)
@@ -118,15 +116,8 @@ void BoardManager::updateMousePosition(const sf::Vector2f screenPosition) const
 	m_pieceManager->updateSelection(screenPosition);
 }
 
-bool BoardManager::endSelection(const sf::Vector2f screenPosition, ChessMove& outMove)
-{
-	bool result = m_pieceManager->endSelection(screenPosition, outMove);
-	if (result) {
-		m_hasCachedMove = true;
-		m_cachedMove = outMove;
-	}
-
-	return result;
+bool BoardManager::endSelection(const sf::Vector2f screenPosition, ChessMove& outMove) {
+	return m_pieceManager->endSelection(screenPosition, outMove);
 }
 
 void BoardManager::update(const float & deltaTime)
@@ -138,3 +129,8 @@ void BoardManager::render(sf::RenderTarget& target)
 {
 	m_pieceManager->render(target);
 }
+
+std::string BoardManager::getFENFormat() const {
+	return m_board->getFENFormat();
+}
+

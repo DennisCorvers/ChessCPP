@@ -7,13 +7,15 @@ This project was a motivation to use C++ in a game development setting. The proj
 - Movement of pieces via mouse; Selection, Deselection, Drag-and-Drop, Single-Click movement
 - Preview of all possible moves for a selected piece
 - Partial history of previous states
-- Sounds for moves: Normal, Take, Check/Checkmate
+- Various sounds in menus and during games
 - All chess rules for pieces
 - End-game via Check, Checkmate, Stalemate and Draw
 - Board mirroring
 - Piece animations
 - Main Menu
 - In-game Menu
+- Customizable UI themes
+- Chess Engine integration
 
 ### ToDo
 

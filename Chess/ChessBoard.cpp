@@ -46,7 +46,7 @@ void ChessBoard::resetBoard(const char(&boardData)[BOARDSIZE])
 
 ActionType ChessBoard::getBoardState(const PieceColour colour) const
 {
-	if (m_drawMoves >= 50)
+	if (m_drawMoves >= 100)
 		return ActionType::Draw;
 
 	const ChessPosition& king = getKing(colour);
@@ -68,6 +68,59 @@ ActionType ChessBoard::getBoardState(const PieceColour colour) const
 	//If the only 2 pieces able to move are kings, Draw
 
 	return ActionType::None;
+}
+
+std::string ChessBoard::getFENFormat() const
+{
+	std::string FENString;
+	FENString.reserve(56);
+
+	//PIECE PLACEMENT
+	{
+		for (char y = 0; y < 8; y++) {
+			char emptyCount = 0;
+
+			for (char x = 0; x < 8; x++) {
+				char pieceVal = getPiece(x, y).getFEN();
+				if (pieceVal == 0) {
+					emptyCount++;
+					if (emptyCount == 8) {
+						FENString += '8';
+						break;
+					}
+					continue;
+				}
+
+				if (emptyCount > 0) {
+					FENString += (emptyCount + 48);
+					pieceVal = 0;
+				}
+				FENString += pieceVal;
+			}
+			FENString += '/';
+		}
+		FENString[FENString.size() - 1] = 0;
+	}
+
+	//SIDE TO MOVE
+	char toMove = getPlayingColour() == PieceColour::Black ? 'b' : 'w';
+	FENString += toMove;
+	FENString += ' ';
+
+	//CASTLING ABILITY
+	FENString += "KQkq ";
+
+	//EN PASSANT TARGET SQUARE
+	FENString += "- ";
+
+	//HALFMOVE CLOCK
+	FENString += std::to_string(m_drawMoves) + ' ';
+
+	//FULLMOVE COUNTER
+	FENString += std::to_string(m_moveNumber / 2 + 1);
+
+	std::cout << FENString << std::endl;
+	return FENString;
 }
 
 bool ChessBoard::hasMoves(const PieceColour colour) const

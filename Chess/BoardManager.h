@@ -31,11 +31,8 @@ private:
 
 	SoundManager& m_soundManager;
 
-	bool m_hasCachedMove = false;
-	ChessMove m_cachedMove;
-
 	void handleSound(const ActionType chessAction, bool playSound);
-	bool validateMove(const ChessMove move) const;
+	bool validateNewMove(const ChessMove move) const;
 
 public:
 	BoardManager(
@@ -52,7 +49,7 @@ public:
 	void flipBoard(PieceColour orientation);
 	void flipBoard();
 
-	bool inputMove(const ChessMove move, bool animate);
+	bool inputMove(const ChessMove move, bool validateMove, bool animate);
 
 	void startSelection(const sf::Vector2f screenPosition, bool forceColour) const;
 	void startSelection(const sf::Vector2f screenPosition, PieceColour validColour) const;
@@ -61,5 +58,7 @@ public:
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget& target);
+
+	std::string getFENFormat() const;
 };
 
