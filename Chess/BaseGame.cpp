@@ -20,10 +20,17 @@ BaseGame::BaseGame(StateManager & stateManager, States state) :
 
 	m_view.setSize(sf::Vector2f(m_window->getSize().x, m_window->getSize().y));
 	m_view.setCenter(m_boardManager->getBoardCenter());
+
+	EventManager* eventManager = stateManager.getContext().eventManager;
+	eventManager->addCallback(States::Pause, "onResetBoard", &BaseGame::onResetBoard, this);
+	eventManager->addCallback(States::Pause, "onSwitchBoard", &BaseGame::onSwitchBoard, this);
+	eventManager->addCallback(States::Pause, "onQuitGame", &BaseGame::onQuitGame, this);
 }
 
 BaseGame::~BaseGame()
-{}
+{
+	m_stateManager->getContext().eventManager->removeCallbacks(States::Pause);
+}
 
 void BaseGame::loadAssets()
 {
@@ -47,9 +54,8 @@ bool BaseGame::update(float deltaTime)
 
 bool BaseGame::handleEvent(const sf::Event & event)
 {
-	EType eType = event.type;
-	if (eType == sf::Event::Resized)
-		Graphics::applyResize(m_view, m_window->getSize().x, m_window->getSize().y);
+	if (event.type == sf::Event::Resized)
+		Graphics::applyResize(m_view, event);
 
 	return false;
 }

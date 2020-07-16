@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "AllStates.hpp"
 
+#include "EventManager.h"
 #include "StateManager.h"
 #include "SharedContext.hpp"
 
@@ -21,7 +22,7 @@ Game::Game()
 	m_soundManager = std::make_unique<SoundManager>(*m_audioManager);
 	m_themeManager = std::make_unique<ThemeManager>();
 	m_debugOverlay = std::make_unique<DebugOverlay>();
-
+	m_eventManager = std::make_unique<EventManager>();
 
 	initWindow();
 
@@ -31,12 +32,13 @@ Game::Game()
 	m_context->fontManager = m_fontManager.get();
 	m_context->soundManager = m_soundManager.get();
 	m_context->themeManager = m_themeManager.get();
+	m_context->eventManager = m_eventManager.get();
 
 
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->switchState(States::Pause);
 }
 
 Game::~Game() {
@@ -82,7 +84,7 @@ void Game::initUI()
 
 void Game::registerStates() {
 	m_stateManager->registerState<SGameSandbox>(States::Sandbox);
-	//m_stateManager->registerState<SGameSinglePlayer>(States::SinglePlayer);
+	m_stateManager->registerState<SGameSinglePlayer>(States::SinglePlayer);
 	//m_stateManager->registerState<???>(States::Multiplayer);
 	m_stateManager->registerState<SMainMenu>(States::MainMenu);
 	m_stateManager->registerState<SPauseMenu>(States::Pause);
@@ -127,7 +129,7 @@ void Game::update()
 	m_stateManager->update(m_deltaTime);
 	m_soundManager->update(m_deltaTime);
 
-#ifdef NDEBUG
+#ifndef NDEBUG
 	m_debugOverlay->update(m_deltaTime);
 #endif
 }
@@ -141,7 +143,7 @@ void Game::render()
 
 	m_stateManager->render();
 
-#ifdef NDEBUG
+#ifndef NDEBUG
 	m_window->setView(*m_defaultView);
 	m_debugOverlay->draw(*m_window);
 #endif

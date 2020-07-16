@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning( disable : 4244 ) 
 
-#define NDEBUG
+//#define NDEBUG
 
 //std
 #include <memory>

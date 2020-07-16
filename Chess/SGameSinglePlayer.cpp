@@ -7,7 +7,7 @@
 SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	BaseGame(stateManager, States::SinglePlayer)
 {
-	//std::make_unique<URIConnector>("stockfish.exe");
+	std::make_unique<URIConnector>("stockfish.exe");
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
@@ -18,7 +18,8 @@ void SGameSinglePlayer::onCreate() {
 }
 
 void SGameSinglePlayer::onDestroy() {
-	m_stockfish->stopEngine();
+	if (m_stockfish)
+		m_stockfish->stopEngine();
 }
 
 void SGameSinglePlayer::activate()
@@ -66,6 +67,15 @@ bool SGameSinglePlayer::handleEvent(const sf::Event & event)
 	}
 
 	return false;
+}
+
+void SGameSinglePlayer::onQuitGame(const EventArgs & eventInfo) {
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(States::SinglePlayer);
+}
+
+void SGameSinglePlayer::onResetBoard(const EventArgs& eventInfo) {
+	m_boardManager->resetGame();
 }
 
 

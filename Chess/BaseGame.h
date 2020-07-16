@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseState.hpp"
 
-struct ChessMove;
+class EventArgs;
 class BoardManager;
 class BaseGame : public BaseState
 {
@@ -15,6 +15,10 @@ protected:
 	std::unique_ptr<BoardManager> m_boardManager;
 
 	void loadAssets();
+
+	virtual void onResetBoard(const EventArgs& eventInfo) = 0;
+	virtual void onSwitchBoard(const EventArgs& eventInfo) = 0;
+	virtual void onQuitGame(const EventArgs& eventInfo) = 0;
 
 public:
 	BaseGame(StateManager& stateManager, States state);

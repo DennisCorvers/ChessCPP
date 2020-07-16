@@ -30,6 +30,7 @@ bool SMainMenu::update(float deltaTime) {
 
 bool SMainMenu::handleEvent(const sf::Event & event)
 {
+	BaseMenu::handleEvent(event);
 	m_gui.handleEvent(event);
 
 	return false;
@@ -62,7 +63,7 @@ void SMainMenu::initializeUI()
 		button->setSize(size);
 		button->setPosition(xOffset, yOffset);
 		button->setTextSize(20);
-		button->setRenderer(defaultTheme.getRenderer("BorderlessButton"));
+		button->setRenderer(defaultTheme.getRenderer("MenuButton"));
 		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 		button->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
 		m_gui.add(button);

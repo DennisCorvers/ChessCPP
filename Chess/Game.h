@@ -28,7 +28,7 @@ private:
 	std::unique_ptr<sf::RenderWindow> m_window;
 
 	std::unique_ptr<StateManager> m_stateManager;
-	//std::unique_ptr<EventManager> m_eventManager;
+	std::unique_ptr<EventManager> m_eventManager;
 
 	//RESOURCE MANAGERS
 	std::unique_ptr<MyTextureManager> m_textureManager;

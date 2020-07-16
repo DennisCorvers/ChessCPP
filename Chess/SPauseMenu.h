@@ -21,14 +21,13 @@ public:
 
 	virtual bool handleEvent(const sf::Event & event) override;
 
-	void onPauseMenuOpen(States callingState);
-
 private:
 
-	States m_previousState;
 	sf::RectangleShape m_backdrop;
 
-	void initializeUI() override;
+	void initializeUI();
+	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
+
 	void onResumePressed();
 	void onNewGamePressed();
 	void onSwapColourPressed();

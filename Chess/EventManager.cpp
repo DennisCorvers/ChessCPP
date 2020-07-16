@@ -5,50 +5,58 @@ EventManager::EventManager()
 {
 }
 
-
 EventManager::~EventManager()
 {
-	while (!m_inputs.empty()) {
-		m_inputs.pop();
-	}
 }
 
-void EventManager::handleEvent(const sf::Event& sfmlEvent)
+bool EventManager::removeCallback(States state, const std::string & name)
 {
-	m_inputs.empty();
-	sf::Event::EventType eType = sfmlEvent.type;
-	MyEvent myEvent;
-
-	//Handle keyboard
-	if (eType == sf::Event::KeyPressed || eType == sf::Event::KeyReleased) {
-		myEvent.eventType = MyEventType(eType);
-		myEvent.keyCode = sfmlEvent.key.code;
-	}
-	//Handle mouse
-	else if (eType == sf::Event::MouseButtonPressed || eType == sf::Event::MouseButtonReleased) {
-		myEvent.eventType = MyEventType(eType);
-		myEvent.keyCode = sfmlEvent.mouseButton.button;
-
-		myEvent.mousePos.x = static_cast<float>(sfmlEvent.mouseButton.x);
-		myEvent.mousePos.y = static_cast<float>(sfmlEvent.mouseButton.y);
-	}
-
-	if (myEvent.eventType != MyEventType::None) {
-		m_inputs.push(myEvent);
-	}
-}
-
-void EventManager::update()
-{
-}
-
-bool EventManager::pollEvent(MyEvent* const eventOut)
-{
-	if (m_inputs.empty()) {
+	auto it = m_callbackContainers.find(state);
+	if (it == m_callbackContainers.end())
 		return false;
-	}
-	
-	*eventOut = m_inputs.front();
-	m_inputs.pop();
+
+	auto callbackIt = it->second.find(name);
+	if (callbackIt == it->second.end())
+		return false;
+
+	it->second.erase(name);
 	return true;
+}
+
+bool EventManager::removeCallbacks(States state)
+{
+	auto it = m_callbackContainers.find(state);
+	if (it == m_callbackContainers.end())
+		return false;
+
+	m_callbackContainers.erase(it);
+	return true;
+}
+
+void EventManager::removeAllCallbacks() {
+	m_callbackContainers.clear();
+}
+
+void EventManager::handleEvent(States state, const std::string & name, const EventArgs & eventInfo) const
+{
+	auto container = m_callbackContainers.find(state);
+	if (container == m_callbackContainers.end())
+		return;
+
+	auto callback = container->second.find(name);
+	if (callback == container->second.end())
+		return;
+
+	callback->second(eventInfo);
+}
+
+void EventManager::handleEvent(const std::string& name, const EventArgs & eventInfo) const
+{
+	for (auto containers : m_callbackContainers) {
+		auto callback = containers.second.find(name);
+		if (callback == containers.second.end())
+			continue;
+
+		callback->second(eventInfo);
+	}
 }

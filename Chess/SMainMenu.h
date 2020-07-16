@@ -23,7 +23,7 @@ public:
 	virtual bool handleEvent(const sf::Event & event) override;
 
 private:
-	void initializeUI() override;
+	void initializeUI();
 
 	void onQuitPressed();
 	void onSinglePlayerPressed();

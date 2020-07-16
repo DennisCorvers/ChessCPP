@@ -14,6 +14,8 @@ SGameSandbox::~SGameSandbox()
 {}
 
 void SGameSandbox::onCreate() {
+
+
 	m_boardManager->resetGame();
 }
 
@@ -43,18 +45,24 @@ bool SGameSandbox::handleEvent(const sf::Event & event)
 		}
 	}
 
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::R) {
-		m_boardManager->resetGame();
-	}
-
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::F) {
-		m_boardManager->flipBoard();
-	}
-
 	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
 		m_stateManager->switchState(States::Pause);
 	}
 
 	return false;
 }
+
+void SGameSandbox::onQuitGame(const EventArgs & eventInfo) {
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(States::Sandbox);
+}
+
+void SGameSandbox::onResetBoard(const EventArgs& eventInfo) {
+	m_boardManager->resetGame();
+}
+
+void SGameSandbox::onSwitchBoard(const EventArgs& eventInfo) {
+	m_boardManager->flipBoard();
+}
+
 
