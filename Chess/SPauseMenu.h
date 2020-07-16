@@ -23,8 +23,6 @@ public:
 
 private:
 
-	sf::RectangleShape m_backdrop;
-
 	void initializeUI();
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
 

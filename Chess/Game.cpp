@@ -38,7 +38,7 @@ Game::Game()
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::Pause);
+	m_stateManager->switchState(States::MainMenu);
 }
 
 Game::~Game() {

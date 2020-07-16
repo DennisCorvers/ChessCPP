@@ -33,7 +33,6 @@ void SPauseMenu::deactivate()
 
 void SPauseMenu::render()
 {
-	m_stateManager->getContext().window->draw(m_backdrop);
 	m_gui.draw();
 }
 
@@ -94,11 +93,6 @@ void SPauseMenu::initializeUI()
 
 	background->setSize(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
 	background->setPosition(sf::Vector2f((window->getSize().x - background->getSize().x) / 2, window->getSize().y / 4 - 50));
-	//m_backdrop = sf::RectangleShape(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
-	//m_backdrop.setPosition(sf::Vector2f((window->getSize().x - m_backdrop.getSize().x) / 2, window->getSize().y / 4 - 50));
-	//m_backdrop.setFillColor(sf::Color(255, 255, 255, 250));
-	//m_backdrop.setOutlineColor(sf::Color(50, 50, 50, 120));
-	//m_backdrop.setOutlineThickness(2);
 }
 
 void SPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)

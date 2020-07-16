@@ -14,6 +14,7 @@ URIConnector::URIConnector(const std::string & path) :
 }
 
 URIConnector::~URIConnector() {
+	stopEngine();
 	closeConnection();
 }
 
@@ -42,6 +43,20 @@ void URIConnector::update(float deltaTime)
 		return;
 
 
+	std::string result = readEngine();
+
+#ifndef NDEBUG
+	std::cout << result << std::endl;
+#endif
+
+
+}
+
+void URIConnector::requestMove(const std::string& position)
+{
+	std::string str;
+	sendCommand("position startpos moves " + position + '\n');
+	sendCommand("go\n");
 }
 
 void URIConnector::stopEngine() {
@@ -50,12 +65,13 @@ void URIConnector::stopEngine() {
 
 void URIConnector::connectToEngine(char* path)
 {
+	ASSERT(lpProcessInformation.hProcess == NULL, "Engine already running!");
 	lpPipeAttributes.nLength = sizeof(lpPipeAttributes);
 	lpPipeAttributes.bInheritHandle = TRUE;
 	lpPipeAttributes.lpSecurityDescriptor = NULL;
 
 	CreatePipe(&hReadPipeOut, &hWritePipeOut, &lpPipeAttributes, 0);
-	CreatePipe(&hReadPipeIn, &hWritePipeOut, &lpPipeAttributes, 0);
+	CreatePipe(&hReadPipeIn, &hWritePipeIn, &lpPipeAttributes, 0);
 
 	lpStartupInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	lpStartupInfo.wShowWindow = SW_HIDE;
@@ -70,7 +86,7 @@ void URIConnector::connectToEngine(char* path)
 void URIConnector::closeConnection()
 {
 	sendCommand("quit\n");
-	if (hWritePipeOut != NULL) CloseHandle(hWritePipeOut);
+	if (hWritePipeIn != NULL) CloseHandle(hWritePipeIn);
 	if (hReadPipeIn != NULL) CloseHandle(hReadPipeIn);
 	if (hWritePipeOut != NULL) CloseHandle(hWritePipeOut);
 	if (hReadPipeOut != NULL) CloseHandle(hReadPipeOut);
@@ -78,3 +94,24 @@ void URIConnector::closeConnection()
 	if (lpProcessInformation.hThread != NULL) CloseHandle(lpProcessInformation.hThread);
 }
 
+bool URIConnector::pollEngine()
+{
+	if (!PeekNamedPipe(hReadPipeOut, NULL, NULL, &lpBytesRead, &lpTotalBytesAvail, NULL))
+		return false;
+
+	return lpTotalBytesAvail > 0;
+}
+
+std::string URIConnector::readEngine()
+{
+	std::string output;
+	do
+	{
+		//ZeroMemory(buffer, sizeof(buffer));
+		if (!ReadFile(hReadPipeOut, buffer, sizeof(buffer), &lpBytesRead, NULL) || !lpBytesRead) break;
+		buffer[lpBytesRead] = '\n';
+		output.append((char*)buffer, lpBytesRead + 1);
+	} while (lpBytesRead >= sizeof(buffer));
+
+	return output;
+}
