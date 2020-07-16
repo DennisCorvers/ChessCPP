@@ -15,4 +15,9 @@ public:
 		}
 		return font;
 	}
+
+	static void setSmoothing(sf::Font& font, unsigned int fontSize, bool isSmooth) {
+		sf::Texture& texture = const_cast<sf::Texture&>(font.getTexture(fontSize));
+		texture.setSmooth(isSmooth);
+	}
 };

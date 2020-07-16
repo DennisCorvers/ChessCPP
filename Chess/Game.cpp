@@ -58,7 +58,7 @@ void Game::initWindow()
 		sf::VideoMode(DEFAULT_SIZE.x, DEFAULT_SIZE.y, 0),
 		"Chess++",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
-		sf::ContextSettings(0, 0, 0));
+		sf::ContextSettings(0, 0, 2));
 
 	m_window->setView(*m_defaultView);
 

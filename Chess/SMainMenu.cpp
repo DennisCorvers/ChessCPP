@@ -40,6 +40,7 @@ void SMainMenu::initializeUI()
 {
 	FontManager* fontManager = m_stateManager->getContext().fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(States::MainMenu, AssetNames::f_opensans_reg);
+	FontManager::setSmoothing(openSans, 20, false);
 
 	ThemeManager* themeManager = m_stateManager->getContext().themeManager;
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::MainMenu, AssetNames::theme_default);
@@ -75,8 +76,6 @@ void SMainMenu::initializeUI()
 	buttons[2]->connect("pressed", &SMainMenu::onJoinGamePressed, this);
 	buttons[3]->connect("pressed", &SMainMenu::onHostGamePressed, this);
 	buttons[4]->connect("pressed", &SMainMenu::onQuitPressed, this);
-
-	//https://tgui.eu/examples/0.8/many-different-widgets/
 }
 
 void SMainMenu::onQuitPressed() {

@@ -57,6 +57,7 @@ void SPauseMenu::initializeUI()
 {
 	FontManager* fontManager = m_stateManager->getContext().fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(States::Pause, AssetNames::f_opensans_reg);
+	FontManager::setSmoothing(openSans, 20, false);
 
 	ThemeManager* themeManager = m_stateManager->getContext().themeManager;
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::Pause, AssetNames::theme_default);
@@ -64,7 +65,7 @@ void SPauseMenu::initializeUI()
 	SoundManager* soundManager = m_stateManager->getContext().soundManager;
 	sf::RenderWindow* window = m_stateManager->getContext().window;
 
-	m_gui.setFont(tgui::Font(openSans));
+	m_gui.setFont(openSans);
 	int xSize = 300;
 	int ySize = 60;
 	int xOffset = (window->getSize().x - xSize) / 2;
