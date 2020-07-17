@@ -17,6 +17,7 @@
 #include <stack>
 #include <cassert>
 #include <cmath>
+#include <unordered_map>
 
 //SFML
 #include "SFML/Audio.hpp"
@@ -29,7 +30,7 @@
 //Self
 #include "Utils.h"
 #include "Enums.h"
-#include "Event.h"
+#include "Bitmask.hpp"
 
 
 

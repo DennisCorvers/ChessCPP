@@ -172,9 +172,6 @@
     <ClInclude Include="SMainMenu.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Source Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="FontManager.hpp">
       <Filter>Source Files\Managers\Resources</Filter>
     </ClInclude>
@@ -228,6 +225,12 @@
     </ClInclude>
     <ClInclude Include="AllStates.hpp">
       <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmask.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.hpp">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,13 +20,8 @@ public:
 	inline unsigned char x() const {
 		return m_x;
 	}
-
 	inline unsigned char y() const {
 		return m_y;
-	}
-
-	static ChessPosition distance(const ChessPosition& from, const ChessPosition& to) {
-		return ChessPosition(abs(from.m_x - to.m_x), abs(from.m_y - to.m_y));
 	}
 
 	bool operator==(const ChessPosition& rhs) const {
@@ -36,8 +31,19 @@ public:
 		return !(*this == rhs);
 	}
 
+	std::string toChessNotation() const {
+		std::string val; val.reserve(2);
+		val += static_cast<char>(m_x + 97);
+		val += std::to_string(8 - m_y);
+		return val;
+	}
+
 	friend std::ostream& operator<<(std::ostream& output, const ChessPosition& cp) {
-		return output << (cp.m_x + 65) << (8 - cp.m_y);
+		return output << cp.toChessNotation();
+	}
+
+	static ChessPosition distance(const ChessPosition& from, const ChessPosition& to) {
+		return ChessPosition(abs(from.m_x - to.m_x), abs(from.m_y - to.m_y));
 	}
 };
 

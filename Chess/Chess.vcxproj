@@ -193,6 +193,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="AudioManager.hpp" />
     <ClInclude Include="BaseGame.h" />
     <ClInclude Include="BaseMenu.hpp" />
+    <ClInclude Include="Bitmask.hpp" />
     <ClInclude Include="ChessBoard.h" />
     <ClInclude Include="BoardManager.h" />
     <ClInclude Include="ChessPiece.h" />
@@ -206,7 +207,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="DebugOverlay.hpp" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="Event.h" />
+    <ClInclude Include="Event.hpp" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="Game.h" />

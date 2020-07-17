@@ -6,8 +6,6 @@ enum struct PieceColour : char
 	Black = -1
 };
 
-
-
 enum struct PieceType : unsigned char
 {
 	None = 0,
@@ -45,13 +43,6 @@ inline int operator&(ActionType a, ActionType b) {
 inline ActionType& operator|=(ActionType& a, ActionType b) {
 	a = a | b;	return a;
 }
-
-enum struct SessionState : char {
-	None = 0,
-	Playing = 1,
-	Finished = 2,
-	Waiting = 3
-};
 
 namespace Enums {
 

@@ -73,45 +73,94 @@ ActionType ChessBoard::getBoardState(const PieceColour colour) const
 std::string ChessBoard::getFENFormat() const
 {
 	std::string FENString;
-	FENString.reserve(56);
+	FENString.reserve(90); //Max FEN size
+	char emptyCount = 0;
 
 	//PIECE PLACEMENT
-	{
-		for (char y = 0; y < 8; y++) {
-			char emptyCount = 0;
-
-			for (char x = 0; x < 8; x++) {
-				char pieceVal = getPiece(x, y).getFEN();
-				if (pieceVal == 0) {
-					emptyCount++;
-					if (emptyCount == 8) {
-						FENString += '8';
-						break;
-					}
-					continue;
+	for (char y = 0; y < 8; y++) {
+		for (char x = 0; x < 8; x++) {
+			char pieceVal = getPiece(x, y).getFEN();
+			if (pieceVal == 0) {
+				emptyCount++;
+				if (emptyCount == 8) {
+					FENString += '8';
+					emptyCount = 0;
+					break;
 				}
-
-				if (emptyCount > 0) {
-					FENString += (emptyCount + 48);
-					pieceVal = 0;
-				}
-				FENString += pieceVal;
+				continue;
 			}
-			FENString += '/';
+
+			if (emptyCount > 0) {
+				FENString += (emptyCount + 48);
+				emptyCount = 0;
+			}
+			FENString += pieceVal;
 		}
-		FENString[FENString.size() - 1] = 0;
+
+		if (emptyCount > 0) {
+			FENString += (emptyCount + 48);
+			emptyCount = 0;
+		}
+		FENString += '/';
 	}
+	FENString[FENString.size() - 1] = 0;
 
 	//SIDE TO MOVE
-	char toMove = getPlayingColour() == PieceColour::Black ? 'b' : 'w';
-	FENString += toMove;
-	FENString += ' ';
+	FENString += getPlayingColour() == PieceColour::Black ? "b " : "w ";
 
 	//CASTLING ABILITY
-	FENString += "KQkq ";
+	char castlingRights[4] = { 'K', 'Q', 'k', 'q' };
+	//White castling rights
+	if (getPiece(m_whiteKing).hasMoved()) {
+		castlingRights[0] = 0;
+		castlingRights[1] = 0;
+	}
+	else {
+		ChessPiece rookK = getPiece(7, 7);
+		if (rookK.getType() != PieceType::Rook || rookK.hasMoved())
+			castlingRights[0] = 0;
+		ChessPiece rookQ = getPiece(0, 7);
+		if (rookQ.getType() != PieceType::Rook || rookQ.hasMoved())
+			castlingRights[1] = 0;
+	}
+
+	//Black castling rights
+	if (getPiece(m_blackKing).hasMoved()) {
+		castlingRights[2] = 0;
+		castlingRights[3] = 0;
+	}
+	else {
+		ChessPiece rookK = getPiece(7, 0);
+		if (rookK.getType() != PieceType::Rook || rookK.hasMoved())
+			castlingRights[2] = 0;
+		ChessPiece rookQ = getPiece(0, 0);
+		if (rookQ.getType() != PieceType::Rook || rookQ.hasMoved())
+			castlingRights[3] = 0;
+	}
+
+	int rightsCount = 0;
+	for (char cr : castlingRights) {
+		if (cr != 0) {
+			FENString += cr;
+			rightsCount++;
+		}
+	}
+	if (rightsCount == 0)
+		FENString += '-';
+	FENString += ' ';
 
 	//EN PASSANT TARGET SQUARE
-	FENString += "- ";
+	if (m_lastMove.pieceFrom.getType() == PieceType::Pawn
+		&& ChessPosition::distance(m_lastMove.moveFrom, m_lastMove.moveTo).y() == 2) {
+		ChessPosition enPassantPosition = ChessPosition(
+			(m_lastMove.moveFrom.x() + m_lastMove.moveTo.x()) / 2,
+			(m_lastMove.moveFrom.y() + m_lastMove.moveTo.y()) / 2
+		);
+		FENString += enPassantPosition.toChessNotation() + ' ';
+	}
+	else
+		FENString += "- ";
+
 
 	//HALFMOVE CLOCK
 	FENString += std::to_string(m_drawMoves) + ' ';

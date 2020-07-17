@@ -41,7 +41,7 @@ public:
 	}
 
 	friend std::ostream& operator<<(std::ostream& output, const ChessMove& cp) {
-		return output << cp.getPositionFrom() << " -> " << cp.getPositionTo();
+		return output << cp.getPositionFrom() << cp.getPositionTo();
 	}
 };
 
