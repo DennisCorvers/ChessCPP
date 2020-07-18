@@ -3,10 +3,6 @@
 
 #pragma warning( disable : 4267 ) 
 
-//https://github.com/official-stockfish/Stockfish
-//https://gist.github.com/aliostad/f4470274f39d29b788c1b09519e67372
-//https://www.chessprogramming.org/Forsyth-Edwards_Notation#:~:text=Forsyth%2DEdwards%20Notation%20(FEN),of%20the%20Portable%20Game%20Notation%20.
-
 namespace URI {
 
 	enum struct EngineMessageType {
@@ -25,8 +21,8 @@ namespace URI {
 	};
 
 	struct EngineInformation {
-		float pollIntervalSec = 0.1f;
-		unsigned int maxEngineTimeMs = 500;
+		float pollInterval = 0.1f;
+		unsigned int maxEngineTime = 1.0f;
 	};
 
 	class URIConnector {
@@ -43,7 +39,8 @@ namespace URI {
 		DWORD lpBytesRead;
 		DWORD lpTotalBytesAvail;
 
-		bool m_engineReady;
+		bool m_isWorking;
+		float m_workTime;
 		std::stack<std::string> m_toEngine;
 		std::stack <EngineMessage> m_fromEngine;
 

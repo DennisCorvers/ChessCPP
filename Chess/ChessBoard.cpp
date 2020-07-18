@@ -103,9 +103,10 @@ std::string ChessBoard::getFENFormat() const
 		}
 		FENString += '/';
 	}
-	FENString[FENString.size() - 1] = 0;
+	FENString[FENString.size() - 1] = ' ';
 
 	//SIDE TO MOVE
+	//Should be inverted, but "normal" notation causes the engine to give wrong moves?
 	FENString += getPlayingColour() == PieceColour::Black ? "b " : "w ";
 
 	//CASTLING ABILITY

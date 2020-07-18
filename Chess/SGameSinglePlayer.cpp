@@ -10,7 +10,7 @@ SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	m_myColour(PieceColour::White)
 {
 	auto engineInfo = URI::EngineInformation();
-	m_stockfish = std::make_unique<URI::URIConnector>("stockfish.exe", engineInfo);
+	m_chessEngine = std::make_unique<URI::URIConnector>("stockfish.exe", engineInfo);
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
@@ -18,36 +18,19 @@ SGameSinglePlayer::~SGameSinglePlayer()
 
 }
 
-void SGameSinglePlayer::switchBoard() {
-	m_myColour = m_myColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-	m_boardManager->resetGame(m_myColour);
-}
-
 void SGameSinglePlayer::onCreate() {
-	m_boardManager->resetGame(m_myColour);
-	m_stockfish->resetGame();
-}
-
-void SGameSinglePlayer::onDestroy()
-{
-}
-
-void SGameSinglePlayer::activate()
-{
-}
-
-void SGameSinglePlayer::deactivate()
-{
-
+	m_boardManager->resetGame();
+	m_chessEngine->resetGame();
+	m_chessEngine->setSkillLevel(1);
 }
 
 bool SGameSinglePlayer::update(float deltaTime)
 {
 	BaseGame::update(deltaTime);
 
-	m_stockfish->runEngine(deltaTime);
-	if (m_stockfish->pollEngine()) {
-		auto message = m_stockfish->getMessage();
+	m_chessEngine->runEngine(deltaTime);
+	if (m_chessEngine->pollEngine()) {
+		auto message = m_chessEngine->getMessage();
 		std::cout << message.message << std::endl;
 		switch (message.messageType)
 		{
@@ -75,7 +58,7 @@ bool SGameSinglePlayer::handleEvent(const sf::Event & event)
 			ChessMove newMove;
 			if (m_boardManager->endSelection(mousePos, newMove)) {
 				if (m_boardManager->inputMove(newMove, false, false)) {
-					m_stockfish->requestMove(m_boardManager->getFENFormat());
+					m_chessEngine->requestMove(m_boardManager->getFENFormat());
 				}
 			}
 		}
@@ -83,10 +66,6 @@ bool SGameSinglePlayer::handleEvent(const sf::Event & event)
 
 	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
 		m_stateManager->switchState(States::Pause);
-	}
-
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Q) {
-		m_stockfish->requestMove(m_boardManager->getFENFormat());
 	}
 
 	return false;
@@ -98,8 +77,15 @@ void SGameSinglePlayer::onQuitGame(const EventArgs & eventInfo) {
 }
 
 void SGameSinglePlayer::onResetBoard(const EventArgs& eventInfo) {
-	m_boardManager->resetGame();
-	m_stockfish->resetGame();
+	onCreate();
+}
+
+void SGameSinglePlayer::onSwitchBoard(const EventArgs & eventInfo) {
+	m_myColour = m_myColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
+	m_boardManager->resetGame(m_myColour);
+
+	if (m_myColour == PieceColour::Black)
+		m_chessEngine->requestMove(m_boardManager->getFENFormat());
 }
 
 

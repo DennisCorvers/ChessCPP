@@ -8,7 +8,7 @@ namespace URI {
 
 	URIConnector::URIConnector(const std::string & path, EngineInformation & engineInfo) :
 		hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL),
-		m_info(engineInfo)
+		m_info(engineInfo), m_isWorking(false), m_workTime(0)
 	{
 		char* writable = new char[path.size() + 1];
 		std::copy(path.begin(), path.end(), writable);
@@ -52,7 +52,17 @@ namespace URI {
 	void URIConnector::runEngine(float deltaTime)
 	{
 		m_lastUpdate += deltaTime;
-		if (m_lastUpdate < m_info.pollIntervalSec)
+
+		if (m_isWorking) {
+			m_workTime += deltaTime;
+			if (m_workTime > m_info.maxEngineTime) {
+				sendCommand("stop\n");
+				m_isWorking = false;
+				m_workTime = 0;
+			}
+		}
+
+		if (m_lastUpdate < m_info.pollInterval)
 			return;
 
 		m_lastUpdate = 0;
@@ -72,7 +82,9 @@ namespace URI {
 	void URIConnector::requestMove(const std::string& FENString)
 	{
 		queueCommand("position fen " + FENString + '\n');
-		queueCommand("go movetime " + std::to_string(m_info.maxEngineTimeMs) + '\n');
+		queueCommand("go\n");
+		m_isWorking = true;
+		//queueCommand("go movetime " + std::to_string(m_info.maxEngineTimeMs) + '\n');
 	}
 
 	void URIConnector::stopEngine() {
@@ -148,6 +160,7 @@ namespace URI {
 		std::cout << message << std::endl;
 		if (message.compare(0, BESTMOVE.size(), BESTMOVE) == 0) {
 			m_fromEngine.emplace(EngineMessageType::BestMove, message.substr(BESTMOVE.size() + 1, 4));
+			m_isWorking = false;
 			return;
 		}
 	}

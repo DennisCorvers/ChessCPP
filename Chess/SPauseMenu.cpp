@@ -104,13 +104,8 @@ void SPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)
 	buttons.push_back(tgui::Button::create("New Game"));
 	buttons.back()->connect("pressed", &SPauseMenu::onNewGamePressed, this);
 
-	if (!m_stateManager->hasState(States::SinglePlayer)) {
-		buttons.push_back(tgui::Button::create("Swap Colour"));
-		buttons.back()->connect("pressed", &SPauseMenu::onSwapColourPressed, this);
-	}
-	else {
-		buttons.push_back(nullptr);
-	}
+	buttons.push_back(tgui::Button::create("Swap Colour"));
+	buttons.back()->connect("pressed", &SPauseMenu::onSwapColourPressed, this);
 
 	buttons.push_back(tgui::Button::create("Quit Game"));
 	buttons.back()->connect("pressed", &SPauseMenu::onQuitGamePressed, this);
