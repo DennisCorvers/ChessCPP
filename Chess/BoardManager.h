@@ -2,7 +2,6 @@
 #include "Enums.h"
 #include "ChessMove.h"
 #include "assetNames.h"
-#include "Entity.h"
 
 namespace BoardSettings {
 	static const char DEFAULTBOARD[64]{
@@ -44,6 +43,7 @@ public:
 
 	const sf::Vector2f getBoardCenter();
 
+	void resetGame(PieceColour orientation);
 	void resetGame();
 
 	void flipBoard(PieceColour orientation);

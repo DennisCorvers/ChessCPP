@@ -168,7 +168,6 @@ std::string ChessBoard::getFENFormat() const
 	//FULLMOVE COUNTER
 	FENString += std::to_string(m_moveNumber / 2 + 1);
 
-	std::cout << FENString << std::endl;
 	return FENString;
 }
 

@@ -47,9 +47,13 @@ ChessPieceManager::~ChessPieceManager()
 		delete m_chessPieces[i];
 }
 
-void ChessPieceManager::flipBoard(const PieceColour orientation)
+void ChessPieceManager::flipBoard(const PieceColour orientation, bool forceRefresh)
 {
-	if (m_viewOrientation != orientation) {
+	if (forceRefresh) {
+		m_viewOrientation = orientation;
+		refreshBoard();
+	}
+	else if (m_viewOrientation != orientation) {
 		m_viewOrientation = orientation;
 		refreshBoard();
 	}
@@ -114,6 +118,7 @@ void ChessPieceManager::inputMove(const ChessAction & newAction, bool animate)
 		sf::Vector2i boardPosition(newAction.moveTo.x(), newAction.moveTo.y());
 		sf::Vector2f newPosition = boardToScreen(boardPosition);
 		auto pieceFrom = getClickedPiece(newAction.moveFrom);
+		ASSERT(pieceFrom != nullptr, "No piece at " << newAction.moveFrom);
 
 		auto animation = new AnimatorComponent(*pieceFrom, newPosition);
 

@@ -40,8 +40,19 @@ public:
 		return !(*this == rhs);
 	}
 
+	static ChessMove fromChessNotation(const std::string& chessNotation) {
+		if (chessNotation.size() < 4)
+			throw std::exception("Invalid Chess Notation");
+		return ChessMove(
+			ChessPosition::fromChessNotation(chessNotation),
+			ChessPosition::fromChessNotation(chessNotation.substr(2, 2))
+		);
+	}
+	std::string toChessNotation() const {
+		return m_positionFrom.toChessNotation() + m_positionTo.toChessNotation();
+	}
 	friend std::ostream& operator<<(std::ostream& output, const ChessMove& cp) {
-		return output << cp.getPositionFrom() << cp.getPositionTo();
+		return output << cp.toChessNotation();
 	}
 };
 

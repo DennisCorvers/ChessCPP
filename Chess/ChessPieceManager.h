@@ -133,7 +133,7 @@ public:
 	void updateSelection(const sf::Vector2f screenPosition);
 	bool endSelection(const sf::Vector2f screenPosition, ChessMove& outMove);
 
-	void flipBoard(const PieceColour orientation);
+	void flipBoard(const PieceColour orientation, bool forceRefresh = false);
 	void flipBoard();
 	void updateBoard(const ChessBoard& board);
 	void refreshBoard(const ChessBoard& board);

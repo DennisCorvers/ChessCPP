@@ -7,59 +7,80 @@
 //https://gist.github.com/aliostad/f4470274f39d29b788c1b09519e67372
 //https://www.chessprogramming.org/Forsyth-Edwards_Notation#:~:text=Forsyth%2DEdwards%20Notation%20(FEN),of%20the%20Portable%20Game%20Notation%20.
 
-struct EngineInformation {
-	float pollIntervalSec = 0.1f;
-	unsigned int maxEngineTimeMs = 500;
-};
+namespace URI {
 
-class URIConnector {
-private:
+	enum struct EngineMessageType {
+		UCIOK,
+		ReadyOK,
+		BestMove
+	};
 
-	STARTUPINFO lpStartupInfo = { 0 };
-	SECURITY_ATTRIBUTES lpPipeAttributes = { 0 };
-	PROCESS_INFORMATION lpProcessInformation = { 0 };
-	HANDLE hWritePipeIn;
-	HANDLE hReadPipeIn;
-	HANDLE hWritePipeOut;
-	HANDLE hReadPipeOut;
-	BYTE buffer[2048];
-	DWORD lpNumberOfBytesWritten;
-	DWORD lpBytesRead;
-	DWORD lpTotalBytesAvail;
+	struct EngineMessage {
+		EngineMessage() = delete;
+		EngineMessage(EngineMessageType messageType, const std::string& message) :
+			messageType(messageType),
+			message(message) {}
+		EngineMessageType messageType;
+		std::string message;
+	};
 
-	unsigned int m_skillLevel;
-	float m_lastUpdate;
-	EngineInformation m_info;
+	struct EngineInformation {
+		float pollIntervalSec = 0.1f;
+		unsigned int maxEngineTimeMs = 500;
+	};
 
-public:
-	URIConnector(const std::string& path, EngineInformation& engineInfo);
+	class URIConnector {
+	private:
+		STARTUPINFO lpStartupInfo = { 0 };
+		SECURITY_ATTRIBUTES lpPipeAttributes = { 0 };
+		PROCESS_INFORMATION lpProcessInformation = { 0 };
+		HANDLE hWritePipeIn;
+		HANDLE hReadPipeIn;
+		HANDLE hWritePipeOut;
+		HANDLE hReadPipeOut;
+		BYTE buffer[2048];
+		DWORD lpNumberOfBytesWritten;
+		DWORD lpBytesRead;
+		DWORD lpTotalBytesAvail;
 
-	virtual ~URIConnector();
+		bool m_engineReady;
+		std::stack<std::string> m_toEngine;
+		std::stack <EngineMessage> m_fromEngine;
 
-	void resetGame();
+		unsigned int m_skillLevel;
+		float m_lastUpdate;
+		EngineInformation m_info;
 
-	void setSkillLevel(const unsigned int skillLevel);
-	unsigned int getSkillLevel() const;
+	public:
+		void setSkillLevel(const unsigned int skillLevel);
+		unsigned int getSkillLevel() const;
 
-	void update(float deltaTime);
+		URIConnector(const std::string& path, EngineInformation& engineInfo);
 
-	void requestMove(const std::string& position);
+		virtual ~URIConnector();
 
-	void stopEngine();
+		void resetGame();
 
-private:
+		void requestMove(const std::string& FENString);
 
-	void connectToEngine(char* path);
+		EngineMessage getMessage();
+		bool pollEngine();
+		void runEngine(float deltaTime);
+		void stopEngine();
 
-	void closeConnection();
+	private:
 
-	inline void sendCommand(const std::string& command) {
-		WriteFile(hWritePipeIn, command.c_str(), command.length(), &lpNumberOfBytesWritten, NULL);
-	}
+		void connectToEngine(char* path);
 
-	bool pollEngine();
+		void sendCommand(const std::string& command);
+		void queueCommand(const std::string& command);
 
-	std::string readEngine();
-};
+		bool pollEngineRead();
+		void readEngine();
+		void processEngineMessage(const std::string& message);
+
+		void closeConnection();
+	};
+}
 
 #pragma warning( default : 4267 )

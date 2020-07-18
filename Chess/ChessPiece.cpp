@@ -2,6 +2,15 @@
 #include "ChessPiece.h"
 #include "Enums.h"
 
+void ChessPiece::setType(PieceType type) {
+	m_pieceData = (m_pieceData & (~type_mask)) | (static_cast<char>(type));
+}
+
+void ChessPiece::setColour(PieceColour colour) {
+	char value = colour == PieceColour::Black ? 0 : colour_mask;
+	m_pieceData = (m_pieceData & (~colour_mask)) | value;
+}
+
 ChessPiece::ChessPiece() :
 	m_pieceData(0)
 {}
@@ -24,6 +33,21 @@ ChessPiece::ChessPiece(PieceColour colour, PieceType pieceType)
 ChessPiece::~ChessPiece()
 {
 
+}
+
+void ChessPiece::reset() {
+	m_pieceData = 0;
+}
+
+void ChessPiece::setTo(const ChessPiece piece, bool hasMoved) {
+	m_pieceData = piece.m_pieceData;
+
+	if (hasMoved)
+		setMoved();
+}
+
+void ChessPiece::setTo(PieceType newType) {
+	setType(newType);
 }
 
 char ChessPiece::getFEN() const

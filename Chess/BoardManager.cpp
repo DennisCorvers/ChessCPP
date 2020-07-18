@@ -20,6 +20,13 @@ const sf::Vector2f BoardManager::getBoardCenter() {
 	return m_pieceManager->getCenter();
 }
 
+void BoardManager::resetGame(PieceColour orientation)
+{
+	m_board->resetBoard(BoardSettings::DEFAULTBOARD);
+	m_pieceManager->updateBoard(*m_board);
+	m_pieceManager->flipBoard(orientation, true);
+}
+
 void BoardManager::resetGame()
 {
 	m_board->resetBoard(BoardSettings::DEFAULTBOARD);

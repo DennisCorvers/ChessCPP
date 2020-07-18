@@ -14,8 +14,6 @@ SGameSandbox::~SGameSandbox()
 {}
 
 void SGameSandbox::onCreate() {
-
-
 	m_boardManager->resetGame();
 }
 

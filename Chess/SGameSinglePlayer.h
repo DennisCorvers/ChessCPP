@@ -1,12 +1,15 @@
 #pragma once
 #include "BaseGame.h"
 
-class URIConnector;
+namespace URI { class URIConnector; }
 class EventArgs;
 class SGameSinglePlayer : public BaseGame
 {
 private:
-	std::unique_ptr<URIConnector> m_stockfish;
+	std::unique_ptr<URI::URIConnector> m_stockfish;
+
+	void switchBoard();
+	PieceColour m_myColour;
 
 public:
 	SGameSinglePlayer(StateManager& stateManager);

@@ -11,14 +11,8 @@ private:
 
 	unsigned char m_pieceData = 0;
 
-	void setType(PieceType type) {
-		m_pieceData = (m_pieceData & (~type_mask)) | (static_cast<char>(type));
-	}
-	void setColour(PieceColour colour) {
-
-		char value = colour == PieceColour::Black ? 0 : colour_mask;
-		m_pieceData = (m_pieceData & (~colour_mask)) | value;
-	}
+	void setType(PieceType type);
+	void setColour(PieceColour colour);
 
 public:
 	ChessPiece();
@@ -36,18 +30,9 @@ public:
 		m_pieceData |= moved_mask;
 	}
 
-	void reset() {
-		m_pieceData = 0;
-	}
-	void setTo(const ChessPiece piece, bool hasMoved = true) {
-		m_pieceData = piece.m_pieceData;
-
-		if (hasMoved)
-			setMoved();
-	}
-	void setTo(PieceType newType) {
-		setType(newType);
-	}
+	void reset();
+	void setTo(const ChessPiece piece, bool hasMoved = true);
+	void setTo(PieceType newType);
 
 	inline PieceColour getColour() const
 	{
