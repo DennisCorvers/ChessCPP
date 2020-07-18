@@ -123,7 +123,6 @@ namespace URI {
 	}
 
 	void URI::URIConnector::sendCommand(const std::string & command) {
-		std::cout << command << std::endl;
 		WriteFile(hWritePipeIn, command.c_str(), static_cast<DWORD>(command.length()), &lpNumberOfBytesWritten, NULL);
 	}
 
@@ -146,7 +145,7 @@ namespace URI {
 		{
 			int start = 0;
 			if (!ReadFile(hReadPipeOut, buffer, sizeof(buffer), &lpBytesRead, NULL) || !lpBytesRead) break;
-			for (unsigned int i = 0; i < lpBytesRead; i++) {
+			for (unsigned int i = 1; i < lpBytesRead; i++) {
 				if (buffer[i] == '\n') {
 					processEngineMessage(std::string((char*)buffer + start, i - start - 1));
 					start = i + 1;
@@ -157,8 +156,10 @@ namespace URI {
 
 	void URIConnector::processEngineMessage(const std::string& message)
 	{
-		std::cout << message << std::endl;
 		if (message.compare(0, BESTMOVE.size(), BESTMOVE) == 0) {
+			int pos = message.find("none", 10, 4);
+			if (pos > 0) //Engine found no more moves. Likely end game?
+				return;
 			m_fromEngine.emplace(EngineMessageType::BestMove, message.substr(BESTMOVE.size() + 1, 4));
 			m_isWorking = false;
 			return;

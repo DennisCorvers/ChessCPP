@@ -19,9 +19,12 @@ SGameSinglePlayer::~SGameSinglePlayer()
 }
 
 void SGameSinglePlayer::onCreate() {
-	m_boardManager->resetGame();
+	m_boardManager->resetGame(m_myColour);
 	m_chessEngine->resetGame();
-	m_chessEngine->setSkillLevel(1);
+	m_chessEngine->setSkillLevel(20);
+
+	if (m_myColour == PieceColour::Black)
+		m_chessEngine->requestMove(m_boardManager->getFENFormat());
 }
 
 bool SGameSinglePlayer::update(float deltaTime)
@@ -31,11 +34,10 @@ bool SGameSinglePlayer::update(float deltaTime)
 	m_chessEngine->runEngine(deltaTime);
 	if (m_chessEngine->pollEngine()) {
 		auto message = m_chessEngine->getMessage();
-		std::cout << message.message << std::endl;
 		switch (message.messageType)
 		{
 		case URI::EngineMessageType::BestMove:
-			m_boardManager->inputMove(ChessMove::fromChessNotation(message.message), true, true);
+			m_boardManager->inputMove(ChessMove::fromChessNotation(message.message), false, true);
 			break;
 		default:
 			break;
@@ -82,10 +84,7 @@ void SGameSinglePlayer::onResetBoard(const EventArgs& eventInfo) {
 
 void SGameSinglePlayer::onSwitchBoard(const EventArgs & eventInfo) {
 	m_myColour = m_myColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
-	m_boardManager->resetGame(m_myColour);
-
-	if (m_myColour == PieceColour::Black)
-		m_chessEngine->requestMove(m_boardManager->getFENFormat());
+	onCreate();
 }
 
 

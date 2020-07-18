@@ -11,7 +11,7 @@ private:
 	bool m_isAnimating;
 
 public:
-	AnimatorComponent(Entity& target, sf::Vector2f targetPosition, float timeToTarget = .15f);
+	AnimatorComponent(Entity& target, sf::Vector2f targetPosition, float timeToTarget = .2f);
 	virtual ~AnimatorComponent();
 
 	inline bool isAnimating() {
