@@ -21,7 +21,7 @@ namespace URI {
 	};
 
 	struct EngineInformation {
-		float pollInterval = .5f;
+		float pollInterval = .1f;
 		unsigned int maxEngineTime = 1.0f;
 	};
 

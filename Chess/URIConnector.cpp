@@ -82,9 +82,10 @@ namespace URI {
 	void URIConnector::requestMove(const std::string& FENString)
 	{
 		queueCommand("position fen " + FENString + '\n');
-		queueCommand("go\n");
+		//queueCommand("go\n");
+		queueCommand("go movetime " + std::to_string(m_info.maxEngineTime * 1000) + '\n');
 		m_isWorking = true;
-		//queueCommand("go movetime " + std::to_string(m_info.maxEngineTimeMs) + '\n');
+
 	}
 
 	void URIConnector::stopEngine() {
