@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <string>
+#include <mutex>
 
 enum LoggerSeverity {
 	NONE = 0,
@@ -23,6 +24,8 @@ private:
 	const std::string DATETIME_FORMAT = "[%d-%m-%Y %H:%M:%S]: ";
 	LoggerSeverity m_loggerSeverity;
 	std::fstream m_logFile;
+
+	std::mutex m_lock;
 
 public:
 	LogMode LoggerMode = LogMode::Both;

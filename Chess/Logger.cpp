@@ -145,12 +145,13 @@ void Logger::log_inner(LoggerSeverity severity, const std::string& message, cons
 		return;
 
 	auto output = getTime() + prefix + message + '\n';
-
 	if (LoggerMode & LogMode::Console)
 		std::cout << output;
 
 	if (LoggerMode & LogMode::File) {
 		if (m_logFile) {
+			const std::lock_guard<std::mutex> lock(m_lock);
+
 			m_logFile << output;
 			m_logFile.flush();
 		}

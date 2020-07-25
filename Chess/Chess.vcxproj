@@ -168,6 +168,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="ChessPieceEntity.cpp" />
     <ClCompile Include="ChessRules.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -205,6 +206,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="ChessPosition.h" />
     <ClInclude Include="ChessRules.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Configuration.h" />
     <ClInclude Include="DebugOverlay.hpp" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enums.h" />
