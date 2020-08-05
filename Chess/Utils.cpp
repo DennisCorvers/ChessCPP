@@ -1,5 +1,5 @@
 #include "pch.h"
-
+#include <cctype>
 
 namespace Math {
 	int limit(int value, int upper) {
@@ -92,4 +92,23 @@ namespace Graphics {
 		window.setSize(newSize);
 		return window.getSize();
 	}
+}
+
+
+std::string String::toLower(const std::string & str)
+{
+	std::string low(str);
+	std::transform(low.begin(), low.end(), low.begin(),
+		[](unsigned char c) { return std::tolower(c); }
+	);
+
+	return low;
+}
+
+bool String::stob(const std::string & str)
+{
+	std::string low = toLower(str);
+	if (!low.compare("true"))
+		return true;
+	return false;
 }

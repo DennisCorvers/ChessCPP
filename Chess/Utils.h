@@ -42,5 +42,10 @@ inline bool operator < (const sf::Vector2i& a, const sf::Vector2i& b) {
 	return a.x < b.x && a.y << b.y;
 }
 
+namespace String {
+	std::string toLower(const std::string& str);
+	bool stob(const std::string& str);
+}
+
 
 
