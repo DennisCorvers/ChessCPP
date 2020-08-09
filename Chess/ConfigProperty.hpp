@@ -1,6 +1,8 @@
 #pragma once
 struct ConfigProperty {
 private:
+	using string = const std::string&;
+
 	std::string m_name;
 	std::string m_comment;
 
@@ -11,6 +13,12 @@ private:
 
 	bool m_isChanged;
 
+	ConfigProperty(string name, string comment = "") :
+		m_name(name),
+		m_comment(comment),
+		m_isChanged(false)
+	{ }
+
 	inline void setMinValue(const std::string& minValue) {
 		m_minValue = minValue;
 	}
@@ -18,18 +26,11 @@ private:
 		m_maxValue = maxValue;
 	}
 
-	using string = const std::string&;
-
 public:
-	ConfigProperty(string name, string value, string comment = "") :
-		m_name(name),
-		m_value(value),
-		m_defaultValue(value),
-		m_comment(comment),
-		m_minValue("-2147483647"),
-		m_maxValue("2147483647"),
-		m_isChanged(false)
-	{ }
+	using Ptr = std::shared_ptr<ConfigProperty>;
+	static Ptr create(string name, string comment = "") {
+		return std::make_shared<ConfigProperty>(name, comment);
+	}
 
 	virtual ~ConfigProperty() {};
 
@@ -76,7 +77,7 @@ public:
 	}
 	int getInt(int defaultValue) {
 		try {
-			std::stoi(m_value);
+			return std::stoi(m_value);
 		}
 		catch (...) {
 			return defaultValue;
@@ -88,7 +89,7 @@ public:
 	}
 	long getLong(long defaultValue) {
 		try {
-			std::stol(m_value);
+			return std::stol(m_value);
 		}
 		catch (...) {
 			return defaultValue;
@@ -100,7 +101,7 @@ public:
 	}
 	float getFloat(float defaultValue) {
 		try {
-			std::stof(m_value);
+			return std::stof(m_value);
 		}
 		catch (...) {
 			return defaultValue;
@@ -112,7 +113,7 @@ public:
 	}
 	double getDouble(double defaultValue) {
 		try {
-			std::stod(m_value);
+			return std::stod(m_value);
 		}
 		catch (...) {
 			return defaultValue;

@@ -6,7 +6,7 @@
 class Configuration
 {
 private:
-	std::map<std::string, ConfigProperty> m_properties;
+	std::map<std::string, ConfigProperty::Ptr> m_properties;
 
 	std::fstream m_file;
 	std::string m_filePath;
@@ -20,6 +20,7 @@ public:
 	virtual void save();
 	virtual void load();
 
-	ConfigProperty get(const std::string& key);
+	void registerProperty(ConfigProperty::Ptr configProperty);
+	ConfigProperty::Ptr get(const std::string& key);
 };
 

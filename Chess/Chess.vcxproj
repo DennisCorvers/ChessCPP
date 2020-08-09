@@ -206,6 +206,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="ChessPosition.h" />
     <ClInclude Include="ChessRules.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="ConfigManager.hpp" />
     <ClInclude Include="ConfigProperty.hpp" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="DebugOverlay.hpp" />
