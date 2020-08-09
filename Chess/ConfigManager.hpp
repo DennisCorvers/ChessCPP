@@ -12,17 +12,12 @@ public:
 	ConfigManager() :
 		m_config("Settings.ini")
 	{
-		try {
-			m_config.load();
-		}
-		catch (...) {
 
-		}
 	}
 
 
 private:
 	void initConfig() {
-		auto portConfig = ConfigProperty::create("PortNumber");
+		//auto portConfig = new BoolProperty();
 	}
 };

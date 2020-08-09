@@ -110,5 +110,8 @@ bool String::stob(const std::string & str)
 	std::string low = toLower(str);
 	if (!low.compare("true"))
 		return true;
-	return false;
+	if (!low.compare("false"))
+		return false;
+	
+	throw new std::invalid_argument("Conversion to bool not possible.");
 }

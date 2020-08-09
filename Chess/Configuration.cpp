@@ -27,8 +27,8 @@ void Configuration::load()
 
 }
 
-void Configuration::registerProperty(const ConfigProperty& prop)
-{
-	m_properties.emplace(prop);
+void Configuration::clearProperties() {
+	m_properties.clear();
 }
+
 

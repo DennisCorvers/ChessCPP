@@ -22,5 +22,10 @@ public:
 
 	void registerProperty(ConfigProperty::Ptr configProperty);
 	ConfigProperty::Ptr get(const std::string& key);
+
+	void clearProperties();
+
+	template<typename T>
+	std::shared_ptr<T> get(const std::string& key);
 };
 

@@ -1,193 +1,186 @@
 #pragma once
-struct ConfigProperty {
+class ConfigProperty {
 private:
-	using string = const std::string&;
-
 	std::string m_name;
 	std::string m_comment;
 
-	std::string m_minValue;
-	std::string m_maxValue;
-	std::string m_defaultValue;
-	std::string m_value;
+	bool m_isRead;
 
-	bool m_isChanged;
+protected:
+	using string = const std::string&;
+	virtual void fromString(string value) = 0;
+
+public:
+	using Ptr = std::shared_ptr<ConfigProperty>;
+	bool IsChanged;
 
 	ConfigProperty(string name, string comment = "") :
 		m_name(name),
 		m_comment(comment),
-		m_isChanged(false)
+		IsChanged(false),
+		m_isRead(false)
 	{ }
 
-	inline void setMinValue(const std::string& minValue) {
-		m_minValue = minValue;
+	bool isRead() const {
+		return m_isRead;
 	}
-	inline void setMaxValue(const std::string& maxValue) {
-		m_maxValue = maxValue;
+
+	void readProperty(string value) {
+		m_isRead = true;
+		fromString(value);
+	}
+
+	ConfigProperty& setComment(string comment) {
+		m_comment = comment;
+		return *this;
+	}
+
+	string getComment() {
+		return m_comment;
+	}
+
+	string getName() {
+		return m_name;
+	}
+};
+
+class StringProperty : public ConfigProperty {
+private:
+	std::string m_defaultValue;
+	std::string m_value;
+
+public:
+	StringProperty(string name, string defaultValue, string comment = "") :
+		m_defaultValue(defaultValue),
+		m_value(defaultValue),
+		ConfigProperty(name, comment) {	}
+
+	string getValue() {
+		return m_value;
+	}
+
+	StringProperty& setValue(string value) {
+		IsChanged = true;
+		m_value = value;
+	}
+
+	virtual void fromString(string value) override {
+		m_value = value;
+	}
+};
+
+class BoolProperty : public ConfigProperty {
+private:
+	bool m_defaultValue;
+	bool m_value;
+
+public:
+	BoolProperty(string name, bool defaultValue, string comment = "") :
+		m_defaultValue(defaultValue),
+		m_value(defaultValue),
+		ConfigProperty(name, comment) { }
+
+	bool getValue() {
+		return m_value;
+	}
+
+	BoolProperty& setValue(bool value) {
+		IsChanged = true;
+		m_value = value;
+	}
+
+	virtual void fromString(const std::string & value) override {
+		try {
+			m_value = String::stob(value);
+		}
+		catch (const std::invalid_argument&) {
+			m_value = m_defaultValue;
+		}
+	}
+};
+
+template<typename T, typename PropType>
+class NumericProperty : public ConfigProperty {
+public:
+	T m_defaultValue;
+	T m_value;
+	T m_minValue;
+	T m_maxValue;
+
+protected:
+	NumericProperty(string name, T defaultValue, T minValue, T maxValue, string comment = "") :
+		m_value(defaultValue),
+		m_defaultValue(defaultValue),
+		m_minValue(minValue),
+		m_maxValue(maxValue),
+		ConfigProperty(name, comment)
+	{
+		if (defaultValue < minValue)
+			throw new std::invalid_argument("Defaultvalue is smaller than MinValue");
+
+		if (defaultValue > maxValue)
+			throw new std::invalid_argument("Defaultvalue is larger than MaxValue");
+
+		if (minValue > maxValue)
+			throw new std::invalid_argument("MinValue is larger than MaxValue");
 	}
 
 public:
-	using Ptr = std::shared_ptr<ConfigProperty>;
-	static Ptr create(string name, string comment = "") {
-		return std::make_shared<ConfigProperty>(name, comment);
+	PropType& setMinValue(T minValue) {
+		m_minValue = minValue;
+		return static_cast<PropType&>(*this);
 	}
-
-	virtual ~ConfigProperty() {};
-
-	void setToDefault() {
-		m_value = m_defaultValue;
-	}
-
-	void resetChangedState() {
-		m_isChanged = false;
-	}
-
-	const std::string& getComment() {
-		return m_comment;
-	}
-	const std::string& getName() {
-		return m_name;
-	}
-	const std::string& getValue() {
-		return m_value;
-	}
-	const std::string& getDefaultValue() {
-		return m_defaultValue;
-	}
-	const std::string& getMinValue() {
+	const T getMinValue() const {
 		return m_minValue;
 	}
-	const std::string& getMaxValue() {
+
+	PropType& setMaxValue(T maxValue) {
+		m_maxValue = maxValue;
+		return static_cast<PropType&>(*this);
+	}
+	const T getMaxValue() const {
 		return m_maxValue;
 	}
 
-	bool isBoolValue() {
-		std::string low = String::toLower(m_value);
-		return low.compare("true") || low.compare("false");
-	}
-	bool getBool() {
-		return isBoolValue() ? String::stob(m_value) : String::stob(m_defaultValue);
-	}
-	bool getBool(bool defaultValue) {
-		return isBoolValue() ? String::stob(m_value) : defaultValue;
+	const T getDefaultValue() const {
+		return m_defaultValue;
 	}
 
-	int getInt() {
-		return getInt(std::stoi(m_defaultValue));
+	PropType& setValue(T value) {
+		m_value = value < m_minValue ? m_minValue : value > m_maxValue ? m_maxValue : value;
+		return static_cast<PropType&>(*this);
 	}
-	int getInt(int defaultValue) {
-		try {
-			return std::stoi(m_value);
-		}
-		catch (...) {
-			return defaultValue;
-		}
-	}
-
-	long getLong() {
-		return getLong(std::stol(m_defaultValue));
-	}
-	long getLong(long defaultValue) {
-		try {
-			return std::stol(m_value);
-		}
-		catch (...) {
-			return defaultValue;
-		}
-	}
-
-	float getFloat() {
-		return getFloat(std::stof(m_defaultValue));
-	}
-	float getFloat(float defaultValue) {
-		try {
-			return std::stof(m_value);
-		}
-		catch (...) {
-			return defaultValue;
-		}
-	}
-
-	double getDouble() {
-		return getDouble(std::stod(m_defaultValue));
-	}
-	double getDouble(double defaultValue) {
-		try {
-			return std::stod(m_value);
-		}
-		catch (...) {
-			return defaultValue;
-		}
-	}
-
-	inline void setValue(const std::string& value) {
-		m_value = value;
-		m_isChanged = true;
-	}
-	void setValue(bool value) {
-		if (value)
-			setValue("true");
-		else
-			setValue("false");
-	}
-	void setValue(int value) {
-		setValue(std::to_string(value));
-	}
-	void setValue(long value) {
-		setValue(std::to_string(value));
-	}
-	void setValue(float value) {
-		setValue(std::to_string(value));
-	}
-	void setValue(double value) {
-		setValue(std::to_string(value));
-	}
-
-	inline void setDefaultValue(const std::string& value) {
-		m_defaultValue = value;
-	}
-	void setDefaultValue(bool value) {
-		if (value)
-			setDefaultValue("true");
-		else
-			setDefaultValue("false");
-	}
-	void setDefaultValue(int value) {
-		setDefaultValue(std::to_string(value));
-	}
-	void setDefaultValue(long value) {
-		setDefaultValue(std::to_string(value));
-	}
-	void setDefaultValue(float value) {
-		setDefaultValue(std::to_string(value));
-	}
-	void setDefaultValue(double value) {
-		setDefaultValue(std::to_string(value));
-	}
-
-	void setMinValue(int value) {
-		setMinValue(std::to_string(value));
-	}
-	void setMinValue(long value) {
-		setMinValue(std::to_string(value));
-	}
-	void setMinValue(float value) {
-		setMinValue(std::to_string(value));
-	}
-	void setMinValue(double value) {
-		setMinValue(std::to_string(value));
-	}
-
-	void setMaxValue(int value) {
-		setMaxValue(std::to_string(value));
-	}
-	void setMaxValue(long value) {
-		setMaxValue(std::to_string(value));
-	}
-	void setMaxValue(float value) {
-		setMaxValue(std::to_string(value));
-	}
-	void setMaxValue(double value) {
-		setMaxValue(std::to_string(value));
+	const T getValue() const {
+		return m_value;
 	}
 };
+
+class IntProperty : public NumericProperty<int, IntProperty> {
+public:
+	IntProperty(string name, int defaultValue, string comment = "") :
+		NumericProperty(name, defaultValue, INT_MIN, INT_MAX, comment) { }
+
+	IntProperty(string name, int defaultValue, int minValue, int maxValue, string comment = "") :
+		NumericProperty(name, defaultValue, minValue, maxValue, comment) { }
+
+	virtual void fromString(const std::string & value) override {
+		try {
+			setValue(std::stoi(value));
+		}
+		catch (const std::invalid_argument&) {
+			m_value = m_defaultValue;
+		}
+	}
+};
+
+//class LongProperty : public ConfigProperty {
+//
+//};
+//
+//class FloatProperty : public ConfigProperty {
+//
+//};
+//
+//class DoubleProperty : public ConfigProperty {
+//
+//};
