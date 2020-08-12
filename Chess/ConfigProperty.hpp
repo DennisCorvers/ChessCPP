@@ -1,14 +1,35 @@
 #pragma once
+#include <cctype>
+
+inline int stob(const std::string& _Str)
+{
+	const char *_Ptr = _Str.c_str();
+
+	if (!_Ptr)
+		std::_Xinvalid_argument("invalid stob argument");
+
+	std::string low(_Str);
+	std::transform(low.begin(), low.end(), low.begin(),
+		[](unsigned char c) { return std::tolower(c); }
+	);
+
+	if (!low.compare("true")) return true;
+	if (!low.compare("false")) return false;
+
+	std::_Xinvalid_argument("stob argument out of range");
+}
+
 class ConfigProperty {
 private:
-	std::string m_name;
-	std::string m_comment;
-
 	bool m_isRead;
 
 protected:
+	std::string m_name;
+	std::string m_comment;
+
 	using string = const std::string&;
 	virtual void fromString(string value) = 0;
+	virtual std::string getVerboseComment() = 0;
 
 public:
 	using Ptr = std::shared_ptr<ConfigProperty>;
@@ -20,6 +41,7 @@ public:
 		IsChanged(false),
 		m_isRead(false)
 	{ }
+	virtual ~ConfigProperty() {}
 
 	bool isRead() const {
 		return m_isRead;
@@ -29,13 +51,15 @@ public:
 		m_isRead = true;
 		fromString(value);
 	}
+	virtual std::string valueToString() = 0;
 
 	ConfigProperty& setComment(string comment) {
 		m_comment = comment;
 		return *this;
 	}
-
-	string getComment() {
+	std::string getComment(bool isVerbose = true) {
+		if (isVerbose)
+			return m_comment + ' ' + getVerboseComment();
 		return m_comment;
 	}
 
@@ -45,11 +69,28 @@ public:
 };
 
 class StringProperty : public ConfigProperty {
-private:
 	std::string m_defaultValue;
 	std::string m_value;
 
+	std::string getVerboseComment() override {
+		return "[default: " + m_defaultValue + ']';
+	}
+
+	void fromString(string value) override {
+		m_value = value;
+	}
+
+	std::string valueToString() override {
+		return m_value;
+	}
+
 public:
+	using Ptr = std::shared_ptr<StringProperty>;
+
+	static Ptr create(string name, string defaultValue, string comment = "") {
+		return std::make_shared<StringProperty>(name, defaultValue, comment);
+	}
+
 	StringProperty(string name, string defaultValue, string comment = "") :
 		m_defaultValue(defaultValue),
 		m_value(defaultValue),
@@ -63,18 +104,37 @@ public:
 		IsChanged = true;
 		m_value = value;
 	}
-
-	virtual void fromString(string value) override {
-		m_value = value;
-	}
 };
 
 class BoolProperty : public ConfigProperty {
-private:
 	bool m_defaultValue;
 	bool m_value;
 
+	std::string getVerboseComment() override {
+		std::string defVal = m_value ? "true" : "false";
+		return "[default: " + defVal + ']';
+	}
+
+	void fromString(const std::string & value) override {
+		try {
+			m_value = stob(value);
+		}
+		catch (...) {
+			m_value = m_defaultValue;
+		}
+	}
+
+	std::string valueToString() override {
+		return m_value ? "true" : "false";
+	}
+
 public:
+	using Ptr = std::shared_ptr<BoolProperty>;
+
+	static Ptr create(string name, bool defaultValue, string comment = "") {
+		return std::make_shared<BoolProperty>(name, defaultValue, comment);
+	}
+
 	BoolProperty(string name, bool defaultValue, string comment = "") :
 		m_defaultValue(defaultValue),
 		m_value(defaultValue),
@@ -88,33 +148,28 @@ public:
 		IsChanged = true;
 		m_value = value;
 	}
-
-	virtual void fromString(const std::string & value) override {
-		try {
-			m_value = String::stob(value);
-		}
-		catch (const std::invalid_argument&) {
-			m_value = m_defaultValue;
-		}
-	}
 };
 
 template<typename T, typename PropType>
 class NumericProperty : public ConfigProperty {
-public:
-	T m_defaultValue;
-	T m_value;
-	T m_minValue;
-	T m_maxValue;
+	std::string getVerboseComment() override {
+		T defaultMinValue = std::numeric_limits<T>::min();
+		T defaultMaxValue = std::numeric_limits<T>::max();
+		std::stringstream ss;
+		ss << '[';
+		if (m_minValue != defaultMinValue && m_maxValue != defaultMaxValue)
+			ss << "range: " << m_minValue << " ~ " << m_maxValue << ", ";
+		else {
+			if (m_minValue != defaultMinValue)
+				ss << "min: " << m_minValue << ", ";
+			if (m_maxValue != defaultMaxValue)
+				ss << "max: " << m_maxValue << ", ";
+		}
+		ss << "default: " << m_defaultValue << ']';
+		return ss.str();
+	}
 
-protected:
-	NumericProperty(string name, T defaultValue, T minValue, T maxValue, string comment = "") :
-		m_value(defaultValue),
-		m_defaultValue(defaultValue),
-		m_minValue(minValue),
-		m_maxValue(maxValue),
-		ConfigProperty(name, comment)
-	{
+	inline void innerCreate(T defaultValue, T minValue, T maxValue) {
 		if (defaultValue < minValue)
 			throw new std::invalid_argument("Defaultvalue is smaller than MinValue");
 
@@ -123,9 +178,36 @@ protected:
 
 		if (minValue > maxValue)
 			throw new std::invalid_argument("MinValue is larger than MaxValue");
+
+		m_defaultValue = defaultValue;
+		m_value = defaultValue;
+		m_minValue = minValue;
+		m_maxValue = maxValue;
 	}
 
+protected:
+	T m_defaultValue;
+	T m_value;
+	T m_minValue;
+	T m_maxValue;
+
 public:
+	NumericProperty(string name, T defaultValue, string comment = "") :
+		ConfigProperty(name, comment) {
+		innerCreate(defaultValue, std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+	}
+	NumericProperty(string name, T defaultValue, T minValue, T maxValue, string comment = "") :
+		ConfigProperty(name, comment) {
+		innerCreate(defaultValue, minValue, maxValue);
+	}
+
+	static std::shared_ptr<PropType> create(string name, T defaultValue, string comment = "") {
+		return std::make_shared<PropType>(name, defaultValue, comment);
+	}
+	static std::shared_ptr<PropType> create(string name, T defaultValue, T minValue, T maxValue, string comment = "") {
+		return std::make_shared<PropType>(name, defaultValue, minValue, maxValue, comment);
+	}
+
 	PropType& setMinValue(T minValue) {
 		m_minValue = minValue;
 		return static_cast<PropType&>(*this);
@@ -156,31 +238,80 @@ public:
 };
 
 class IntProperty : public NumericProperty<int, IntProperty> {
-public:
-	IntProperty(string name, int defaultValue, string comment = "") :
-		NumericProperty(name, defaultValue, INT_MIN, INT_MAX, comment) { }
 
-	IntProperty(string name, int defaultValue, int minValue, int maxValue, string comment = "") :
-		NumericProperty(name, defaultValue, minValue, maxValue, comment) { }
-
-	virtual void fromString(const std::string & value) override {
+	void fromString(const std::string & value) override {
 		try {
 			setValue(std::stoi(value));
 		}
-		catch (const std::invalid_argument&) {
+		catch (...) {
 			m_value = m_defaultValue;
 		}
 	}
+
+	std::string valueToString() override {
+		return std::to_string(m_value);
+	}
+
+public:
+	using Ptr = std::shared_ptr<IntProperty>;
+	using NumericProperty::NumericProperty;
 };
 
-//class LongProperty : public ConfigProperty {
-//
-//};
-//
-//class FloatProperty : public ConfigProperty {
-//
-//};
-//
-//class DoubleProperty : public ConfigProperty {
-//
-//};
+class LongProperty : public NumericProperty<long long, LongProperty> {
+	using Long = long long;
+
+	void fromString(const std::string & value) override {
+		try {
+			setValue(std::stoll(value));
+		}
+		catch (...) {
+			m_value = m_defaultValue;
+		}
+	}
+
+	std::string valueToString() override {
+		return std::to_string(m_value);
+	}
+
+public:
+	using Ptr = std::shared_ptr<LongProperty>;
+	using NumericProperty::NumericProperty;
+};
+
+class FloatProperty : public NumericProperty<float, FloatProperty> {
+	void fromString(const std::string & value) override {
+		try {
+			setValue(std::stof(value));
+		}
+		catch (...) {
+			m_value = m_defaultValue;
+		}
+	}
+
+	std::string valueToString() override {
+		return std::to_string(m_value);
+	}
+
+public:
+	using Ptr = std::shared_ptr<FloatProperty>;
+	using NumericProperty::NumericProperty;
+};
+
+class DoubleProperty : public NumericProperty<double, DoubleProperty> {
+	void fromString(const std::string& value) override {
+		try {
+			setValue(std::stod(value));
+		}
+		catch (...) {
+			m_value = m_defaultValue;
+		}
+	}
+
+	std::string valueToString() override {
+		return std::to_string(m_value);
+	}
+
+public:
+	using Ptr = std::shared_ptr<DoubleProperty>;
+	using NumericProperty::NumericProperty;
+};
