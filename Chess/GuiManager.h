@@ -10,6 +10,7 @@ private:
 	int m_nextGuiID;
 	std::vector<GuiPair> m_guis;
 	std::queue<int> m_toRemove;
+	std::queue<int> m_toShow;
 	std::queue<GuiBase*> m_toAdd;
 
 public:

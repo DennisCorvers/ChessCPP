@@ -7,7 +7,7 @@ enum struct GuiState : char {
 	SHOW_ONTOP
 };
 
-class GuiBase
+class GuiBase : sf::NonCopyable
 {
 private:
 	friend class GuiManager;
@@ -20,9 +20,17 @@ public:
 	GuiBase(GuiManager& guiManager);
 	virtual ~GuiBase();
 
-	virtual void close();
+	////
+	///@brief Displays the Gui.
+	////
 	virtual void show();
+	////
+	///@brief Displays the Gui on top of all other Guis
+	////
 	virtual void showDialog();
+	////
+	///@brief Hides the Gui.
+	////
 	virtual void hide();
 
 protected:
@@ -46,18 +54,14 @@ protected:
 	////
 	///@brief Occurs after a Gui is activated
 	////
-	virtual void onActivate() {};
+	virtual void onShow() {};
 	////
-	///@brief Occurs before a Gui is destroyed
+	///@brief Occurs before the GuiManager deregisters the Gui
 	////
-	virtual void onDestroy() {};
-	////
-	///@brief Occurs after a Gui is closed
-	////
-	virtual void onClose() {};
+	virtual void onDispose() {};
 	////
 	///@brief Occurs after a Gui is hidden
 	////
-	virtual void onDeactivate() {};
+	virtual void onHide() {};
 };
 
