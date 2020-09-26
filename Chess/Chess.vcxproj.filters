@@ -39,6 +39,9 @@
     <Filter Include="Source Files\States\Base">
       <UniqueIdentifier>{f79f710a-693c-44ce-a400-a7b4347c15e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Gui">
+      <UniqueIdentifier>{e7016397-aca7-4944-9220-c4de8add6948}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -115,6 +118,12 @@
     </ClCompile>
     <ClCompile Include="Configuration.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiBase.cpp">
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +258,12 @@
     </ClInclude>
     <ClInclude Include="ConfigManager.hpp">
       <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiManager.h">
+      <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiBase.h">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

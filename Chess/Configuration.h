@@ -38,12 +38,27 @@ public:
 	template<typename T>
 	std::shared_ptr<T> getType(const std::string& key)
 	{
+		static_assert(std::is_base_of<ConfigProperty, T>::value, "Provided type is not a ConfigProperty.");
+
 		auto it = m_properties.find(key);
 		if (it == m_properties.end())
-			throw new std::exception(("Property with key " + key + " does not exist!").c_str());
+			throw new std::exception(("Property with key " + key + " does not exist.").c_str());
 
 		auto baseProp = std::dynamic_pointer_cast<T>(it->second);
+
 		return baseProp;
+	}
+
+	template<typename T, typename... Types>
+	std::shared_ptr<T> registerProperty(Types&&... args) {
+		static_assert(std::is_base_of<ConfigProperty, T>::value, "Provided type is not a ConfigProperty.");
+
+		std::shared_ptr<T> newProperty = std::make_shared<T>(std::forward<Types>(args)...);
+
+		lock_guard lock(m_fileLock);
+		m_properties.emplace(newProperty->getName(), newProperty);
+
+		return newProperty;
 	}
 };
 
