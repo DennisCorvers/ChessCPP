@@ -11,6 +11,7 @@ GuiManager::~GuiManager()
 {
 	for (auto itr = m_guis.begin(); itr != m_guis.end(); ++itr) {
 		itr->second->onDispose();
+		delete itr->second;
 	}
 }
 
@@ -45,8 +46,7 @@ void GuiManager::lateUpdate()
 {
 	while (!m_toAdd.empty()) {
 		auto gui = m_toAdd.front();
-		if (gui)
-			m_guis.emplace_back(gui->m_id, gui);
+		m_guis.emplace_back(gui->m_id, gui);
 		m_toAdd.pop();
 	}
 
@@ -59,6 +59,18 @@ void GuiManager::lateUpdate()
 		removeInternal(m_toRemove.front());
 		m_toRemove.pop();
 	}
+}
+
+void GuiManager::clearGuis()
+{
+	while (!m_toAdd.empty())
+		m_toAdd.pop();
+
+	while (!m_toShow.empty())
+		m_toShow.pop();
+
+	for (auto& it : m_guis)
+		disposeGui(it.first);
 }
 
 void GuiManager::registerGui(GuiBase* guiBase)
@@ -102,6 +114,10 @@ void GuiManager::removeInternal(const int id)
 		it->second->onDispose();
 		m_guis.erase(it);
 
+		delete it->second;
+
 		return;
 	}
 }
+
+

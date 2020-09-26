@@ -11,9 +11,6 @@ GuiBase::GuiBase(GuiManager& guiManager)
 
 GuiBase::~GuiBase()
 {
-	m_guiState = GuiState::HIDDEN;
-	if (m_guiManager)
-		m_guiManager->disposeGui(m_id);
 	//Unsubscribe Events
 }
 
@@ -30,4 +27,10 @@ void GuiBase::showDialog() {
 void GuiBase::hide() {
 	m_guiState = GuiState::HIDDEN;
 	onHide();
+}
+
+void GuiBase::close()
+{
+	m_guiState = GuiState::HIDDEN;
+	m_guiManager->disposeGui(m_id);
 }

@@ -23,6 +23,8 @@ public:
 
 	void lateUpdate();
 
+	void clearGuis();
+
 private:
 	void registerGui(GuiBase* guiBase);
 	void disposeGui(const int id);

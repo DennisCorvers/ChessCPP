@@ -18,7 +18,6 @@ private:
 
 public:
 	GuiBase(GuiManager& guiManager);
-	virtual ~GuiBase();
 
 	////
 	///@brief Displays the Gui.
@@ -32,9 +31,14 @@ public:
 	///@brief Hides the Gui.
 	////
 	virtual void hide();
+	////
+	///@brief Closes and destructs the Gui.
+	////
+	virtual void close();
 
 protected:
 
+	virtual ~GuiBase();
 	////
 	///@brief Updates the Gui element.
 	///@param deltaTime Time since last frame.
@@ -60,7 +64,7 @@ protected:
 	////
 	virtual void onDispose() {};
 	////
-	///@brief Occurs after a Gui is hidden
+	///@brief Occurs after a Gui is hidden.
 	////
 	virtual void onHide() {};
 };
