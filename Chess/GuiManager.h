@@ -1,7 +1,7 @@
 #pragma once
 
 class GuiBase;
-class GuiManager : private sf::NonCopyable
+class GuiManager : NonCopyable
 {
 private:
 	friend class GuiBase;

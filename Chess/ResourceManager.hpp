@@ -3,7 +3,7 @@
 #include "AssetNames.h"
 
 template<typename Derived, typename T>
-class ResourceManager {
+class ResourceManager : NonCopyable {
 
 private:
 	template<typename K, typename V>

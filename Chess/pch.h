@@ -31,6 +31,7 @@
 #include "Utils.h"
 #include "Enums.h"
 #include "Bitmask.hpp"
+#include "NonCopyable.hpp"
 
 
 

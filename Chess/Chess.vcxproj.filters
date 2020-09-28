@@ -122,9 +122,6 @@
     <ClCompile Include="GuiManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="GuiBase.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -262,8 +259,11 @@
     <ClInclude Include="GuiManager.h">
       <Filter>Source Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="GuiBase.h">
+    <ClInclude Include="GuiBase.hpp">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="NonCopyable.hpp">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

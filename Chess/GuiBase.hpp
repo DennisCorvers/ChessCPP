@@ -7,7 +7,7 @@ enum struct GuiState : char {
 	SHOW_ONTOP
 };
 
-class GuiBase : sf::NonCopyable
+class GuiBase
 {
 private:
 	friend class GuiManager;
@@ -17,28 +17,48 @@ private:
 	GuiState m_guiState;
 
 public:
-	GuiBase(GuiManager& guiManager);
+	GuiBase(GuiManager& guiManager)
+		: m_guiManager(&guiManager)
+	{
+		m_guiManager->registerGui(this);
+	}
 
 	////
 	///@brief Displays the Gui.
 	////
-	virtual void show();
+	virtual void show() {
+		m_guiState = GuiState::SHOW;
+		m_guiManager->showGui(m_id);
+	}
 	////
 	///@brief Displays the Gui on top of all other Guis
 	////
-	virtual void showDialog();
+	virtual void showDialog() {
+		m_guiState = GuiState::SHOW_ONTOP;
+		m_guiManager->showGui(m_id);
+	}
 	////
 	///@brief Hides the Gui.
 	////
-	virtual void hide();
+	virtual void hide() {
+		m_guiState = GuiState::HIDDEN;
+		onHide();
+	}
 	////
 	///@brief Closes and destructs the Gui.
 	////
-	virtual void close();
+	virtual void close()
+	{
+		m_guiState = GuiState::HIDDEN;
+		m_guiManager->disposeGui(m_id);
+	}
 
 protected:
 
-	virtual ~GuiBase();
+	virtual ~GuiBase()
+	{
+		//Unsubscribe Events
+	}
 	////
 	///@brief Updates the Gui element.
 	///@param deltaTime Time since last frame.

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GuiManager.h"
-#include "GuiBase.h"
+#include "GuiBase.hpp"
 
 GuiManager::GuiManager()
 	: m_nextGuiID(0)
