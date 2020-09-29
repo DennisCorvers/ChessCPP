@@ -42,6 +42,9 @@
     <Filter Include="Source Files\Gui">
       <UniqueIdentifier>{e7016397-aca7-4944-9220-c4de8add6948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Gui\Base">
+      <UniqueIdentifier>{3f8b15e2-09a7-4af7-8c69-fc37f57810e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -119,8 +122,11 @@
     <ClCompile Include="Configuration.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="GuiManager.cpp">
-      <Filter>Source Files\Managers</Filter>
+    <ClCompile Include="GuiPauseMenu.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiContainer.cpp">
+      <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,14 +262,23 @@
     <ClInclude Include="ConfigManager.hpp">
       <Filter>Source Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="GuiManager.h">
-      <Filter>Source Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiBase.hpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
     <ClInclude Include="NonCopyable.hpp">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="STest.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiPauseMenu.h">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiContainer.hpp">
+      <Filter>Source Files\Gui\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiWindow.hpp">
+      <Filter>Source Files\Gui\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiWindowBlank.hpp">
+      <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

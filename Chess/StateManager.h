@@ -3,7 +3,7 @@
 #include "SharedContext.hpp"
 
 class BaseState;
-class StateManager : NonCopyable
+class StateManager : private NonCopyable
 {
 private:
 	using StatePair = std::pair<States, std::unique_ptr<BaseState>>;

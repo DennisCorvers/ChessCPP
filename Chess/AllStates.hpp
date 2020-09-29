@@ -4,3 +4,4 @@
 #include "SMainMenu.h"
 #include "SPauseMenu.h"
 #include "States.h"
+#include "STest.h"

@@ -38,7 +38,8 @@ Game::Game()
 	initUI();
 
 	registerStates();
-	m_stateManager->switchState(States::MainMenu);
+	//m_stateManager->switchState(States::MainMenu);
+	m_stateManager->switchState(States::Test);
 }
 
 Game::~Game() {
@@ -85,9 +86,10 @@ void Game::initUI()
 void Game::registerStates() {
 	m_stateManager->registerState<SGameSandbox>(States::Sandbox);
 	m_stateManager->registerState<SGameSinglePlayer>(States::SinglePlayer);
-	//m_stateManager->registerState<???>(States::Multiplayer);
 	m_stateManager->registerState<SMainMenu>(States::MainMenu);
 	m_stateManager->registerState<SPauseMenu>(States::Pause);
+
+	m_stateManager->registerState<STest>(States::Test);
 }
 
 void Game::update()

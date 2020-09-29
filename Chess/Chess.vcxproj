@@ -173,7 +173,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GuiManager.cpp" />
+    <ClCompile Include="GuiPauseMenu.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="SGameSandbox.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -188,6 +188,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="URIConnector.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="GuiContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllStates.hpp" />
@@ -217,8 +218,9 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GuiBase.hpp" />
-    <ClInclude Include="GuiManager.h" />
+    <ClInclude Include="GuiPauseMenu.h" />
+    <ClInclude Include="GuiWindow.hpp" />
+    <ClInclude Include="GuiWindowBlank.hpp" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="NonCopyable.hpp" />
     <ClInclude Include="resource.h" />
@@ -234,9 +236,11 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="SPauseMenu.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="States.h" />
+    <ClInclude Include="STest.h" />
     <ClInclude Include="TextureManager.hpp" />
     <ClInclude Include="URIConnector.hpp" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="GuiContainer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chess.rc" />
