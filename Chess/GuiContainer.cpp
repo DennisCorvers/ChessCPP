@@ -29,13 +29,15 @@ void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window) {
 void GuiContainer::removeWindow(const std::shared_ptr<GuiWindow>& window)
 {
 	window->onDispose(m_sharedContext);
+	m_guiBase.remove(window->m_guiWindow);
 }
 
 void GuiContainer::removeAllWindows()
 {
 	for (auto window : m_childWindows) {
-		removeWindow(window.second);
+		window.second->onDispose(m_sharedContext);
 	}
 
+	m_guiBase.removeAllWidgets();
 	m_childWindows.empty();
 }

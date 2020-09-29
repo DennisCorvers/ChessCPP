@@ -3,6 +3,7 @@
 #include "StateManager.h"
 #include "GuiPauseMenu.h"
 #include "GuiContainer.hpp"
+#include "Event.hpp"
 
 class STest : public BaseState
 {
@@ -23,26 +24,16 @@ public:
 	{
 		auto child = std::make_shared<GuiPauseMenu>();
 		m_win.addWindow(child);
-		//auto child = tgui::ChildWindow::create();
-		//m_gui.add(child);
+		Event<int, std::string> ev;
 
-		//auto button = tgui::Button::create("Button");
-		//child->add(button);
-		//auto renderer = child->getRenderer();
-		//renderer->setBackgroundColor(tgui::Color::Transparent);
-		//renderer->setBorderColor(tgui::Color::Magenta);
-		////child->setEnabled(false);
-
-		//auto child2 = tgui::ChildWindow::create();
-		//m_gui.add(child2);
-
-		//auto button2 = tgui::Button::create("Child2 Button");
-		//child2->add(button2);
-		//auto renderer2 = child2->getRenderer();
-		//renderer2->setBackgroundColor(tgui::Color::Green);
-
-		//child->moveToFront();
+		ev.subscribe(&STest::someFunc, this);
+		ev(123, "123");
+		ev.unsubscribe(&STest::someFunc, this);
 	};
+
+	void someFunc(int num, std::string str) {
+
+	}
 
 	virtual void onDestroy() override
 	{
