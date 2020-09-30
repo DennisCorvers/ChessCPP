@@ -27,11 +27,19 @@ public:
 		Event<int, std::string> ev;
 
 		ev.subscribe(&STest::someFunc, this);
+		ev.subscribe(&someOtherFunc);
 		ev(123, "123");
+
 		ev.unsubscribe(&STest::someFunc, this);
+		ev.unsubscribe(&someOtherFunc);
+		//ev.clearHandlers();
 	};
 
 	void someFunc(int num, std::string str) {
+
+	}
+
+	static void someOtherFunc(int num, std::string str) {
 
 	}
 

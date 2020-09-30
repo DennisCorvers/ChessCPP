@@ -2,48 +2,90 @@
 #include <utility>
 
 template<typename... Args>
+class EventHandlerBase {
+
+protected:
+	bool m_isStatic;
+	EventHandlerBase() {}
+
+public:
+	virtual ~EventHandlerBase() {}
+
+	virtual bool equals(EventHandlerBase<Args...>* other) const = 0;
+	virtual void invoke(Args... args) const = 0;
+
+	inline bool isStaticHandler() const{
+		return m_isStatic;
+	}
+};
+
+
+template<typename T, typename... Args>
+class EventHandler final : public EventHandlerBase<Args...> {
+
+private:
+	T* m_listener;
+	void(T::*m_func)(Args...);
+
+public:
+	EventHandler(void(T::*func)(Args...), T* instance) :
+		m_listener(instance),
+		m_func(func)
+	{
+		this->m_isStatic = false;
+	}
+
+	~EventHandler() { }
+
+	bool equals(EventHandlerBase<Args...>* other) const override {
+		if (this->isStaticHandler() != other->isStaticHandler())
+			return false;
+
+		EventHandler<T, Args...>* castedHandler = static_cast<EventHandler<T, Args...>*>(other);
+		return
+			this->m_listener == castedHandler->m_listener &&
+			this->m_func == castedHandler->m_func;
+	}
+
+	void invoke(Args... args) const override {
+		(m_listener->*m_func)(args...);
+	}
+};
+
+
+template<typename... Args>
+class EventHandlerStatic final : public EventHandlerBase<Args...> {
+
+private:
+	void(*m_func)(Args...);
+
+public:
+	EventHandlerStatic(void(*func)(Args...)) :
+		m_func(func)
+	{
+		this->m_isStatic = true;
+	}
+
+	~EventHandlerStatic() { }
+
+	bool equals(EventHandlerBase<Args...>* other) const override {
+		if (this->isStaticHandler() != other->isStaticHandler())
+			return false;
+
+		EventHandlerStatic<Args...>* castedHandler = static_cast<EventHandlerStatic<Args...>*>(other);
+
+		return this->m_func == castedHandler->m_func;
+	}
+
+	void invoke(Args... args) const override {
+		(*m_func)(args...);
+	}
+};
+
+
+template<typename... Args>
 class Event {
 private:
-	template<typename... Args>
-	struct EventHandlerBase {
-
-	protected:
-		EventHandlerBase() {}
-
-	public:
-		virtual ~EventHandlerBase() {}
-
-		virtual bool compare(EventHandlerBase* other) const = 0;
-		virtual void invoke(Args... args) const = 0;
-	};
-
-	template<typename T, typename... Args>
-	struct EventHandler : EventHandlerBase<Args...> {
-		EventHandler(void(T::*func)(Args...), T* instance) :
-			m_listener(instance), m_func(func) { }
-		~EventHandler() { std::cout << "Deleted Handler" << std::endl; }
-
-		bool compare(EventHandlerBase<Args...>* other) const override {
-			EventHandler<T, Args...>* castedHandler = static_cast<EventHandler<T, Args...>*>(other);
-
-			return
-				this->m_listener == castedHandler->m_listener &&
-				this->m_func == castedHandler->m_func;
-		}
-
-		void invoke(Args... args) const override {
-			if (!m_listener) //Assume static handler
-				m_dfunc(args...);
-			else
-				(m_listener->*m_func)(args...);
-		}
-
-	private:
-		T* m_listener;
-		void(T::*m_func)(Args...);
-		void(*m_dfunc)(Args...);
-	};
-
 	using EventHandlerPtr = std::unique_ptr<EventHandlerBase<Args...>>;
 	std::vector<EventHandlerPtr> m_eventHandlers;
 
@@ -70,8 +112,7 @@ public:
 	///@brief Subscribe to the Event using a static function.
 	////
 	Event& subscribe(void(*func)(Args...)) {
-		//Uses int instead of T since it's null anyway.
-		m_eventHandlers.push_back(std::make_unique<EventHandler<int, Args...>>(func, 0));
+		m_eventHandlers.push_back(std::make_unique<EventHandlerStatic<Args...>>(func));
 		return *this;
 	}
 
@@ -88,15 +129,19 @@ public:
 	///@brief Unsubscribe from the Event using a static function.
 	////
 	Event& unsubscribe(void(*func)(Args...)) {
-		innerUnsubscribe(&EventHandler<int, Args...>(func, 0));
+		innerUnsubscribe(&EventHandlerStatic<Args...>(func));
 		return *this;
+	}
+
+	void clearHandlers() noexcept {
+		m_eventHandlers.clear();
 	}
 
 private:
 	void innerUnsubscribe(EventHandlerBase<Args...>* handlerReplica) {
 		for (auto it = m_eventHandlers.begin(); it != m_eventHandlers.end();)
 		{
-			if ((**it).compare(handlerReplica))
+			if (!(**it).equals(handlerReplica))
 				++it;
 			else
 				it = m_eventHandlers.erase(it);
