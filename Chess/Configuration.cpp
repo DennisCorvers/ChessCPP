@@ -76,7 +76,7 @@ void Configuration::processLine(const std::string & nextLine)
 				it->second->readProperty(valueStr);
 
 			std::cout << propName << "=" << valueStr << std::endl;
-			i = nextLine.length();
+			i = static_cast<int>(nextLine.length());
 			break;
 		}
 		case ' ': //Ignore whitespace

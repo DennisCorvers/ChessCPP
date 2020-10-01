@@ -24,22 +24,27 @@ public:
 	{
 		auto child = std::make_shared<GuiPauseMenu>();
 		m_win.addWindow(child);
-		Event<int, std::string> ev;
+		Event<int> ev;
+		auto connector = ev.connect(&STest::someFunc, this);
+		//auto staticCon = ev.connect(&STest::someOtherFunc);
+		//subscribing
+	//	ev.subscribe(&STest::someFunc, this);
+	//	ev.subscribe(&someOtherFunc);
 
-		ev.subscribe(&STest::someFunc, this);
-		ev.subscribe(&someOtherFunc);
-		ev(123, "123");
+	//	//invoking
+	//	ev(123, "123");
 
-		ev.unsubscribe(&STest::someFunc, this);
-		ev.unsubscribe(&someOtherFunc);
-		//ev.clearHandlers();
+	//	//unsubscribing (also happens when ev goes out of scope)
+	//	ev.unsubscribe(&STest::someFunc, this);
+	//	ev.unsubscribe(&someOtherFunc);
+
 	};
 
-	void someFunc(int num, std::string str) {
+	void someFunc(int num) {
 
 	}
 
-	static void someOtherFunc(int num, std::string str) {
+	static void someOtherFunc(int num) {
 
 	}
 
