@@ -26,7 +26,10 @@ public:
 		m_win.addWindow(child);
 		Event<int> ev;
 		auto connector = ev.connect(&STest::someFunc, this);
-		//auto staticCon = ev.connect(&STest::someOtherFunc);
+		auto staticCon = ev.connect(&STest::someOtherFunc);
+		connector->disconnect();
+		staticCon->disconnect();
+		ev.staticConnect(&STest::someOtherFunc);
 		//subscribing
 	//	ev.subscribe(&STest::someFunc, this);
 	//	ev.subscribe(&someOtherFunc);
@@ -37,7 +40,8 @@ public:
 	//	//unsubscribing (also happens when ev goes out of scope)
 	//	ev.unsubscribe(&STest::someFunc, this);
 	//	ev.unsubscribe(&someOtherFunc);
-
+		ev.cleanExpiredHandlers();
+		ev.staticDisconnect(&STest::someOtherFunc);
 	};
 
 	void someFunc(int num) {

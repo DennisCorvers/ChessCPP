@@ -64,9 +64,15 @@ public:
 template<typename... Args>
 class EventHandlerBase : public HandlerBase {
 private:
+	template<typename... Args>
+	friend class Event;
+
 	Event<Args...>* m_event;
 	bool m_isStatic;
 	uint32_t m_key;
+
+protected:
+	std::weak_ptr<Connection> m_connector;
 
 public:
 	EventHandlerBase(uint32_t key, bool isStatic, Event<Args...>* event) :
@@ -76,18 +82,22 @@ public:
 
 	virtual ~EventHandlerBase() {}
 
-	virtual bool isExpired() const {
-		return false;
-	}
+	virtual bool isExpired() const = 0;
+
 	inline bool isStaticHandler() const {
 		return m_isStatic;
 	}
 
-protected:
 	virtual bool equals(EventHandlerBase<Args...>* other) const = 0;
+
 	virtual void invoke(Args... args) const = 0;
 
 private:
+	inline void setConnector(const std::shared_ptr<Connection>& connector)
+	{
+		m_connector = std::weak_ptr<Connection>(connector);
+	}
+
 	void disconnect() {
 		m_event->connectorUnsubscribe(m_key);
 	}
@@ -96,7 +106,7 @@ private:
 template<typename T, typename... Args>
 class EventHandler final : public EventHandlerBase<Args...> {
 public:
-	std::weak_ptr<Connection> m_connector;
+
 	T* m_listener;
 	void(T::*m_func)(Args...);
 
@@ -107,10 +117,6 @@ public:
 	{ }
 
 	~EventHandler() { }
-
-	void setConnector(const std::shared_ptr<Connection>& connector) {
-		m_connector = std::weak_ptr<Connection>(connector);
-	}
 
 	bool equals(EventHandlerBase<Args...>* other) const override {
 		if (this->isStaticHandler() != other->isStaticHandler())
@@ -128,7 +134,7 @@ public:
 	}
 
 	bool isExpired() const override {
-		return m_connector.expired();
+		return this->m_connector.expired();
 	}
 };
 
@@ -143,6 +149,16 @@ public:
 	{ }
 
 	~EventHandlerStatic() { }
+
+	bool isExpired() const {
+		using emptyPtr = std::weak_ptr<Connection>;
+		if (!this->m_connector.owner_before(emptyPtr{}) && !emptyPtr{}.owner_before(this->m_connector)) {
+			return false; //Non-initialized Connector means it's a statically Connected Handler. This shouldn't automatically disconnect.
+		}
+		else {
+			return this->m_connector.expired();
+		}
+	}
 
 	bool equals(EventHandlerBase<Args...>* other) const override {
 		if (this->isStaticHandler() != other->isStaticHandler())
@@ -192,24 +208,16 @@ public:
 	template<typename T>
 	std::shared_ptr<Connection> connect(void(T::*func)(Args...), T* instance) {
 		auto handler = std::make_shared<EventHandler<T, Args...>>(m_connectorKey, func, instance, this);
-		auto connector = Connection::create(handler);
-		handler->setConnector(connector);
-
-		m_eventHandlers.emplace(m_connectorKey++, std::move(handler));
-		return connector;
+		return innerConnect(std::move(handler));
 	}
 
 	////
 	///@brief Subscribe to the Event using a static member function.
 	///		Does not automatically get disconnected as there is no member to become null.
 	////
-	void connect(void(*func)(Args...)) {
+	std::shared_ptr<Connection> connect(void(*func)(Args...)) {
 		auto handler = std::make_shared<EventHandlerStatic<Args...>>(m_connectorKey, func, this);
-		auto connector = Connection::create(handler);
-		handler->setConnector(connector);
-
-		m_eventHandlers.emplace(m_connectorKey++, std::move(handler));
-		return connector;
+		return innerConnect(std::move(handler));
 	}
 
 	////
@@ -217,14 +225,15 @@ public:
 	///		Does not automatically get disconnected.
 	////
 	void staticConnect(void(*func)(Args...)) {
-		m_eventHandlers.push_back(std::make_shared<EventHandlerStatic<Args...>>(func));
+		auto handler = std::make_shared<EventHandlerStatic<Args...>>(m_connectorKey, func, this);
+		m_eventHandlers.emplace(m_connectorKey++, std::move(handler));
 	}
 
 	////
 	///@brief Unsubscribe from the Event using a static function.
 	////
 	void staticDisconnect(void(*func)(Args...)) {
-		innerUnsubscribe(EventHandlerStatic<Args...>(func));
+		innerUnsubscribe(&EventHandlerStatic<Args...>(0, func, this));
 	}
 
 	////
@@ -238,7 +247,7 @@ public:
 	///@brief Removes all expired EventHandlers from this Event.
 	////
 	void cleanExpiredHandlers() noexcept {
-		for (auto it = m_eventHandlers.begin(); it != m_eventHandlers.end(); ++it) {
+		for (auto it = m_eventHandlers.begin(); it != m_eventHandlers.end();) {
 			if (it->second->isExpired())
 				it = m_eventHandlers.erase(it);
 			else
@@ -257,13 +266,21 @@ private:
 		m_eventHandlers.erase(handler);
 	}
 
-	void innerUnsubscribe(const EventHandlerBase<Args...>& handlerReplica) {
+	void innerUnsubscribe(EventHandlerBase<Args...>* handlerReplica) {
 		for (auto it = m_eventHandlers.begin(); it != m_eventHandlers.end();)
 		{
-			if (!(**it).equals(handlerReplica))
-				++it;
-			else
+			if (it->second->equals(handlerReplica))
 				it = m_eventHandlers.erase(it);
+			else
+				++it;
 		}
+	}
+
+	std::shared_ptr<Connection> innerConnect(std::shared_ptr<EventHandlerBase<Args...>> eventHandler) {
+		auto connector = Connection::create(eventHandler);
+		eventHandler->setConnector(connector);
+
+		m_eventHandlers.emplace(m_connectorKey++, std::move(eventHandler));
+		return connector;
 	}
 };
