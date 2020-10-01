@@ -4,6 +4,7 @@
 ///Forward declarations
 class Connection;
 class HandlerBase;
+class ConnectionContainer;
 
 template<typename... Args>
 class Event;
@@ -21,12 +22,46 @@ class EventHandlerStatic;
 using Connector = std::shared_ptr<Connection>;
 
 //Implementation
+class ConnectionContainer final {
+private:
+	std::vector<Connector> m_connectors;
+
+public:
+	ConnectionContainer() { }
+	~ConnectionContainer() { }
+
+	ConnectionContainer(const ConnectionContainer&) = delete;
+	ConnectionContainer(const ConnectionContainer&&) = delete;
+	ConnectionContainer& operator=(const ConnectionContainer&) = delete;
+
+	////
+	///@brief Adds a connector to the container.
+	////
+	void add(Connector connector) {
+		m_connectors.push_back(std::move(connector));
+	}
+
+	////
+	///@brief Adds a connector to the container.
+	////
+	void operator+=(Connector connector) {
+		add(connector);
+	}
+
+	////
+	///@brief Disconnecs all connectors in the container.
+	////
+	void disconnectAll() {
+		m_connectors.clear();
+	}
+};
+
 class HandlerBase {
 public:
 	virtual void disconnect() = 0;
 };
 
-class Connection {
+class Connection final {
 private:
 	template<typename... Args>
 	friend class Event;
@@ -175,7 +210,7 @@ public:
 };
 
 template<typename... Args>
-class Event {
+class Event final {
 	template<typename... Args>
 	friend class EventHandlerBase;
 
@@ -189,14 +224,23 @@ public:
 	Event(const Event&) = delete;
 	Event& operator=(const Event&) = delete;
 
+	////
+	///@brief Invokes all callbacks registered to this Event.
+	////
 	void operator()(Args... args) {
+		invoke(args...);
+	}
+
+	////
+	///@brief Invokes all callbacks registered to this Event. Same as calling the () operator.
+	////
+	inline void invoke(Args... args) {
 		for (auto it = m_eventHandlers.begin(); it != m_eventHandlers.end();)
 		{
-			if ((**it).isExpired()) {
+			if (it->second->isExpired())
 				it = m_eventHandlers.erase(it);
-			}
 			else {
-				(**it).invoke(args...);
+				it->second->invoke(args...);
 				++it;
 			}
 		}
