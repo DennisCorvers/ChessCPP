@@ -1,5 +1,6 @@
 #include <list>
 #include <utility>
+#pragma once
 
 ///Forward declarations
 class Connection;

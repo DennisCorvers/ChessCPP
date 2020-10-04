@@ -12,7 +12,6 @@ struct SharedContext {
 	FontManager* fontManager;
 	SoundManager* soundManager;
 	ThemeManager* themeManager;
-	EventManager* eventManager;
 
 	void changeState(States state) const {
 		soundManager->switchState(state);

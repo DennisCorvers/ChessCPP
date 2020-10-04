@@ -5,6 +5,5 @@ enum struct States : int {
 	SinglePlayer,
 	Sandbox,
 	Multiplayer,
-	Pause,
 	Test
 };

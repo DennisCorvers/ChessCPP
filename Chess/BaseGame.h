@@ -1,12 +1,15 @@
 #pragma once
 #include "BaseState.hpp"
 
-class EventArgs;
 class BoardManager;
+class GuiContainer;
+class GuiPauseMenu;
 class BaseGame : public BaseState
 {
 private:
 	States m_gameState;
+	std::unique_ptr<GuiContainer> m_gui;
+	std::shared_ptr<GuiPauseMenu> m_pauseMenu;
 
 protected:
 	using EType = sf::Event::EventType;
@@ -16,9 +19,10 @@ protected:
 
 	void loadAssets();
 
-	virtual void onResetBoard(const EventArgs& eventInfo) = 0;
-	virtual void onSwitchBoard(const EventArgs& eventInfo) = 0;
-	virtual void onQuitGame(const EventArgs& eventInfo) = 0;
+	virtual void onResetBoard() = 0;
+	virtual void onSwitchBoard() = 0;
+	virtual void onQuitGame() = 0;
+	virtual bool onEvent(const sf::Event& event) = 0;
 
 public:
 	BaseGame(StateManager& stateManager, States state);
@@ -32,5 +36,7 @@ public:
 
 	virtual void render();
 	virtual bool update(float deltaTime) override;
-	virtual bool handleEvent(const sf::Event & event) override;
+
+private:
+	bool handleEvent(const sf::Event & event) override;
 };

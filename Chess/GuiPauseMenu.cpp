@@ -2,15 +2,12 @@
 #include "GuiPauseMenu.h"
 
 
-GuiPauseMenu::GuiPauseMenu()
-{
-}
-
+GuiPauseMenu::GuiPauseMenu(bool isClient) :
+	m_isClient(isClient)
+{ }
 
 GuiPauseMenu::~GuiPauseMenu()
-{
-
-}
+{ }
 
 void GuiPauseMenu::onInitialize(const SharedContext & sharedContext)
 {
@@ -65,15 +62,34 @@ void GuiPauseMenu::onDispose(const SharedContext & sharedContext)
 void GuiPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)
 {
 	buttons.push_back(tgui::Button::create("Resume"));
-	//buttons.back()->connect("pressed", &SPauseMenu::onResumePressed, this);
+	buttons.back()->connect("pressed", &GuiPauseMenu::hide, this);
 
 	//Don't 1 and 2 these when Network Client
-	buttons.push_back(tgui::Button::create("New Game"));
-	//buttons.back()->connect("pressed", &SPauseMenu::onNewGamePressed, this);
+	if (!m_isClient) {
+		buttons.push_back(tgui::Button::create("New Game"));
+		buttons.back()->connect("pressed", &GuiPauseMenu::onNewGame, this);
 
-	buttons.push_back(tgui::Button::create("Swap Colour"));
-	//buttons.back()->connect("pressed", &SPauseMenu::onSwapColourPressed, this);
+		buttons.push_back(tgui::Button::create("Swap Colour"));
+		buttons.back()->connect("pressed", &GuiPauseMenu::onSwapColour, this);
+	}
 
 	buttons.push_back(tgui::Button::create("Quit Game"));
-	//buttons.back()->connect("pressed", &SPauseMenu::onQuitGamePressed, this);
+	buttons.back()->connect("pressed", &GuiPauseMenu::onExitGame, this);
 }
+
+void GuiPauseMenu::onNewGame()
+{
+	OnNewGameEvent.invoke();
+}
+
+void GuiPauseMenu::onSwapColour()
+{
+	OnSwapColourEvent.invoke();
+}
+
+void GuiPauseMenu::onExitGame()
+{
+	OnExitGameEvent.invoke();
+}
+
+

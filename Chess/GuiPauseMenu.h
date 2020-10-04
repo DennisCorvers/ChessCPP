@@ -3,13 +3,24 @@
 
 class GuiPauseMenu : public GuiWindowBlank
 {
+private:
+	bool m_isClient;
+
 public:
-	GuiPauseMenu();
+	Event<> OnNewGameEvent;
+	Event<> OnSwapColourEvent;
+	Event<> OnExitGameEvent;
+
+	GuiPauseMenu(bool isClient = false);
 	virtual ~GuiPauseMenu();
 
 	void onInitialize(const SharedContext& sharedContext) override;
 	void onDispose(const SharedContext& sharedContext) override;
 
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
-};
 
+protected:
+	void onNewGame();
+	void onSwapColour();
+	void onExitGame();
+};

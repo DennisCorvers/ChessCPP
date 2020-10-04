@@ -18,7 +18,7 @@ public:
 	GuiContainer(const SharedContext& sharedContext);
 	virtual ~GuiContainer();
 
-	void addWindow(std::shared_ptr<GuiWindow> window);
+	void addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate = false);
 	void removeWindow(const std::shared_ptr<GuiWindow>& window);
 	void removeAllWindows();
 

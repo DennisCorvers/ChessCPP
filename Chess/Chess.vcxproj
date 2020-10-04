@@ -184,7 +184,6 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="SGameSinglePlayer.cpp" />
     <ClCompile Include="SMainMenu.cpp" />
     <ClCompile Include="SoundManager.cpp" />
-    <ClCompile Include="SPauseMenu.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="URIConnector.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -233,7 +232,6 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="SharedContext.hpp" />
     <ClInclude Include="SMainMenu.h" />
     <ClInclude Include="SoundManager.hpp" />
-    <ClInclude Include="SPauseMenu.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="States.h" />
     <ClInclude Include="STest.h" />

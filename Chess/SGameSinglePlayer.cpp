@@ -46,10 +46,8 @@ bool SGameSinglePlayer::update(float deltaTime)
 	return false;
 }
 
-bool SGameSinglePlayer::handleEvent(const sf::Event & event)
+bool SGameSinglePlayer::onEvent(const sf::Event & event)
 {
-	BaseGame::handleEvent(event);
-
 	if (event.mouseButton.button == sf::Mouse::Left) {
 		sf::Vector2f mousePos = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window), m_view);
 
@@ -66,25 +64,21 @@ bool SGameSinglePlayer::handleEvent(const sf::Event & event)
 		}
 	}
 
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		m_stateManager->switchState(States::Pause);
-	}
-
 	return false;
 }
 
-void SGameSinglePlayer::onQuitGame(const EventArgs & eventInfo) {
-	m_stateManager->switchState(States::MainMenu);
-	m_stateManager->removeState(States::SinglePlayer);
-}
-
-void SGameSinglePlayer::onResetBoard(const EventArgs& eventInfo) {
+void SGameSinglePlayer::onResetBoard() {
 	onCreate();
 }
 
-void SGameSinglePlayer::onSwitchBoard(const EventArgs & eventInfo) {
+void SGameSinglePlayer::onSwitchBoard() {
 	m_myColour = m_myColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
 	onCreate();
+}
+
+void SGameSinglePlayer::onQuitGame() {
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(States::SinglePlayer);
 }
 
 

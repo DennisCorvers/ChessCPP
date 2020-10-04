@@ -17,12 +17,15 @@ GuiContainer::~GuiContainer()
 	removeAllWindows();
 }
 
-void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window) {
+void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate) {
 	if (window->m_windowID != -1)
 		throw new std::exception("Window was already added to container.");
 
 	m_childWindows.emplace(++window->m_windowID, window);
 	window->onInitialize(m_sharedContext);
+	if (!showOnCreate)
+		window->hide();
+
 	m_guiBase.add(window->m_guiWindow);
 }
 

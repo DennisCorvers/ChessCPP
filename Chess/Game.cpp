@@ -22,7 +22,6 @@ Game::Game()
 	m_soundManager = std::make_unique<SoundManager>(*m_audioManager);
 	m_themeManager = std::make_unique<ThemeManager>();
 	m_debugOverlay = std::make_unique<DebugOverlay>();
-	m_eventManager = std::make_unique<EventManager>();
 
 	initWindow();
 
@@ -32,14 +31,13 @@ Game::Game()
 	m_context->fontManager = m_fontManager.get();
 	m_context->soundManager = m_soundManager.get();
 	m_context->themeManager = m_themeManager.get();
-	m_context->eventManager = m_eventManager.get();
 
 
 	initUI();
 
 	registerStates();
-	//m_stateManager->switchState(States::MainMenu);
-	m_stateManager->switchState(States::Test);
+	m_stateManager->switchState(States::MainMenu);
+	//m_stateManager->switchState(States::Test);
 }
 
 Game::~Game() {
@@ -87,7 +85,6 @@ void Game::registerStates() {
 	m_stateManager->registerState<SGameSandbox>(States::Sandbox);
 	m_stateManager->registerState<SGameSinglePlayer>(States::SinglePlayer);
 	m_stateManager->registerState<SMainMenu>(States::MainMenu);
-	m_stateManager->registerState<SPauseMenu>(States::Pause);
 
 	m_stateManager->registerState<STest>(States::Test);
 }

@@ -49,4 +49,16 @@ public:
 	virtual void setEnabled(bool state) {
 		m_guiWindow->setEnabled(state);
 	}
+
+	bool isOnTop() const {
+		return false;
+	}
+
+	bool isVisible() const {
+		return m_guiWindow->isVisible();
+	}
+
+	bool isEnabled() const {
+		return m_guiWindow->isEnabled();
+	}
 };

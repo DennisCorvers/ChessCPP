@@ -3,6 +3,8 @@
 #include "BoardManager.h"
 #include "StateManager.h"
 #include "EventManager.h"
+#include "GuiPauseMenu.h"
+#include "GuiContainer.hpp"
 
 BaseGame::BaseGame(StateManager & stateManager, States state) :
 	BaseState(stateManager),
@@ -21,16 +23,15 @@ BaseGame::BaseGame(StateManager & stateManager, States state) :
 	m_view.setSize(sf::Vector2f(m_window->getSize().x, m_window->getSize().y));
 	m_view.setCenter(m_boardManager->getBoardCenter());
 
-	EventManager* eventManager = stateManager.getContext().eventManager;
-	eventManager->addCallback(States::Pause, "onResetBoard", &BaseGame::onResetBoard, this);
-	eventManager->addCallback(States::Pause, "onSwitchBoard", &BaseGame::onSwitchBoard, this);
-	eventManager->addCallback(States::Pause, "onQuitGame", &BaseGame::onQuitGame, this);
+	m_gui = std::make_unique<GuiContainer>(stateManager.getContext());
+	m_pauseMenu = std::make_shared<GuiPauseMenu>();
+	m_gui->addWindow(m_pauseMenu);
+
+	//Bind events...
 }
 
 BaseGame::~BaseGame()
-{
-	m_stateManager->getContext().eventManager->removeCallbacks(States::Pause);
-}
+{ }
 
 void BaseGame::loadAssets()
 {
@@ -41,6 +42,7 @@ void BaseGame::loadAssets()
 
 void BaseGame::render() {
 	m_boardManager->render(*m_window);
+	m_gui->render();
 }
 
 bool BaseGame::update(float deltaTime)
@@ -56,6 +58,14 @@ bool BaseGame::handleEvent(const sf::Event & event)
 {
 	if (event.type == sf::Event::Resized)
 		Graphics::applyResize(m_view, event);
+
+	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
+		if (!m_pauseMenu->isVisible())
+			m_pauseMenu->show();
+	}
+
+	if (!m_gui->handleEvent(event))
+		return onEvent(event);
 
 	return false;
 }

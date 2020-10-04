@@ -21,10 +21,10 @@ public:
 	virtual void deactivate() override {};
 
 	virtual bool update(float deltaTime) override;
-	virtual bool handleEvent(const sf::Event & event) override;
+	virtual bool onEvent(const sf::Event & event) override;
 
 	// Inherited via BaseGame
-	virtual void onResetBoard(const EventArgs & eventInfo) override;
-	virtual void onSwitchBoard(const EventArgs & eventInfo) override;
-	virtual void onQuitGame(const EventArgs & eventInfo) override;
+	virtual void onResetBoard() override;
+	virtual void onSwitchBoard() override;
+	virtual void onQuitGame() override;
 };

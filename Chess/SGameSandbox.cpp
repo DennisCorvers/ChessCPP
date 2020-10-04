@@ -26,10 +26,8 @@ void SGameSandbox::activate() {
 void SGameSandbox::deactivate() {
 }
 
-bool SGameSandbox::handleEvent(const sf::Event & event)
+bool SGameSandbox::onEvent(const sf::Event & event)
 {
-	BaseGame::handleEvent(event);
-
 	if (event.mouseButton.button == sf::Mouse::Left) {
 		sf::Vector2f mousePos = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window), m_view);
 
@@ -45,24 +43,19 @@ bool SGameSandbox::handleEvent(const sf::Event & event)
 		}
 	}
 
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		m_stateManager->switchState(States::Pause);
-	}
-
 	return false;
 }
 
-void SGameSandbox::onQuitGame(const EventArgs & eventInfo) {
-	m_stateManager->switchState(States::MainMenu);
-	m_stateManager->removeState(States::Sandbox);
-}
-
-void SGameSandbox::onResetBoard(const EventArgs& eventInfo) {
+void SGameSandbox::onResetBoard() {
 	m_boardManager->resetGame();
 }
 
-void SGameSandbox::onSwitchBoard(const EventArgs& eventInfo) {
+void SGameSandbox::onSwitchBoard() {
 	m_boardManager->flipBoard();
 }
 
+void SGameSandbox::onQuitGame() {
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(States::Sandbox);
+}
 
