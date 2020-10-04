@@ -79,16 +79,19 @@ void GuiPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)
 
 void GuiPauseMenu::onNewGame()
 {
+	hide();
 	OnNewGameEvent.invoke();
 }
 
 void GuiPauseMenu::onSwapColour()
 {
+	hide();
 	OnSwapColourEvent.invoke();
 }
 
 void GuiPauseMenu::onExitGame()
 {
+	hide();
 	OnExitGameEvent.invoke();
 }
 

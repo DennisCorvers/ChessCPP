@@ -27,7 +27,10 @@ BaseGame::BaseGame(StateManager & stateManager, States state) :
 	m_pauseMenu = std::make_shared<GuiPauseMenu>();
 	m_gui->addWindow(m_pauseMenu);
 
-	//Bind events...
+	//Bind events
+	m_conNewGame = m_pauseMenu->OnNewGameEvent.connect(&BaseGame::onResetBoard, this);
+	m_conQuitGame = m_pauseMenu->OnExitGameEvent.connect(&BaseGame::onQuitGame, this);
+	m_conSwitchColour = m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
 }
 
 BaseGame::~BaseGame()

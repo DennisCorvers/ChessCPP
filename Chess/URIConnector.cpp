@@ -158,7 +158,7 @@ namespace URI {
 	void URIConnector::processEngineMessage(const std::string& message)
 	{
 		if (message.compare(0, BESTMOVE.size(), BESTMOVE) == 0) {
-			int pos = message.find("none", 10, 4);
+			int pos = static_cast<int>(message.find("none", 10, 4));
 			if (pos > 0) //Engine found no more moves. Likely end game?
 				return;
 			m_fromEngine.emplace(EngineMessageType::BestMove, message.substr(BESTMOVE.size() + 1, 4));

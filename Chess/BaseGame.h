@@ -8,8 +8,12 @@ class BaseGame : public BaseState
 {
 private:
 	States m_gameState;
+	
 	std::unique_ptr<GuiContainer> m_gui;
 	std::shared_ptr<GuiPauseMenu> m_pauseMenu;
+	Connector m_conNewGame;
+	Connector m_conQuitGame;
+	Connector m_conSwitchColour;
 
 protected:
 	using EType = sf::Event::EventType;
