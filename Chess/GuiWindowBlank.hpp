@@ -14,6 +14,12 @@ public:
 		m_renderer->setTitleBarHeight(0);
 	}
 
-	virtual void onInitialize(const SharedContext& sharedContext) = 0;
+	virtual void afterInitialize(const SharedContext& sharedContext) = 0;
 	virtual void onDispose(const SharedContext& sharedContext) = 0;
+
+private:
+	void onInitialize(const SharedContext& sharedContext) override {
+		m_guiWindow->setSize(sharedContext.window->getSize().x, sharedContext.window->getSize().y);
+		afterInitialize(sharedContext);
+	}
 };

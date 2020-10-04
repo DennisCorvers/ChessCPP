@@ -125,6 +125,9 @@
     <ClCompile Include="GuiContainer.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
+    <ClCompile Include="GuiMainMenu.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -211,9 +214,6 @@
     <ClInclude Include="ResourceManagers.hpp">
       <Filter>Source Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="BaseMenu.hpp">
-      <Filter>Source Files\States\Base</Filter>
-    </ClInclude>
     <ClInclude Include="BaseState.hpp">
       <Filter>Source Files\States\Base</Filter>
     </ClInclude>
@@ -273,6 +273,9 @@
     </ClInclude>
     <ClInclude Include="GuiWindowBlank.hpp">
       <Filter>Source Files\Gui\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiMainMenu.h">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

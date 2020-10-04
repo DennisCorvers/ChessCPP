@@ -1,8 +1,16 @@
 #pragma once
-#include "BaseMenu.hpp"
+#include "BaseState.hpp"
 
-class SMainMenu : public BaseMenu
+class GuiMainMenu;
+class GuiContainer;
+class SMainMenu : public BaseState
 {
+private:
+	ConnectionContainer m_conContainer;
+	std::unique_ptr<GuiContainer> m_gui;
+	std::shared_ptr<GuiMainMenu> m_guiMainMenu;
+	
+
 public:
 	SMainMenu(StateManager& stateManager);
 
@@ -23,8 +31,6 @@ public:
 	virtual bool handleEvent(const sf::Event & event) override;
 
 private:
-	void initializeUI();
-
 	void onQuitPressed();
 	void onSinglePlayerPressed();
 	void onJoinGamePressed();

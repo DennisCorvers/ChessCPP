@@ -9,7 +9,7 @@ GuiPauseMenu::GuiPauseMenu(bool isClient) :
 GuiPauseMenu::~GuiPauseMenu()
 { }
 
-void GuiPauseMenu::onInitialize(const SharedContext & sharedContext)
+void GuiPauseMenu::afterInitialize(const SharedContext & sharedContext)
 {
 	FontManager* fontManager = sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
@@ -91,7 +91,6 @@ void GuiPauseMenu::onSwapColour()
 
 void GuiPauseMenu::onExitGame()
 {
-	hide();
 	OnExitGameEvent.invoke();
 }
 

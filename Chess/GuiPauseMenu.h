@@ -14,7 +14,7 @@ public:
 	GuiPauseMenu(bool isClient = false);
 	virtual ~GuiPauseMenu();
 
-	void onInitialize(const SharedContext& sharedContext) override;
+	void afterInitialize(const SharedContext& sharedContext) override;
 	void onDispose(const SharedContext& sharedContext) override;
 
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);

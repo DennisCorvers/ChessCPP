@@ -43,6 +43,8 @@ ChessPieceManager::ChessPieceManager(TextureManager& textureManager, int pixelSi
 
 ChessPieceManager::~ChessPieceManager()
 {
+	m_animatorSystem.reset();
+
 	for (char i = 0; i < 32; i++)
 		delete m_chessPieces[i];
 }

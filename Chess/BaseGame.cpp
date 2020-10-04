@@ -2,9 +2,9 @@
 #include "BaseGame.h"
 #include "BoardManager.h"
 #include "StateManager.h"
-#include "EventManager.h"
 #include "GuiPauseMenu.h"
 #include "GuiContainer.hpp"
+#include "EventManager.h"
 
 BaseGame::BaseGame(StateManager & stateManager, States state) :
 	BaseState(stateManager),
@@ -63,7 +63,9 @@ bool BaseGame::handleEvent(const sf::Event & event)
 		Graphics::applyResize(m_view, event);
 
 	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		if (!m_pauseMenu->isVisible())
+		if (m_pauseMenu->isVisible())
+			m_pauseMenu->hide();
+		else
 			m_pauseMenu->show();
 	}
 

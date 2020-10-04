@@ -309,6 +309,7 @@ private:
 			return false;
 
 		m_eventHandlers.erase(handler);
+		return true;
 	}
 
 	void innerUnsubscribe(EventHandlerBase<Args...>* handlerReplica) {
