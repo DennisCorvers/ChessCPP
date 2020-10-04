@@ -44,3 +44,10 @@ void GuiContainer::removeAllWindows()
 	m_guiBase.removeAllWidgets();
 	m_childWindows.empty();
 }
+
+void GuiContainer::setDebug()
+{
+	for (auto window : m_childWindows) {
+		window.second->setDebug();
+	}
+}

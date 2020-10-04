@@ -21,7 +21,6 @@ void GuiPauseMenu::afterInitialize(const SharedContext & sharedContext)
 	SoundManager* soundManager = sharedContext.soundManager;
 	sf::RenderWindow* window = sharedContext.window;
 
-	m_guiWindow->setSize(window->getSize().x, window->getSize().y);
 	m_guiWindow->setInheritedFont(openSans);
 	int xSize = 300;
 	int ySize = 60;

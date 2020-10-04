@@ -61,4 +61,9 @@ public:
 	bool isEnabled() const {
 		return m_guiWindow->isEnabled();
 	}
+
+	void setDebug() {
+		m_renderer->setBackgroundColor(tgui::Color(0, 0, 100, 100));
+		m_renderer->setBorderColor(tgui::Color::Magenta);
+	}
 };

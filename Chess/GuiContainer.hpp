@@ -52,4 +52,6 @@ public:
 		if (state)
 			m_guiBase.setView(m_view);
 	}
+
+	void setDebug();
 };
