@@ -7,9 +7,9 @@
 SMainMenu::SMainMenu(StateManager & stateManager) :
 	BaseState(stateManager)
 {
-	m_gui = std::make_unique<GuiContainer>(stateManager.getContext());
-	m_guiMainMenu = std::make_shared<GuiMainMenu>();
-	m_gui->addWindow(m_guiMainMenu);
+	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
+	m_guiMainMenu = std::make_shared<GuiMainMenu>(stateManager.getContext());
+	m_gui->addWindow(m_guiMainMenu, true);
 
 	m_conContainer.add(m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this));
 	m_conContainer.add(m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this));

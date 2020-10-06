@@ -13,7 +13,7 @@ private:
 public:
 	STest(StateManager& stateManager) :
 		BaseState(stateManager),
-		m_win(stateManager.getContext())
+		m_win(*stateManager.getContext().window)
 	{
 
 	}
@@ -22,7 +22,7 @@ public:
 
 	virtual void onCreate() override
 	{
-		auto child = std::make_shared<GuiPauseMenu>();
+		auto child = std::make_shared<GuiPauseMenu>(m_stateManager->getContext());
 		m_win.addWindow(child);
 
 	};

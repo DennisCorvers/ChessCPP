@@ -11,11 +11,10 @@ public:
 	Event<> OnSwapColourEvent;
 	Event<> OnExitGameEvent;
 
-	GuiPauseMenu(bool isClient = false);
+	GuiPauseMenu(const SharedContext& sharedContext, bool isClient = false);
 	virtual ~GuiPauseMenu();
 
-	void afterInitialize(const SharedContext& sharedContext) override;
-	void onDispose(const SharedContext& sharedContext) override;
+	void afterInitialize() override;
 
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
 

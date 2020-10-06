@@ -8,11 +8,10 @@ public:
 	Event<> OnSinglePlayerEvent;
 	Event<> OnSandboxEvent;
 
-	GuiMainMenu();
+	GuiMainMenu(const SharedContext & sharedContext);
 	virtual ~GuiMainMenu();
 
-	void afterInitialize(const SharedContext& sharedContext) override;
-	void onDispose(const SharedContext & sharedContext) override;
+	void afterInitialize() override;
 
 private:
 	void onJoinGamePressed();

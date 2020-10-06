@@ -2,8 +2,8 @@
 #include "TGUI/Gui.hpp"
 #include "SFML/Main.hpp"
 #include "SharedContext.hpp"
+#include "GuiContainer.hpp"
 
-class GuiContainer;
 class GuiWindow : private NonCopyable {
 private:
 	int m_windowID = -1;
@@ -15,17 +15,24 @@ protected:
 
 	ChildGuiWindow m_guiWindow;
 	Renderer m_renderer;
+	const SharedContext& m_sharedContext;
+	GuiContainer* m_container;
 
 public:
-	GuiWindow() {
+	Event<> OnClose;
+
+	GuiWindow(const SharedContext& sharedContext) :
+		m_container(nullptr),
+		m_sharedContext(sharedContext)
+	{
 		m_guiWindow = tgui::ChildWindow::create();
+		m_guiWindow->onEscapeKeyPressed.connect([this]() { this->onEscapePress(); });
 		m_renderer = m_guiWindow->getRenderer();
 	}
 
-	virtual void onInitialize(const SharedContext& sharedContext) = 0;
-	virtual void onHide() {};
-	virtual void onShow() {};
-	virtual void onDispose(const SharedContext& sharedContext) = 0;
+	virtual void close() {
+		onClose();
+	}
 
 	virtual void hide() {
 		setEnabled(false);
@@ -34,6 +41,9 @@ public:
 	}
 
 	virtual void show() {
+		if (!m_container)
+			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
+
 		setEnabled(true);
 		onShow();
 		m_guiWindow->setVisible(true);
@@ -62,8 +72,27 @@ public:
 		return m_guiWindow->isEnabled();
 	}
 
+	bool isClosed() const {
+		return !m_container;
+	}
+
 	void setDebug() {
 		m_renderer->setBackgroundColor(tgui::Color(0, 0, 100, 100));
 		m_renderer->setBorderColor(tgui::Color::Magenta);
+	}
+
+protected:
+	virtual void onInitialize() {};
+	virtual void onHide() {};
+	virtual void onShow() {};
+	virtual void onDispose() {};
+
+	virtual void onEscapePress() {};
+
+	virtual void onClose() {
+		if (m_container) {
+			OnClose.invoke();
+			m_container->removeWindow(m_windowID);
+		}
 	}
 };

@@ -6,7 +6,9 @@
 class GuiWindowBlank : public GuiWindow {
 
 public:
-	GuiWindowBlank() {
+	GuiWindowBlank(const SharedContext& sharedContext) :
+		GuiWindow(sharedContext)
+	{
 		m_guiWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
 		m_renderer->setBackgroundColor(tgui::Color::Transparent);
 		m_renderer->setBorderColor(tgui::Color::Transparent);
@@ -14,12 +16,11 @@ public:
 		m_renderer->setTitleBarHeight(0);
 	}
 
-	virtual void afterInitialize(const SharedContext& sharedContext) = 0;
-	virtual void onDispose(const SharedContext& sharedContext) = 0;
+	virtual void afterInitialize() = 0;
 
 private:
-	void onInitialize(const SharedContext& sharedContext) override {
-		m_guiWindow->setSize(sharedContext.window->getSize().x, sharedContext.window->getSize().y);
-		afterInitialize(sharedContext);
+	void onInitialize() override {
+		m_guiWindow->setSize(m_sharedContext.window->getSize().x, m_sharedContext.window->getSize().y);
+		afterInitialize();
 	}
 };

@@ -1,27 +1,24 @@
 #include "pch.h"
 #include "GuiMainMenu.h"
 
-
-GuiMainMenu::GuiMainMenu()
-{
-}
-
+GuiMainMenu::GuiMainMenu(const SharedContext & sharedContext) :
+	GuiWindowBlank(sharedContext)
+{ }
 
 GuiMainMenu::~GuiMainMenu()
-{
-}
+{ }
 
-void GuiMainMenu::afterInitialize(const SharedContext & sharedContext)
+void GuiMainMenu::afterInitialize()
 {
-	FontManager* fontManager = sharedContext.fontManager;
+	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(States::MainMenu, AssetNames::f_opensans_reg);
 	FontManager::setSmoothing(openSans, 20, false);
 
-	ThemeManager* themeManager = sharedContext.themeManager;
+	ThemeManager* themeManager = m_sharedContext.themeManager;
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::MainMenu, AssetNames::theme_default);
 
-	SoundManager* soundManager = sharedContext.soundManager;
-	sf::RenderWindow* window = sharedContext.window;
+	SoundManager* soundManager = m_sharedContext.soundManager;
+	sf::RenderWindow* window = m_sharedContext.window;
 
 	m_guiWindow->setInheritedFont(tgui::Font(openSans));
 	sf::Vector2f size(300, 60);
@@ -52,9 +49,6 @@ void GuiMainMenu::afterInitialize(const SharedContext & sharedContext)
 	buttons[3]->connect("pressed", &GuiMainMenu::onHostGamePressed, this);
 	buttons[4]->connect("pressed", [this]() { OnQuitEvent(); });
 }
-
-void GuiMainMenu::onDispose(const SharedContext & sharedContext)
-{ }
 
 void GuiMainMenu::onJoinGamePressed()
 {

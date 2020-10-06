@@ -1,25 +1,28 @@
 #include "pch.h"
 #include "GuiPauseMenu.h"
 
-
-GuiPauseMenu::GuiPauseMenu(bool isClient) :
+GuiPauseMenu::GuiPauseMenu(const SharedContext & sharedContext, bool isClient) :
+	GuiWindowBlank(sharedContext),
 	m_isClient(isClient)
 { }
 
 GuiPauseMenu::~GuiPauseMenu()
-{ }
+{ 
+	m_sharedContext.fontManager->releaseResource(AssetNames::f_opensans_reg);
+	m_sharedContext.themeManager->releaseResource(AssetNames::theme_default);
+}
 
-void GuiPauseMenu::afterInitialize(const SharedContext & sharedContext)
+void GuiPauseMenu::afterInitialize()
 {
-	FontManager* fontManager = sharedContext.fontManager;
+	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
 	FontManager::setSmoothing(openSans, 20, false);
 
-	ThemeManager* themeManager = sharedContext.themeManager;
+	ThemeManager* themeManager = m_sharedContext.themeManager;
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(AssetNames::theme_default);
 
-	SoundManager* soundManager = sharedContext.soundManager;
-	sf::RenderWindow* window = sharedContext.window;
+	SoundManager* soundManager = m_sharedContext.soundManager;
+	sf::RenderWindow* window = m_sharedContext.window;
 
 	m_guiWindow->setInheritedFont(openSans);
 	int xSize = 300;
@@ -50,12 +53,6 @@ void GuiPauseMenu::afterInitialize(const SharedContext & sharedContext)
 
 	background->setSize(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
 	background->setPosition(sf::Vector2f((window->getSize().x - background->getSize().x) / 2, window->getSize().y / 4 - 50));
-}
-
-void GuiPauseMenu::onDispose(const SharedContext & sharedContext)
-{
-	sharedContext.fontManager->releaseResource(AssetNames::f_opensans_reg);
-	sharedContext.themeManager->releaseResource(AssetNames::theme_default);
 }
 
 void GuiPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)

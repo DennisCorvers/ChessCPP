@@ -23,8 +23,8 @@ BaseGame::BaseGame(StateManager & stateManager, States state) :
 	m_view.setSize(sf::Vector2f(m_window->getSize().x, m_window->getSize().y));
 	m_view.setCenter(m_boardManager->getBoardCenter());
 
-	m_gui = std::make_unique<GuiContainer>(stateManager.getContext());
-	m_pauseMenu = std::make_shared<GuiPauseMenu>();
+	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
+	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext());
 	m_gui->addWindow(m_pauseMenu);
 
 	//Bind events

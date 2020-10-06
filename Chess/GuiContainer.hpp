@@ -1,25 +1,24 @@
 #pragma once
-#include "GuiWindow.hpp"
-#include "GuiWindowBlank.hpp"
 #include "SharedContext.hpp"
 
+class GuiWindow;
 class GuiContainer {
 private:
 	tgui::Gui m_guiBase;
 	sf::View m_view;
 
-	std::unordered_map<int, std::shared_ptr<GuiWindow>> m_childWindows;
-	const SharedContext& m_sharedContext;
+	std::vector<std::shared_ptr<GuiWindow>> m_childWindows;
 
 	bool m_maintainAspectRatio;
 	int nextChildID;
 
 public:
-	GuiContainer(const SharedContext& sharedContext);
+	GuiContainer(sf::RenderWindow& target);
 	virtual ~GuiContainer();
 
 	void addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate = false);
 	void removeWindow(const std::shared_ptr<GuiWindow>& window);
+	void removeWindow(int windowID);
 	void removeAllWindows();
 
 	////
@@ -28,6 +27,7 @@ public:
 	inline void render() {
 		m_guiBase.draw();
 	}
+
 	////
 	///@brief Handles events sent from the application's Window.
 	///@param event Event originating from the application's Window.
