@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "URIConnector.hpp"
+#include "UCIConnector.hpp"
 
-namespace URI {
+namespace UCI {
 	static const std::string BESTMOVE = "bestmove";
 	static const std::string UCIOK = "uciok";
 	static const std::string READYOK = "readyok";
 
-	URIConnector::URIConnector(const std::string & path, EngineInformation & engineInfo) :
+	UCIConnector::UCIConnector(const std::string & path, EngineInformation & engineInfo) :
 		hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL),
 		m_info(engineInfo), m_isWorking(false), m_workTime(0)
 	{
@@ -19,25 +19,25 @@ namespace URI {
 		delete[] writable;
 	}
 
-	URIConnector::~URIConnector() {
+	UCIConnector::~UCIConnector() {
 		stopEngine();
 		closeConnection();
 	}
 
-	void URIConnector::resetGame() {
+	void UCIConnector::resetGame() {
 		queueCommand("ucinewgame\n");
 	}
 
-	void URIConnector::setSkillLevel(const unsigned int skillLevel) {
+	void UCIConnector::setSkillLevel(const unsigned int skillLevel) {
 		m_skillLevel = skillLevel;
 		queueCommand("setoption name Skill Level value " + std::to_string(skillLevel) + "\n");
 	}
 
-	unsigned int URIConnector::getSkillLevel() const {
+	unsigned int UCIConnector::getSkillLevel() const {
 		return m_skillLevel;
 	}
 
-	EngineMessage URI::URIConnector::getMessage()
+	EngineMessage UCI::UCIConnector::getMessage()
 	{
 		ASSERT(m_fromEngine.size() > 0, "No messages available!");
 		EngineMessage info = m_fromEngine.top();
@@ -45,11 +45,11 @@ namespace URI {
 		return info;
 	}
 
-	bool URIConnector::pollEngine() {
+	bool UCIConnector::pollEngine() {
 		return m_fromEngine.size() > 0;
 	}
 
-	void URIConnector::runEngine(float deltaTime)
+	void UCIConnector::runEngine(float deltaTime)
 	{
 		m_lastUpdate += deltaTime;
 
@@ -79,7 +79,7 @@ namespace URI {
 		return;
 	}
 
-	void URIConnector::requestMove(const std::string& FENString)
+	void UCIConnector::requestMove(const std::string& FENString)
 	{
 		queueCommand("position fen " + FENString + '\n');
 		//queueCommand("go\n");
@@ -88,11 +88,11 @@ namespace URI {
 
 	}
 
-	void URIConnector::stopEngine() {
+	void UCIConnector::stopEngine() {
 		sendCommand("stop\n");
 	}
 
-	void URIConnector::connectToEngine(char* path)
+	void UCIConnector::connectToEngine(char* path)
 	{
 		ASSERT(lpProcessInformation.hProcess == NULL, "Engine already running!");
 		lpPipeAttributes.nLength = sizeof(lpPipeAttributes);
@@ -112,7 +112,7 @@ namespace URI {
 		//queueCommand("uci\n");
 	}
 
-	void URIConnector::closeConnection()
+	void UCIConnector::closeConnection()
 	{
 		sendCommand("quit\n");
 		if (hWritePipeIn != NULL) CloseHandle(hWritePipeIn);
@@ -123,16 +123,16 @@ namespace URI {
 		if (lpProcessInformation.hThread != NULL) CloseHandle(lpProcessInformation.hThread);
 	}
 
-	void URI::URIConnector::sendCommand(const std::string & command) {
+	void UCI::UCIConnector::sendCommand(const std::string & command) {
 		WriteFile(hWritePipeIn, command.c_str(), static_cast<DWORD>(command.length()), &lpNumberOfBytesWritten, NULL);
 	}
 
-	void URI::URIConnector::queueCommand(const std::string & command) {
+	void UCI::UCIConnector::queueCommand(const std::string & command) {
 		//m_toEngine.push(command);
 		sendCommand(command);
 	}
 
-	bool URIConnector::pollEngineRead()
+	bool UCIConnector::pollEngineRead()
 	{
 		if (!PeekNamedPipe(hReadPipeOut, NULL, NULL, &lpBytesRead, &lpTotalBytesAvail, NULL))
 			return false;
@@ -140,7 +140,7 @@ namespace URI {
 		return lpTotalBytesAvail > 0;
 	}
 
-	void URIConnector::readEngine()
+	void UCIConnector::readEngine()
 	{
 		do
 		{
@@ -155,7 +155,7 @@ namespace URI {
 		} while (lpBytesRead >= sizeof(buffer));
 	}
 
-	void URIConnector::processEngineMessage(const std::string& message)
+	void UCIConnector::processEngineMessage(const std::string& message)
 	{
 		if (message.compare(0, BESTMOVE.size(), BESTMOVE) == 0) {
 			int pos = static_cast<int>(message.find("none", 10, 4));

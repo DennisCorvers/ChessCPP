@@ -3,7 +3,7 @@
 
 #pragma warning( disable : 4267 ) 
 
-namespace URI {
+namespace UCI {
 
 	enum struct EngineMessageType {
 		UCIOK,
@@ -25,7 +25,7 @@ namespace URI {
 		unsigned int maxEngineTime = 1.0f;
 	};
 
-	class URIConnector {
+	class UCIConnector {
 	private:
 		STARTUPINFO lpStartupInfo = { 0 };
 		SECURITY_ATTRIBUTES lpPipeAttributes = { 0 };
@@ -52,9 +52,9 @@ namespace URI {
 		void setSkillLevel(const unsigned int skillLevel);
 		unsigned int getSkillLevel() const;
 
-		URIConnector(const std::string& path, EngineInformation& engineInfo);
+		UCIConnector(const std::string& path, EngineInformation& engineInfo);
 
-		virtual ~URIConnector();
+		virtual ~UCIConnector();
 
 		void resetGame();
 

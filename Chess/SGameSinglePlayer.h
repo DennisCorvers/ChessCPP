@@ -1,12 +1,12 @@
 #pragma once
 #include "BaseGame.h"
 
-namespace URI { class URIConnector; }
+namespace UCI { class UCIConnector; }
 class EventArgs;
 class SGameSinglePlayer : public BaseGame
 {
 private:
-	std::unique_ptr<URI::URIConnector> m_chessEngine;
+	std::unique_ptr<UCI::UCIConnector> m_chessEngine;
 
 	PieceColour m_myColour;
 

@@ -104,9 +104,6 @@
     <ClCompile Include="BaseGame.cpp">
       <Filter>Source Files\States\Base</Filter>
     </ClCompile>
-    <ClCompile Include="URIConnector.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="SGameSinglePlayer.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
@@ -130,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="GuiInputWindow.cpp">
       <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="UCIConnector.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,9 +229,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="URIConnector.hpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="SGameSinglePlayer.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
@@ -282,6 +279,9 @@
     </ClInclude>
     <ClInclude Include="GuiInputWindow.h">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="UCIConnector.hpp">
+      <Filter>Source Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

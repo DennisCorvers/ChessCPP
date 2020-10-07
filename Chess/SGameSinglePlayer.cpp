@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SGameSinglePlayer.h"
 
-#include "URIConnector.hpp"
+#include "UCIConnector.hpp"
 #include "BoardManager.h"
 #include "StateManager.h"
 
@@ -9,8 +9,8 @@ SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	BaseGame(stateManager, States::SinglePlayer),
 	m_myColour(PieceColour::White)
 {
-	auto engineInfo = URI::EngineInformation();
-	m_chessEngine = std::make_unique<URI::URIConnector>("stockfish.exe", engineInfo);
+	auto engineInfo = UCI::EngineInformation();
+	m_chessEngine = std::make_unique<UCI::UCIConnector>("stockfish.exe", engineInfo);
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
@@ -36,7 +36,7 @@ bool SGameSinglePlayer::update(float deltaTime)
 		auto message = m_chessEngine->getMessage();
 		switch (message.messageType)
 		{
-		case URI::EngineMessageType::BestMove:
+		case UCI::EngineMessageType::BestMove:
 			m_boardManager->inputMove(ChessMove::fromChessNotation(message.message), false, true);
 			break;
 		default:
