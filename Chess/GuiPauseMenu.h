@@ -14,11 +14,11 @@ public:
 	GuiPauseMenu(const SharedContext& sharedContext, bool isClient = false);
 	virtual ~GuiPauseMenu();
 
+private:
 	void afterInitialize() override;
 
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
 
-protected:
 	void onNewGame();
 	void onSwapColour();
 	void onExitGame();

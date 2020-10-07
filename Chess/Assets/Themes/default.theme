@@ -7,6 +7,14 @@ MenuButton {
 	TextColorDown = rgba(0, 0, 0, 235);
 }
 
+MenuHeader {
+	BackgroundColor = rgba(0, 0, 0, 140);
+}
+
+MenuLabel {
+	TextColor = rgba(255, 255, 255, 255);
+}
+
 PauseButton {
 	BackgroundColor = rgba(20, 120, 200, 255);
 	BackgroundColorHover = rgba(15, 91, 153, 255);
@@ -18,4 +26,12 @@ PauseButton {
 
 PauseBackground {
 	BackgroundColor = rgba(255, 255, 255, 250);
+}
+
+PauseHeader {
+	BackgroundColor = rgba(20, 120, 200, 255);
+}
+
+PauseLabel {
+	TextColor = rgba(255, 255, 255, 255);
 }

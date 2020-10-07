@@ -11,9 +11,9 @@ public:
 	GuiMainMenu(const SharedContext & sharedContext);
 	virtual ~GuiMainMenu();
 
+private:
 	void afterInitialize() override;
 
-private:
 	void onJoinGamePressed();
 	void onHostGamePressed();
 };

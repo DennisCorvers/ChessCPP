@@ -128,6 +128,9 @@
     <ClCompile Include="GuiMainMenu.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="GuiInputWindow.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -275,6 +278,9 @@
       <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
     <ClInclude Include="GuiMainMenu.h">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiInputWindow.h">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>

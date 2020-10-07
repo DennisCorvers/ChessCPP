@@ -16,6 +16,7 @@ public:
 		m_renderer->setTitleBarHeight(0);
 	}
 
+protected:
 	virtual void afterInitialize() = 0;
 
 private:
