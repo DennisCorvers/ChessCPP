@@ -19,7 +19,7 @@ GuiContainer::~GuiContainer()
 }
 
 void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate) {
-	if (window->m_windowID != -1)
+	if (window->m_container != nullptr)
 		throw new std::exception("Window already has a container parent!");
 
 	m_childWindows.push_back(window);
@@ -27,7 +27,7 @@ void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreat
 	window->m_container = this;
 	window->m_windowID = ++nextChildID;
 
-	window->onInitialize();
+	window->onAddedToContainer(m_view);
 
 	m_guiBase.add(window->m_guiWindow);
 

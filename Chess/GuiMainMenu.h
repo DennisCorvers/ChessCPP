@@ -12,7 +12,8 @@ public:
 	virtual ~GuiMainMenu();
 
 private:
-	void afterInitialize() override;
+	void initialize();
+	void onAddedToContainer(const sf::View& containerView) override;
 
 	void onJoinGamePressed();
 	void onHostGamePressed();

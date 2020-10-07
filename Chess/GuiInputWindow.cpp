@@ -9,6 +9,7 @@ GuiInputWindow::GuiInputWindow(const SharedContext & sharedContext) :
 	m_confirmButton = tgui::Button::create("Confirm");
 	m_textField = tgui::TextBox::create();
 	m_commentLabel = tgui::Label::create();
+	m_background = tgui::Panel::create();
 
 	initialize();
 }
@@ -42,12 +43,11 @@ void GuiInputWindow::initialize()
 	int butYPosition = screenYSize - butYSize - butYOffset;
 
 	//Background
-	tgui::Panel::Ptr background = tgui::Panel::create();
-	background->setSize(sf::Vector2f(screenXSize, screenYSize));
-	background->setRenderer(defaultTheme.getRenderer("PauseBackground"));
-	background->getRenderer()->setBorders(tgui::Borders::Outline(1));
-	background->getRenderer()->setBorderColor(tgui::Color::Black);
-	m_guiWindow->add(background);
+	m_background->setSize(sf::Vector2f(screenXSize, screenYSize));
+	m_background->setRenderer(defaultTheme.getRenderer("PauseBackground"));
+	m_background->getRenderer()->setBorders(tgui::Borders::Outline(1));
+	m_background->getRenderer()->setBorderColor(tgui::Color::Black);
+	m_guiWindow->add(m_background);
 
 	//Cancel Button
 	m_confirmButton->setSize(butXSize, butYSize);
@@ -90,12 +90,13 @@ void GuiInputWindow::initialize()
 	m_commentLabel->setRenderer(defaultTheme.getRenderer("PauseLabel"));
 	m_guiWindow->add(m_commentLabel);
 
-	//Center screen...
-	//m_guiWindow->setPosition(sf::Vector2f((view.getSize().x - background->getSize().x) / 2, view.getSize().y / 4 - 50));
+	m_guiWindow->setSize(m_background->getSize());
 }
 
-void GuiInputWindow::afterInitialize()
+void GuiInputWindow::onAddedToContainer(const sf::View & containerView)
 {
+	//Center to window...
+	//m_guiWindow->setPosition(sf::Vector2f((containerView.getSize().x - m_background->getSize().x) / 2, containerView.getSize().y / 4 - 50));
 }
 
 void GuiInputWindow::validateInput(const std::string & input) const

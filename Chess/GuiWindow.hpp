@@ -83,14 +83,7 @@ public:
 	}
 
 protected:
-	const sf::Vector2f getContainerSize() const {
-		if (m_container)
-			return m_container->getView().getSize();
-		else
-			return sf::Vector2f(1000, 1000);
-	}
-
-	virtual void onInitialize() {};
+	virtual void onAddedToContainer(const sf::View& containerView) {};
 	virtual void onHide() {};
 	virtual void onShow() {};
 	virtual void onDispose() {};

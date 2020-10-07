@@ -3,12 +3,14 @@
 
 GuiMainMenu::GuiMainMenu(const SharedContext & sharedContext) :
 	GuiWindowBlank(sharedContext)
-{ }
+{
+	initialize();
+}
 
 GuiMainMenu::~GuiMainMenu()
 { }
 
-void GuiMainMenu::afterInitialize()
+void GuiMainMenu::initialize()
 {
 	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(States::MainMenu, AssetNames::f_opensans_reg);
@@ -18,12 +20,11 @@ void GuiMainMenu::afterInitialize()
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::MainMenu, AssetNames::theme_default);
 
 	SoundManager* soundManager = m_sharedContext.soundManager;
-	const sf::View& view = m_sharedContext.window->getView();
 
 	m_guiWindow->setInheritedFont(tgui::Font(openSans));
 	sf::Vector2f size(300, 60);
-	int xOffset = (view.getSize().x - size.x) / 2;
-	int yOffset = view.getSize().y / 4;
+	int xOffset = size.x / 2;
+	int yOffset = 0;
 
 	tgui::Button::Ptr buttons[5];
 	buttons[0] = tgui::Button::create("Single Player");
@@ -48,6 +49,12 @@ void GuiMainMenu::afterInitialize()
 	buttons[2]->connect("pressed", &GuiMainMenu::onJoinGamePressed, this);
 	buttons[3]->connect("pressed", &GuiMainMenu::onHostGamePressed, this);
 	buttons[4]->connect("pressed", [this]() { OnQuitEvent(); });
+}
+
+void GuiMainMenu::onAddedToContainer(const sf::View & containerView)
+{
+	sf::Vector2f size(300, 60);
+	m_guiWindow->setPosition((containerView.getSize().x - size.x) / 2, containerView.getSize().y / 4);
 }
 
 void GuiMainMenu::onJoinGamePressed()

@@ -15,7 +15,8 @@ public:
 	virtual ~GuiPauseMenu();
 
 private:
-	void afterInitialize() override;
+	void initialize();
+	void onAddedToContainer(const sf::View& containerView) override;
 
 	void createButtons(std::vector<tgui::Button::Ptr>& buttons);
 

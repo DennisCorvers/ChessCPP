@@ -8,6 +8,7 @@ protected:
 	tgui::Button::Ptr m_cancelButton;
 	tgui::TextBox::Ptr m_textField;
 	tgui::Label::Ptr m_commentLabel;
+	tgui::Panel::Ptr m_background;
 
 public:
 	Event<> OnConfirm;
@@ -19,7 +20,7 @@ private:
 	void initialize();
 
 protected:
-	void afterInitialize() override;
+	void onAddedToContainer(const sf::View& containerView) override;
 	void validateInput(const std::string& input) const;
 };
 

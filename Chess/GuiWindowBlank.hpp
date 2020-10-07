@@ -15,13 +15,4 @@ public:
 		m_guiWindow->setPositionLocked(true);
 		m_renderer->setTitleBarHeight(0);
 	}
-
-protected:
-	virtual void afterInitialize() = 0;
-
-private:
-	void onInitialize() override {
-		m_guiWindow->setSize(getContainerSize().x, getContainerSize().y);
-		afterInitialize();
-	}
 };

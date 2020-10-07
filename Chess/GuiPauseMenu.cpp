@@ -12,7 +12,7 @@ GuiPauseMenu::~GuiPauseMenu()
 	m_sharedContext.themeManager->releaseResource(AssetNames::theme_default);
 }
 
-void GuiPauseMenu::afterInitialize()
+void GuiPauseMenu::initialize()
 {
 	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
@@ -54,6 +54,11 @@ void GuiPauseMenu::afterInitialize()
 
 	background->setSize(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
 	background->setPosition(sf::Vector2f((view.getSize().x - background->getSize().x) / 2, view.getSize().y / 4 - 50));
+}
+
+void GuiPauseMenu::onAddedToContainer(const sf::View & containerView)
+{
+
 }
 
 void GuiPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)

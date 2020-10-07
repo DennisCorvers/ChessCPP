@@ -48,8 +48,6 @@ public:
 
 	inline bool setMaintainAspectRatio(bool state) {
 		m_maintainAspectRatio = state;
-		if (state)
-			m_guiBase.setView(m_view);
 	}
 
 	const sf::View& getView() const {
