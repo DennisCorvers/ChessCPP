@@ -3,6 +3,8 @@
 #include "StateManager.h"
 #include "GuiContainer.hpp"
 #include "GuiInputWindow.h"
+#include "GuiMainMenu.h"
+#include "GuiPauseMenu.h"
 
 class STest : public BaseState
 {
@@ -21,7 +23,7 @@ public:
 
 	virtual void onCreate() override
 	{
-		auto child = std::make_shared<GuiInputWindow>(m_stateManager->getContext());
+		auto child = std::make_shared<GuiPauseMenu>(m_stateManager->getContext());
 		m_win.addWindow(child);
 		child->show();
 	};

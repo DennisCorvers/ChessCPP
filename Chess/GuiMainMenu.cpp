@@ -23,7 +23,6 @@ void GuiMainMenu::initialize()
 
 	m_guiWindow->setInheritedFont(tgui::Font(openSans));
 	sf::Vector2f size(300, 60);
-	int xOffset = size.x / 2;
 	int yOffset = 0;
 
 	tgui::Button::Ptr buttons[5];
@@ -35,11 +34,11 @@ void GuiMainMenu::initialize()
 
 	for (auto& button : buttons) {
 		button->setSize(size);
-		button->setPosition(xOffset, yOffset);
+		button->setPosition(0, yOffset);
 		button->setTextSize(20);
 		button->setRenderer(defaultTheme.getRenderer("MenuButton"));
-		button->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
-		button->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
+		button->connect("mouseentered", [soundManager]() { soundManager->playSound(AssetNames::s_button_hover); });
+		button->connect("pressed", [soundManager]() { soundManager->playSound(AssetNames::s_button_click); });
 		m_guiWindow->add(button);
 		yOffset += size.y + 50;
 	}
@@ -49,12 +48,16 @@ void GuiMainMenu::initialize()
 	buttons[2]->connect("pressed", &GuiMainMenu::onJoinGamePressed, this);
 	buttons[3]->connect("pressed", &GuiMainMenu::onHostGamePressed, this);
 	buttons[4]->connect("pressed", [this]() { OnQuitEvent(); });
+
+	m_guiWindow->setSize(300, yOffset);
 }
 
 void GuiMainMenu::onAddedToContainer(const sf::View & containerView)
 {
 	sf::Vector2f size(300, 60);
-	m_guiWindow->setPosition((containerView.getSize().x - size.x) / 2, containerView.getSize().y / 4);
+	int xOffset = (containerView.getSize().x - size.x) / 2;
+	int yOffset = containerView.getSize().y / 4;
+	m_guiWindow->setPosition(xOffset, yOffset);
 }
 
 void GuiMainMenu::onJoinGamePressed()
