@@ -22,13 +22,14 @@ void GuiPauseMenu::afterInitialize()
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(AssetNames::theme_default);
 
 	SoundManager* soundManager = m_sharedContext.soundManager;
-	sf::RenderWindow* window = m_sharedContext.window;
+	const sf::View& view = m_sharedContext.window->getView();
 
 	m_guiWindow->setInheritedFont(openSans);
 	int xSize = 300;
 	int ySize = 60;
-	int xOffset = (window->getSize().x - xSize) / 2;
-	int yOffset = window->getSize().y / 4;
+
+	int xOffset = (view.getSize().x - xSize) / 2;
+	int yOffset = view.getSize().y / 4;
 
 	tgui::Panel::Ptr background = tgui::Panel::create();
 	background->setRenderer(defaultTheme.getRenderer("PauseBackground"));
@@ -52,7 +53,7 @@ void GuiPauseMenu::afterInitialize()
 	}
 
 	background->setSize(sf::Vector2f(xSize + 100, yOffset - ySize * 3));
-	background->setPosition(sf::Vector2f((window->getSize().x - background->getSize().x) / 2, window->getSize().y / 4 - 50));
+	background->setPosition(sf::Vector2f((view.getSize().x - background->getSize().x) / 2, view.getSize().y / 4 - 50));
 }
 
 void GuiPauseMenu::createButtons(std::vector<tgui::Button::Ptr>& buttons)

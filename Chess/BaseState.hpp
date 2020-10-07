@@ -1,6 +1,6 @@
 #pragma once
 #include "States.h"
-#include "assetNames.h"
+#include "StateManager.h"
 
 class StateManager;
 class BaseState
@@ -10,7 +10,11 @@ public:
 		m_stateManager(&stateManager),
 		m_isTransparent(false),
 		m_isActive(true)
-	{}
+	{
+		m_view.setSize(Graphics::DEFAULT_SIZE.x, Graphics::DEFAULT_SIZE.y);
+		auto window = stateManager.getContext().window;
+		Graphics::applyResize(m_view, window->getSize().x, window->getSize().y);
+	}
 
 	virtual ~BaseState() {}
 
@@ -43,6 +47,10 @@ public:
 	}
 	const StateManager& getStateManager() const {
 		return *m_stateManager;
+	}
+
+	inline sf::RenderWindow& getWindow() const {
+		return *m_stateManager->getContext().window;
 	}
 
 protected:

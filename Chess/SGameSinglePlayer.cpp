@@ -49,7 +49,7 @@ bool SGameSinglePlayer::update(float deltaTime)
 bool SGameSinglePlayer::onEvent(const sf::Event & event)
 {
 	if (event.mouseButton.button == sf::Mouse::Left) {
-		sf::Vector2f mousePos = m_window->mapPixelToCoords(sf::Mouse::getPosition(*m_window), m_view);
+		sf::Vector2f mousePos = getWindow().mapPixelToCoords(sf::Mouse::getPosition(getWindow()), m_view);
 
 		if (event.type == sf::Event::MouseButtonPressed)
 			m_boardManager->startSelection(mousePos, m_myColour);

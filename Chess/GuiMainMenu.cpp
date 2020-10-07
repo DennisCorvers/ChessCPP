@@ -18,12 +18,12 @@ void GuiMainMenu::afterInitialize()
 	tgui::Theme& defaultTheme = *themeManager->requireAndGet(States::MainMenu, AssetNames::theme_default);
 
 	SoundManager* soundManager = m_sharedContext.soundManager;
-	sf::RenderWindow* window = m_sharedContext.window;
+	const sf::View& view = m_sharedContext.window->getView();
 
 	m_guiWindow->setInheritedFont(tgui::Font(openSans));
 	sf::Vector2f size(300, 60);
-	int xOffset = (window->getSize().x - size.x) / 2;
-	int yOffset = window->getSize().y / 4;
+	int xOffset = (view.getSize().x - size.x) / 2;
+	int yOffset = view.getSize().y / 4;
 
 	tgui::Button::Ptr buttons[5];
 	buttons[0] = tgui::Button::create("Single Player");

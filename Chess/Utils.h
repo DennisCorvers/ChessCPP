@@ -27,6 +27,11 @@ namespace Mathf {
 }
 
 namespace Graphics {
+	const sf::Vector2i DEFAULT_SIZE = sf::Vector2i(1920, 1027);
+	const sf::Vector2i MIN_SIZE = sf::Vector2i(DEFAULT_SIZE.x / 2, DEFAULT_SIZE.y / 2);
+	const int FPS_LIMIT = 60;
+	const int FPS_INACTIVE = 15;
+
 	void applyResize(sf::View& view, int windowWidth, int windowHeight);
 
 	void applyResize(sf::View& view, const sf::Event& event);

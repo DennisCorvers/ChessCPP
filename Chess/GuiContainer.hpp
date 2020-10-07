@@ -25,6 +25,7 @@ public:
 	///@brief Renders the Gui element.
 	////
 	inline void render() {
+		m_guiBase.setView(m_view);
 		m_guiBase.draw();
 	}
 
@@ -36,8 +37,6 @@ public:
 	inline bool handleEvent(const sf::Event& event) {
 		if (event.type == sf::Event::Resized) {
 			Graphics::applyResize(m_view, event);
-			if (m_maintainAspectRatio)
-				m_guiBase.setView(m_view);
 		}
 
 		return m_guiBase.handleEvent(event);
@@ -51,6 +50,10 @@ public:
 		m_maintainAspectRatio = state;
 		if (state)
 			m_guiBase.setView(m_view);
+	}
+
+	const sf::View& getView() const {
+		return m_view;
 	}
 
 	void setDebug();

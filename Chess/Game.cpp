@@ -51,17 +51,17 @@ Game::~Game() {
 void Game::initWindow()
 {
 	m_defaultView = std::make_unique<sf::View>(
-		sf::FloatRect(0, 0, DEFAULT_SIZE.x, DEFAULT_SIZE.y));
+		sf::FloatRect(0, 0, Graphics::DEFAULT_SIZE.x, Graphics::DEFAULT_SIZE.y));
 
 	m_window = std::make_unique<sf::RenderWindow>(
-		sf::VideoMode(DEFAULT_SIZE.x, DEFAULT_SIZE.y, 0),
+		sf::VideoMode(Graphics::DEFAULT_SIZE.x, Graphics::DEFAULT_SIZE.y, 0),
 		"Chess++",
 		sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize,
 		sf::ContextSettings(0, 0, 2));
 
 	m_window->setView(*m_defaultView);
 
-	m_window->setFramerateLimit(FPS_LIMIT);
+	m_window->setFramerateLimit(Graphics::FPS_LIMIT);
 	//m_window->setVerticalSyncEnabled(true);
 
 	sf::Image* icon = new sf::Image;
@@ -106,18 +106,18 @@ void Game::update()
 		}
 		case sf::Event::Resized:
 		{
-			auto newSize = Graphics::clampWindow(*m_window, MIN_SIZE);
+			auto newSize = Graphics::clampWindow(*m_window, Graphics::MIN_SIZE);
 			Graphics::applyResize(*m_defaultView, newSize.x, newSize.y);
 			break;
 		}
 		case sf::Event::LostFocus:
 		{
-			m_window->setFramerateLimit(FPS_INACTIVE);
+			m_window->setFramerateLimit(Graphics::FPS_INACTIVE);
 			continue;
 		}
 		case sf::Event::GainedFocus:
 		{
-			m_window->setFramerateLimit(FPS_LIMIT);
+			m_window->setFramerateLimit(Graphics::FPS_LIMIT);
 			continue;
 		}
 		}

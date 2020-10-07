@@ -18,7 +18,6 @@ private:
 protected:
 	using EType = sf::Event::EventType;
 
-	sf::RenderWindow* m_window;
 	std::unique_ptr<BoardManager> m_boardManager;
 
 	void loadAssets();

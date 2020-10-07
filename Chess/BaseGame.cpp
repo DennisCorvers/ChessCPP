@@ -1,26 +1,24 @@
 #include "pch.h"
 #include "BaseGame.h"
 #include "BoardManager.h"
-#include "StateManager.h"
 #include "GuiPauseMenu.h"
 #include "GuiContainer.hpp"
 #include "EventManager.h"
+#include "ResourceManager.hpp"
 
-BaseGame::BaseGame(StateManager & stateManager, States state) :
+BaseGame::BaseGame(StateManager& stateManager, States state) :
 	BaseState(stateManager),
 	m_gameState(state)
 {
-	m_window = stateManager.getContext().window;
 	loadAssets();
 
 	m_boardManager = std::unique_ptr<BoardManager>(
 		new BoardManager(
 			*stateManager.getContext().textureManager,
 			*stateManager.getContext().soundManager,
-			static_cast<int>(m_window->getSize().y * .85f)
+			static_cast<int>(m_view.getSize().y * .85f)
 		));
 
-	m_view.setSize(sf::Vector2f(m_window->getSize().x, m_window->getSize().y));
 	m_view.setCenter(m_boardManager->getBoardCenter());
 
 	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
@@ -44,13 +42,13 @@ void BaseGame::loadAssets()
 }
 
 void BaseGame::render() {
-	m_boardManager->render(*m_window);
+	m_boardManager->render(getWindow());
 	m_gui->render();
 }
 
 bool BaseGame::update(float deltaTime)
 {
-	sf::Vector2f position = EventManager::GetPixelPosition(*m_window, m_view);
+	sf::Vector2f position = EventManager::GetPixelPosition(getWindow(), m_view);
 	m_boardManager->updateMousePosition(position);
 
 	m_boardManager->update(deltaTime);

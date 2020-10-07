@@ -7,9 +7,10 @@ GuiContainer::GuiContainer(sf::RenderWindow& target) :
 	m_maintainAspectRatio(true),
 	nextChildID(-1)
 {
-	const sf::Vector2u windowSize = target.getSize();
+	sf::Vector2u windowSize(Graphics::DEFAULT_SIZE.x, Graphics::DEFAULT_SIZE.y);
 	m_view.setSize(sf::Vector2f(windowSize.x, windowSize.y));
 	m_view.setCenter(windowSize.x / 2, windowSize.y / 2);
+	Graphics::applyResize(m_view, target.getSize().x, target.getSize().y);
 }
 
 GuiContainer::~GuiContainer()

@@ -20,7 +20,7 @@ public:
 
 private:
 	void onInitialize() override {
-		m_guiWindow->setSize(m_sharedContext.window->getSize().x, m_sharedContext.window->getSize().y);
+		m_guiWindow->setSize(getContainerSize().x, getContainerSize().y);
 		afterInitialize();
 	}
 };

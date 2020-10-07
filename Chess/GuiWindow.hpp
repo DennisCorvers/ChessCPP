@@ -6,6 +6,7 @@
 
 class GuiWindow : private NonCopyable {
 private:
+	GuiContainer* m_container;
 	int m_windowID = -1;
 
 protected:
@@ -16,7 +17,6 @@ protected:
 	ChildGuiWindow m_guiWindow;
 	Renderer m_renderer;
 	const SharedContext& m_sharedContext;
-	GuiContainer* m_container;
 
 public:
 	Event<> OnClose;
@@ -27,6 +27,7 @@ public:
 	{
 		m_guiWindow = tgui::ChildWindow::create();
 		m_guiWindow->onEscapeKeyPressed.connect([this]() { this->onEscapePress(); });
+		m_guiWindow->onClose.connect([this]() { this->onClose(); });
 		m_renderer = m_guiWindow->getRenderer();
 	}
 
@@ -82,6 +83,13 @@ public:
 	}
 
 protected:
+	const sf::Vector2f getContainerSize() const {
+		if (m_container)
+			return m_container->getView().getSize();
+		else
+			return sf::Vector2f(1000, 1000);
+	}
+
 	virtual void onInitialize() {};
 	virtual void onHide() {};
 	virtual void onShow() {};
