@@ -4,6 +4,7 @@
 class GuiWindow;
 class GuiContainer {
 private:
+	friend GuiWindow;
 	tgui::Gui m_guiBase;
 	sf::View m_view;
 
@@ -55,4 +56,14 @@ public:
 	}
 
 	void setDebug();
+
+private:
+	////
+	///@brief Displays the indicated window on top.
+	////
+	void showWindow(GuiWindow& window);
+	////
+	///@brief Displays the indicated window on top.
+	////
+	void hideWindow(GuiWindow& window);
 };

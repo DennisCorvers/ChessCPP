@@ -31,8 +31,8 @@ void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreat
 
 	m_guiBase.add(window->m_guiWindow);
 
-	if (!showOnCreate)
-		window->hide();
+	if (showOnCreate)
+		window->show();
 }
 
 void GuiContainer::removeWindow(const std::shared_ptr<GuiWindow>& window)
@@ -47,12 +47,9 @@ void GuiContainer::removeWindow(int windowID)
 		if ((**itr).m_windowID == windowID) {
 			std::shared_ptr<GuiWindow> window = std::move(*itr);
 
-
 			m_childWindows.erase(itr);
+			window->dispose();
 
-			window->m_container = nullptr;
-			window->m_windowID = -1;
-			window->onDispose();
 			m_guiBase.remove(window->m_guiWindow);
 			return;
 		}
@@ -70,5 +67,52 @@ void GuiContainer::setDebug()
 {
 	for (auto& window : m_childWindows) {
 		window->setDebug();
+	}
+}
+
+void GuiContainer::showWindow(GuiWindow& window)
+{
+	bool isDialog = false;
+	for (auto itr = m_childWindows.begin(); itr != m_childWindows.end(); ++itr)
+	{
+		if ((**itr).m_windowID == window.m_windowID) {
+
+			auto window = std::move(*itr);
+			m_childWindows.erase(itr);
+
+			m_childWindows.push_back(window);
+
+			isDialog = (**itr).m_windowStatus == WindowStatus::DIALOG;
+			break;
+		}
+	}
+
+	if (isDialog)
+	{
+		auto itr = m_childWindows.rbegin();
+		itr++;
+
+		while (itr != m_childWindows.rend()) {
+			(**itr).setEnabled(false);
+		}
+	}
+}
+
+void GuiContainer::hideWindow(GuiWindow& window)
+{
+	bool focussedWindow = false;
+	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	{
+		if ((**itr).m_windowStatus == WindowStatus::NONE)
+			continue;
+
+		(**itr).setEnabled(true);
+		if (!focussedWindow) {
+			(**itr).setEnabled(true);
+			focussedWindow = true;
+		}
+
+		if ((**itr).m_windowStatus == WindowStatus::DIALOG)
+			return;
 	}
 }
