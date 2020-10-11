@@ -18,7 +18,8 @@ GuiContainer::~GuiContainer()
 	removeAllWindows();
 }
 
-void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate) {
+
+void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window) {
 	if (window->m_container != nullptr)
 		throw new std::exception("Window already has a container parent!");
 
@@ -31,35 +32,43 @@ void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreat
 
 	m_guiBase.add(window->m_guiWindow);
 
-	if (showOnCreate)
-		window->show();
+	window->setEnabled(false);
+	window->setVisible(false);
 }
 
-void GuiContainer::removeWindow(const std::shared_ptr<GuiWindow>& window)
+bool GuiContainer::removeWindow(GuiWindow & window)
 {
-	removeWindow(window->m_windowID);
+	return removeWindow(window.m_windowID);
 }
 
-void GuiContainer::removeWindow(int windowID)
+bool GuiContainer::removeWindow(int windowID)
 {
+	std::shared_ptr<GuiWindow> window;
+
 	for (auto itr = m_childWindows.begin(); itr != m_childWindows.end(); ++itr)
 	{
 		if ((**itr).m_windowID == windowID) {
-			std::shared_ptr<GuiWindow> window = std::move(*itr);
+			window = std::move(*itr);
 
 			m_childWindows.erase(itr);
-			window->dispose();
-
 			m_guiBase.remove(window->m_guiWindow);
-			return;
+			break;
 		}
 	}
+
+	if (!window)
+		return false;
+
+	window->m_windowStatus = WindowStatus::NONE;
+	hideWindow(*window);
+	window->innerClose();
+	return true;
 }
 
 void GuiContainer::removeAllWindows()
 {
 	for (auto& window : m_childWindows) {
-		window->onClose();
+		window->innerClose();
 	}
 }
 
@@ -70,7 +79,56 @@ void GuiContainer::setDebug()
 	}
 }
 
-void GuiContainer::showWindow(GuiWindow& window)
+bool GuiContainer::showWindowOnTop(GuiWindow & window)
+{
+	if (hasWindow(window.m_windowID)) {
+		window.m_windowStatus = WindowStatus::DIALOG;
+		innerShow(window);
+		return true;
+	}
+
+	return false;
+}
+
+bool GuiContainer::showWindow(GuiWindow& window)
+{
+	if (hasWindow(window.m_windowID)) {
+		window.m_windowStatus = WindowStatus::SHOW;
+		innerShow(window);
+		return true;
+	}
+
+	return false;
+}
+
+bool GuiContainer::hideWindow(GuiWindow& window)
+{
+	if (hasWindow(window.m_windowID)) {
+		window.m_windowStatus = WindowStatus::NONE;
+		window.innerHide();
+	}
+
+
+	bool enabledWindow = false;
+	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	{
+		if ((**itr).m_windowStatus == WindowStatus::NONE)
+			continue;
+
+		(**itr).setEnabled(true);
+		if (!enabledWindow) {
+			(**itr).setEnabled(true);
+			enabledWindow = true;
+		}
+
+		if ((**itr).m_windowStatus == WindowStatus::DIALOG)
+			return true;
+	}
+
+	return true;
+}
+
+void GuiContainer::innerShow(GuiWindow& window)
 {
 	bool isDialog = false;
 	for (auto itr = m_childWindows.begin(); itr != m_childWindows.end(); ++itr)
@@ -80,9 +138,9 @@ void GuiContainer::showWindow(GuiWindow& window)
 			auto window = std::move(*itr);
 			m_childWindows.erase(itr);
 
+			isDialog = window->m_windowStatus == WindowStatus::DIALOG;
 			m_childWindows.push_back(window);
 
-			isDialog = (**itr).m_windowStatus == WindowStatus::DIALOG;
 			break;
 		}
 	}
@@ -94,25 +152,19 @@ void GuiContainer::showWindow(GuiWindow& window)
 
 		while (itr != m_childWindows.rend()) {
 			(**itr).setEnabled(false);
+			itr++;
 		}
 	}
+
+	window.innerShow();
 }
 
-void GuiContainer::hideWindow(GuiWindow& window)
+bool GuiContainer::hasWindow(int windowID)
 {
-	bool focussedWindow = false;
-	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
-	{
-		if ((**itr).m_windowStatus == WindowStatus::NONE)
-			continue;
-
-		(**itr).setEnabled(true);
-		if (!focussedWindow) {
-			(**itr).setEnabled(true);
-			focussedWindow = true;
-		}
-
-		if ((**itr).m_windowStatus == WindowStatus::DIALOG)
-			return;
+	for (auto& itr : m_childWindows) {
+		if (itr->m_windowID == windowID)
+			return true;
 	}
+
+	return false;
 }

@@ -4,7 +4,6 @@
 class GuiWindow;
 class GuiContainer {
 private:
-	friend GuiWindow;
 	tgui::Gui m_guiBase;
 	sf::View m_view;
 
@@ -17,9 +16,9 @@ public:
 	GuiContainer(sf::RenderWindow& target);
 	virtual ~GuiContainer();
 
-	void addWindow(std::shared_ptr<GuiWindow> window, bool showOnCreate = false);
-	void removeWindow(const std::shared_ptr<GuiWindow>& window);
-	void removeWindow(int windowID);
+	void addWindow(std::shared_ptr<GuiWindow> window);
+	bool removeWindow(GuiWindow& window);
+	bool removeWindow(int windowID);
 	void removeAllWindows();
 
 	////
@@ -37,7 +36,8 @@ public:
 	////
 	inline bool handleEvent(const sf::Event& event) {
 		if (event.type == sf::Event::Resized) {
-			Graphics::applyResize(m_view, event);
+			if (m_maintainAspectRatio)
+				Graphics::applyResize(m_view, event);
 		}
 
 		return m_guiBase.handleEvent(event);
@@ -57,13 +57,21 @@ public:
 
 	void setDebug();
 
+	////
+	///@brief Displays the indicated window on top.
+	////
+	bool showWindowOnTop(GuiWindow& window);
+	////
+	///@brief Displays the indicated window on top.
+	////
+	bool showWindow(GuiWindow& window);
+	////
+	///@brief Displays the indicated window on top.
+	////
+	bool hideWindow(GuiWindow& window);
+
 private:
-	////
-	///@brief Displays the indicated window on top.
-	////
-	void showWindow(GuiWindow& window);
-	////
-	///@brief Displays the indicated window on top.
-	////
-	void hideWindow(GuiWindow& window);
+	void innerShow(GuiWindow& window);
+
+	bool hasWindow(int windowID);
 };

@@ -177,6 +177,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="GuiMainMenu.cpp" />
     <ClCompile Include="GuiPauseMenu.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="MessageBox.cpp" />
     <ClCompile Include="SGameSandbox.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -224,6 +225,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="GuiWindow.hpp" />
     <ClInclude Include="GuiWindowBlank.hpp" />
     <ClInclude Include="Logger.hpp" />
+    <ClInclude Include="MessageBox.h" />
     <ClInclude Include="NonCopyable.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.hpp" />

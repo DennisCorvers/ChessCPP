@@ -26,7 +26,7 @@ protected:
 	const SharedContext& m_sharedContext;
 
 public:
-	Event<> OnClose;
+	Event<> OnClose; //Subscribe onClose function to this event...
 
 	GuiWindow(const SharedContext& sharedContext) :
 		m_container(nullptr),
@@ -35,7 +35,7 @@ public:
 	{
 		m_guiWindow = tgui::ChildWindow::create();
 		m_guiWindow->onEscapeKeyPressed.connect([this]() { this->onEscapePress(); });
-		m_guiWindow->onClose.connect([this]() { this->onClose(); });
+		m_guiWindow->onClose.connect([this]() { this->close(); });
 		m_renderer = m_guiWindow->getRenderer();
 	}
 
@@ -46,28 +46,43 @@ public:
 		m_container->addWindow(window);
 	}
 
+
 	virtual void close() {
-		onClose();
+		if (!m_container)
+			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
+
+		m_windowStatus = WindowStatus::NONE;
+		m_container->removeWindow(*this);
 	}
 
 	virtual void hide() {
-		m_windowStatus = WindowStatus::NONE;
+		if (!m_container)
+			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
 
-		setEnabled(false);
-		m_guiWindow->setVisible(false);
-
-		if (m_container)
-			m_container->hideWindow(*this);
-
-		onHide();
+		m_container->hideWindow(*this);
 	}
 
 	virtual void show() {
-		show(WindowStatus::SHOW);
+		if (!m_container)
+			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
+
+		m_container->showWindow(*this);
 	}
 
 	virtual void showDialog() {
-		show(WindowStatus::DIALOG);
+		if (!m_container)
+			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
+
+		m_container->showWindowOnTop(*this);
+	}
+
+
+	void moveToFront() {
+		m_guiWindow->moveToFront();
+	}
+
+	void setVisible(bool state) {
+		m_guiWindow->setVisible(state);
 	}
 
 	void setEnabled(bool state) {
@@ -103,33 +118,32 @@ protected:
 	virtual void onAddedToContainer(const sf::View& containerView) {};
 	virtual void onHide() {};
 	virtual void onShow() {};
-	virtual void onDispose() {};
 
 	virtual void onEscapePress() {};
 
-	virtual void onClose() {
-		OnClose.invoke();
-		if (m_container) {
-			m_container->removeWindow(m_windowID);
-		}
-	}
+	virtual void onClose() {};
 
 private:
-	inline void show(WindowStatus status) {
-		if (!m_container)
-			throw new std::exception("GuiWindow is not owned by a GuiContainer!");
-
-		m_windowStatus = status;
+	inline void innerShow() {
 		setEnabled(true);
+		setVisible(true);
+
+		moveToFront();
+
 		onShow();
-		m_guiWindow->setVisible(true);
-		m_guiWindow->moveToFront();
 	}
 
-	void dispose() {
-		m_windowStatus = WindowStatus::NONE;
+	inline void innerHide() {
+		setEnabled(false);
+		setVisible(false);
+
+		onHide();
+	}
+
+	inline void innerClose() {
 		m_windowID = -1;
 		m_container = nullptr;
-		onDispose();
+
+		OnClose.invoke();
 	}
 };

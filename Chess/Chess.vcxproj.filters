@@ -131,6 +131,9 @@
     <ClCompile Include="UCIConnector.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="MessageBox.cpp">
+      <Filter>Source Files\Gui\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -282,6 +285,9 @@
     </ClInclude>
     <ClInclude Include="UCIConnector.hpp">
       <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBox.h">
+      <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

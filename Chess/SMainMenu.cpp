@@ -9,7 +9,8 @@ SMainMenu::SMainMenu(StateManager & stateManager) :
 {
 	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
 	m_guiMainMenu = std::make_shared<GuiMainMenu>(stateManager.getContext());
-	m_gui->addWindow(m_guiMainMenu, true);
+	m_gui->addWindow(m_guiMainMenu);
+	m_guiMainMenu->showDialog();
 
 	m_conContainer.add(m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this));
 	m_conContainer.add(m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this));
