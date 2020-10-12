@@ -26,7 +26,7 @@ protected:
 	const SharedContext& m_sharedContext;
 
 public:
-	Event<> OnClose; //Subscribe onClose function to this event...
+	Signal<> OnClose;
 
 	GuiWindow(const SharedContext& sharedContext) :
 		m_container(nullptr),

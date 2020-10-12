@@ -6,7 +6,6 @@ class GuiContainer;
 class SMainMenu : public BaseState
 {
 private:
-	ConnectionContainer m_conContainer;
 	std::unique_ptr<GuiContainer> m_gui;
 	std::shared_ptr<GuiMainMenu> m_guiMainMenu;
 	

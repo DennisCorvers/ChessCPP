@@ -7,9 +7,9 @@ private:
 	bool m_isClient;
 
 public:
-	Event<> OnNewGameEvent;
-	Event<> OnSwapColourEvent;
-	Event<> OnExitGameEvent;
+	Signal<> OnNewGameEvent;
+	Signal<> OnSwapColourEvent;
+	Signal<> OnExitGameEvent;
 
 	GuiPauseMenu(const SharedContext& sharedContext, bool isClient = false);
 	virtual ~GuiPauseMenu();

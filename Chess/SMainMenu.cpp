@@ -12,9 +12,9 @@ SMainMenu::SMainMenu(StateManager & stateManager) :
 	m_gui->addWindow(m_guiMainMenu);
 	m_guiMainMenu->showDialog();
 
-	m_conContainer.add(m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this));
-	m_conContainer.add(m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this));
-	m_conContainer.add(m_guiMainMenu->OnSinglePlayerEvent.connect(&SMainMenu::onSinglePlayerPressed, this));
+	m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this);
+	m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this);
+	m_guiMainMenu->OnSinglePlayerEvent.connect(&SMainMenu::onSinglePlayerPressed, this);
 }
 
 SMainMenu::~SMainMenu()

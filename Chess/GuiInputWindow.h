@@ -11,7 +11,7 @@ protected:
 	tgui::Panel::Ptr m_background;
 
 public:
-	Event<> OnConfirm;
+	Signal<> OnConfirm;
 
 	GuiInputWindow(const SharedContext & sharedContext);
 	virtual ~GuiInputWindow();

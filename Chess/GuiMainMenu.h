@@ -4,9 +4,9 @@
 class GuiMainMenu : public GuiWindowBlank
 {
 public:
-	Event<> OnQuitEvent;
-	Event<> OnSinglePlayerEvent;
-	Event<> OnSandboxEvent;
+	Signal<> OnQuitEvent;
+	Signal<> OnSinglePlayerEvent;
+	Signal<> OnSandboxEvent;
 
 	GuiMainMenu(const SharedContext & sharedContext);
 	virtual ~GuiMainMenu();
