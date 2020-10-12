@@ -235,6 +235,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="pch.h" />
     <ClInclude Include="SGameSinglePlayer.h" />
     <ClInclude Include="SharedContext.hpp" />
+    <ClInclude Include="Signal.hpp" />
     <ClInclude Include="SMainMenu.h" />
     <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="StateManager.h" />

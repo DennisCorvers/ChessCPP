@@ -3,6 +3,7 @@
 #include "StateManager.h"
 #include "GuiContainer.hpp"
 #include "MessageBox.h"
+#include "Signal.hpp"
 
 class STest : public BaseState
 {

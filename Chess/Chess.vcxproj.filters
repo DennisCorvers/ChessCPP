@@ -289,6 +289,9 @@
     <ClInclude Include="MessageBox.h">
       <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Signal.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chess.rc" />
