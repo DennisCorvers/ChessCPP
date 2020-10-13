@@ -2,8 +2,7 @@
 #include "BaseState.hpp"
 #include "StateManager.h"
 #include "GuiContainer.hpp"
-#include "MessageBox.h"
-#include "Signal.hpp"
+#include "MessageBox.hpp"
 
 class STest : public BaseState
 {
@@ -15,7 +14,9 @@ public:
 		BaseState(stateManager),
 		m_win(*stateManager.getContext().window)
 	{
-
+		auto mb = MessageBox::create(stateManager.getContext());
+		m_win.addWindow(mb);
+		mb->show("Hello!", "MyTitle", MessageBoxButtons::AbortRetryIgnore);
 	}
 
 	virtual ~STest() {};

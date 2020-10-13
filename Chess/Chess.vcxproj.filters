@@ -286,11 +286,11 @@
     <ClInclude Include="UCIConnector.hpp">
       <Filter>Source Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="MessageBox.h">
-      <Filter>Source Files\Gui\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Signal.hpp">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBox.hpp">
+      <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
