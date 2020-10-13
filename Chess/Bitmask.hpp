@@ -58,26 +58,7 @@ public:
 	}
 };
 
-class CharMask : public Bitmask<unsigned char> {
-public:
-	CharMask() : Bitmask() {}
-	CharMask(unsigned char bits) : Bitmask(bits) {}
-};
-
-class ShortMask : public Bitmask<unsigned short> {
-public:
-	ShortMask() : Bitmask() {}
-	ShortMask(unsigned short bits) : Bitmask(bits) {}
-};
-
-class IntMask : public Bitmask<unsigned int> {
-public:
-	IntMask() : Bitmask() {}
-	IntMask(unsigned int bits) : Bitmask(bits) {}
-};
-
-class LongMask : public Bitmask<unsigned long> {
-public:
-	LongMask() : Bitmask() {}
-	LongMask(unsigned long bits) : Bitmask(bits) {}
-};
+using CharMask = Bitmask<unsigned char>;
+using ShortMask = Bitmask<unsigned short>;
+using IntMask = Bitmask<unsigned int>;
+using LongMask = Bitmask<unsigned long>;
