@@ -25,7 +25,7 @@ void AnimatorComponent::update(const float & deltaTime)
 		return;
 
 	m_t += deltaTime / m_timeToTarget;
-	m_target->setCenter(Mathf::lerp(m_startPosition, m_targetPosition, m_t));
+	m_target->setCenter(Math::lerp(m_startPosition, m_targetPosition, m_t));
 
 	if (m_t > 1)
 		stop();

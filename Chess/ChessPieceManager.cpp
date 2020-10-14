@@ -241,7 +241,7 @@ void ChessPieceManager::startSelection(const sf::Vector2f screenPosition, int fo
 
 void ChessPieceManager::updateSelection(const sf::Vector2f screenPosition)
 {
-	if (Mathf::distance(screenPosition, m_lastScreenPosition) > 0.15f) {
+	if (Math::distance(screenPosition, m_lastScreenPosition) > 0.15f) {
 		if (m_moveAction.isMoving())
 		{
 			auto clampedMouse = clampToBoard(screenPosition);
@@ -341,7 +341,7 @@ sf::Vector2i ChessPieceManager::screenToBoard(const sf::Vector2f mousePosition) 
 	int xPos = (int)((mousePos.x) / m_squareSize.x);
 	int yPos = (int)((mousePos.y) / m_squareSize.y);
 
-	sf::Vector2i clamped(Math::limit(xPos, 7), Math::limit(yPos, 7));
+	sf::Vector2i clamped(Math::min(xPos, 7), Math::min(yPos, 7));
 	return transformVector(clamped);
 }
 
@@ -358,8 +358,8 @@ sf::Vector2f ChessPieceManager::boardToScreen(const sf::Vector2i boardPosition) 
 sf::Vector2f ChessPieceManager::clampToBoard(const sf::Vector2f mousePosition) const
 {
 	return sf::Vector2f(
-		Math::clamp(mousePosition.x, 0, m_squareSize.x * 8),
-		Math::clamp(mousePosition.y, 0, m_squareSize.y * 8)
+		Math::clamp<float>(mousePosition.x, 0, m_squareSize.x * 8),
+		Math::clamp<float>(mousePosition.y, 0, m_squareSize.y * 8)
 	);
 }
 

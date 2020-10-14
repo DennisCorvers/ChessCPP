@@ -28,6 +28,7 @@
 #include "TGUI/TGUI.hpp"
 
 //Self
+#include "Math.hpp"
 #include "Utils.h"
 #include "Enums.h"
 #include "Bitmask.hpp"
