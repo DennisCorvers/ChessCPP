@@ -16,7 +16,7 @@ public:
 	{
 		auto mb = MessageBox::create(stateManager.getContext());
 		m_win.addWindow(mb);
-		mb->show("Hello!", "MyTitle", MessageBoxButtons::AbortRetryIgnore);
+		mb->show("Hello!\n\nGoodbye...", "Message of the day.", MessageBoxButtons::OK);
 	}
 
 	virtual ~STest() {};

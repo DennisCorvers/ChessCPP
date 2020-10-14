@@ -27,15 +27,16 @@ public:
 	Signal<const MessageBox&> OnMessageBoxResult;
 
 private:
-	static constexpr unsigned int MAX_X_SIZE = 500;
-	static constexpr unsigned int MAX_Y_SIZE = 200;
-	static constexpr unsigned int MIN_X_SIZE = 20;
-	static constexpr unsigned int MIN_Y_SIZE = 20;
+	static constexpr unsigned int MAX_X_SIZE = 800;
+	static constexpr unsigned int MAX_Y_SIZE = 500;
+	static constexpr unsigned int MIN_X_SIZE = 250;
+	static constexpr unsigned int MIN_Y_SIZE = 120;
 
 	static constexpr unsigned int TEXT_PAD_LEFT = 20;
-	static constexpr unsigned int TEXT_PAD_TOP = 20;
-	static constexpr unsigned int TEXT_PAD_BOTTOM = 20;
+	static constexpr unsigned int TEXT_PAD_Y = 20;
 	static constexpr unsigned int BUTTON_PAD = 20;
+	static constexpr unsigned int BUTTON_LEFT = 30;
+
 
 	static constexpr int MAX_BUTTONS = 3;
 	using Button = tgui::Button::Ptr;
@@ -69,7 +70,8 @@ public:
 private:
 	void initialize();
 
-	void setButtons(MessageBoxButtons buttons);
+	void setGuiWindow();
+	void setButtons();
 	void placeLabel();
 
 	unsigned char getButtonCount() const;

@@ -9,9 +9,7 @@ MessageBox::MessageBox(const SharedContext & sharedContext) :
 }
 
 MessageBox::~MessageBox()
-{
-
-}
+{ }
 
 void MessageBox::initialize()
 {
@@ -22,12 +20,13 @@ void MessageBox::initialize()
 		m_buttons[i]->connect("pressed", [this, i]() { buttonClicked(i); });
 		m_buttons[i]->connect("mouseentered", [soundManager]() { soundManager->playSound(AssetNames::s_button_hover); });
 		m_buttons[i]->connect("pressed", [soundManager]() { soundManager->playSound(AssetNames::s_button_click); });
-		m_buttons[i]->setSize(80, 30);
+		m_buttons[i]->setSize(80, 25);
 		m_buttons[i]->setVisible(false);
 		m_guiWindow->add(m_buttons[i]);
 	}
 
 	m_label = tgui::Label::create();
+	m_guiWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
 	m_guiWindow->add(m_label);
 }
 
@@ -42,10 +41,16 @@ void MessageBox::show(const std::string & text, const std::string & title) {
 
 void MessageBox::show(const std::string & text, const std::string & title, MessageBoxButtons buttons) {
 
+	//Setproperties first (for auto-sizing)
 	m_result = MessageBoxResult::None;
-	m_guiWindow->setTitle(title);
+	m_setButtons = buttons;
+
+	m_guiWindow->setTitle(" " + title);
 	m_label->setText(text);
-	setButtons(buttons);
+
+	//Calculate window size and placement to fit everything to the window
+	setGuiWindow();
+	setButtons();
 	placeLabel();
 
 	GuiWindow::showDialog();
@@ -57,14 +62,27 @@ MessageBoxResult MessageBox::getMessageBoxResult() const {
 }
 
 
-void MessageBox::setButtons(MessageBoxButtons buttons)
+void MessageBox::setGuiWindow()
 {
-	m_setButtons = buttons;
 	unsigned char buttonCount = getButtonCount();
+	const auto& buttonSize = m_buttons[0]->getSize();
 
-	if (buttonCount < 1)
-		throw new std::exception("Cannot form an empty Messagebox");
+	//Calculate minimum required size for label + buttons.
+	sf::Vector2u windowSize;
+	windowSize.x = m_label->getSize().x + TEXT_PAD_LEFT * 2;
+	windowSize.y = m_label->getSize().y + TEXT_PAD_Y * 2 + buttonSize.y + BUTTON_PAD;
 
+	unsigned int buttonsWidth = BUTTON_LEFT * 2 + buttonSize.x * buttonCount + (buttonCount - 1) * 20;
+	windowSize.x = Math::max(windowSize.x, buttonsWidth);
+	windowSize.x = Math::clamp(windowSize.x, MIN_X_SIZE, MAX_X_SIZE);
+	windowSize.y = Math::clamp(windowSize.y, MIN_Y_SIZE, MAX_Y_SIZE);
+
+	m_guiWindow->setSize(windowSize.x, windowSize.y);
+}
+
+void MessageBox::setButtons()
+{
+	unsigned char buttonCount = getButtonCount();
 	auto buttonTexts = getButtonText();
 
 	//Hide all buttons first
@@ -72,22 +90,16 @@ void MessageBox::setButtons(MessageBoxButtons buttons)
 		button->setVisible(false);
 	}
 
-	const tgui::Vector2f& buttonSize = m_buttons[0]->getSize();
+	const auto& buttonSize = m_buttons[0]->getSize();
 
-	sf::Vector2u minSize;
-	minSize.x = m_label->getSize().x + TEXT_PAD_LEFT * 2;
-	minSize.y = m_label->getSize().y + TEXT_PAD_TOP * 2 + buttonSize.y + TEXT_PAD_BOTTOM;
-
-	unsigned int buttonsWidth = 40 + buttonSize.x * buttonCount + (buttonCount - 1) * 20;
-
-	m_guiWindow->setSize(buttonsWidth, minSize.y);
-
-
+	//Calculate Y and X offset to center all buttons
 	int yOffset = m_guiWindow->getSize().y - buttonSize.y - BUTTON_PAD;
+	int xOffset = (m_guiWindow->getSize().x - (buttonSize.x * buttonCount + (buttonCount - 1) * 20)) / 2;
 	for (int i = 0; i < buttonCount; i++) {
 		m_buttons[i]->setText(buttonTexts[i]);
 		m_buttons[i]->setVisible(true);
-		m_buttons[i]->setPosition(50, yOffset);
+		m_buttons[i]->setPosition(xOffset, yOffset);
+		xOffset += buttonSize.x + 20;
 	}
 }
 
@@ -96,14 +108,10 @@ void MessageBox::placeLabel() {
 	//Center X
 	const auto& mySize = m_guiWindow->getSize();
 	int xOffset = (mySize.x - m_label->getSize().x) / 2;
-	xOffset = xOffset < TEXT_PAD_LEFT ? TEXT_PAD_LEFT : xOffset;
-
+	xOffset = Math::max<int>(xOffset, TEXT_PAD_LEFT);
 
 	//Center Y
-	int buttonRegion = m_buttons[0]->getSize().y + BUTTON_PAD;
-	int yOffset = (mySize.y - m_label->getSize().y - buttonRegion - TEXT_PAD_BOTTOM) / 2;
-
-
+	int yOffset = (mySize.y - m_label->getSize().y - m_buttons[0]->getSize().y - BUTTON_PAD) / 2;
 	m_label->setPosition(xOffset, yOffset);
 }
 
