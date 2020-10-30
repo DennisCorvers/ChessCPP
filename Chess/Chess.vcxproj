@@ -219,6 +219,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GuiBotInput.hpp" />
     <ClInclude Include="GuiInputWindow.h" />
     <ClInclude Include="GuiMainMenu.h" />
     <ClInclude Include="GuiPauseMenu.h" />

@@ -36,6 +36,16 @@ void GuiContainer::addWindow(std::shared_ptr<GuiWindow> window) {
 	window->setVisible(false);
 }
 
+void GuiContainer::addShow(std::shared_ptr<GuiWindow> window) {
+	addWindow(window);
+	window->show();
+}
+
+void GuiContainer::addShowDialog(std::shared_ptr<GuiWindow> window) {
+	addWindow(window);
+	window->showDialog();
+}
+
 bool GuiContainer::removeWindow(GuiWindow & window)
 {
 	return removeWindow(window.m_windowID);
@@ -70,6 +80,32 @@ void GuiContainer::removeAllWindows()
 	for (auto& window : m_childWindows) {
 		window->innerClose();
 	}
+}
+
+bool GuiContainer::handleEvent(const sf::Event & event)
+{
+	if (event.type == sf::Event::Resized) {
+		if (m_maintainAspectRatio)
+			Graphics::applyResize(m_view, event);
+	}
+
+	if (event.type == sf::Event::EventType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
+		GuiWindow* window = nullptr;
+
+		//Close foccused window...
+		for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+		{
+			if ((**itr).isFocussed()) {
+				window = (*itr).get();
+				break;
+			}
+		}
+
+		if (window != nullptr)
+			window->onEscapePress();
+	}
+
+	return m_guiBase.handleEvent(event);
 }
 
 void GuiContainer::setDebug()
@@ -108,17 +144,16 @@ bool GuiContainer::hideWindow(GuiWindow& window)
 		window.innerHide();
 	}
 
-
-	bool enabledWindow = false;
+	bool focusSet = false;
 	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
 	{
 		if ((**itr).m_windowStatus == WindowStatus::NONE)
 			continue;
 
 		(**itr).setEnabled(true);
-		if (!enabledWindow) {
-			(**itr).setEnabled(true);
-			enabledWindow = true;
+		if (!focusSet) {
+			(**itr).setFocus(true);
+			focusSet = true;
 		}
 
 		if ((**itr).m_windowStatus == WindowStatus::DIALOG)

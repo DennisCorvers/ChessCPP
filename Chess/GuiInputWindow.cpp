@@ -8,7 +8,7 @@ GuiInputWindow::GuiInputWindow(const SharedContext & sharedContext) :
 	m_cancelButton = tgui::Button::create("Cancel");
 	m_confirmButton = tgui::Button::create("Confirm");
 	m_textField = tgui::TextBox::create();
-	m_commentLabel = tgui::Label::create();
+	m_title = tgui::Label::create();
 	m_background = tgui::Panel::create();
 
 	initialize();
@@ -18,6 +18,14 @@ GuiInputWindow::~GuiInputWindow()
 {
 	m_sharedContext.fontManager->releaseResource(AssetNames::f_opensans_reg);
 	m_sharedContext.themeManager->releaseResource(AssetNames::theme_default);
+}
+
+void GuiInputWindow::setText(const std::string & text) {
+	m_textField->setText(text);
+}
+
+const std::string GuiInputWindow::getText() const {
+	return m_textField->getText();
 }
 
 void GuiInputWindow::initialize()
@@ -56,6 +64,7 @@ void GuiInputWindow::initialize()
 	m_confirmButton->setRenderer(defaultTheme.getRenderer("PauseButton"));
 	m_confirmButton->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 	m_confirmButton->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
+	m_confirmButton->connect("pressed", &GuiInputWindow::onConfirmClick, this);
 	m_guiWindow->add(m_cancelButton);
 
 	//Confirm button
@@ -65,6 +74,7 @@ void GuiInputWindow::initialize()
 	m_cancelButton->setRenderer(defaultTheme.getRenderer("PauseButton"));
 	m_cancelButton->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 	m_cancelButton->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
+	m_cancelButton->connect("pressed", [&, this]() {close();});
 	m_guiWindow->add(m_confirmButton);
 
 	//Textbox
@@ -84,22 +94,24 @@ void GuiInputWindow::initialize()
 	m_guiWindow->add(headerBack);
 
 	//Header label
-	m_commentLabel->setPosition(10, 2);
-	m_commentLabel->setTextSize(20);
-	m_commentLabel->setText("Server IP...");
-	m_commentLabel->setRenderer(defaultTheme.getRenderer("PauseLabel"));
-	m_guiWindow->add(m_commentLabel);
+	m_title->setPosition(10, 2);
+	m_title->setTextSize(20);
+	m_title->setText("<Title>");
+	m_title->setRenderer(defaultTheme.getRenderer("PauseLabel"));
+	m_guiWindow->add(m_title);
 
 	m_guiWindow->setSize(m_background->getSize());
 }
 
+void GuiInputWindow::onConfirmClick() {
+	validateInput(m_textField->getText());
+}
+
 void GuiInputWindow::onAddedToContainer(const sf::View & containerView)
 {
-	//Center to window...
-	//m_guiWindow->setPosition(sf::Vector2f((containerView.getSize().x - m_background->getSize().x) / 2, containerView.getSize().y / 4 - 50));
+	m_guiWindow->setPosition(sf::Vector2f(
+		(containerView.getSize().x - m_guiWindow->getSize().x) / 2,
+		(containerView.getSize().y - m_guiWindow->getSize().y) / 2
+	));
 }
 
-void GuiInputWindow::validateInput(const std::string & input) const
-{
-
-}

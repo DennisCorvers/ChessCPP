@@ -125,13 +125,13 @@
     <ClCompile Include="GuiMainMenu.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="GuiInputWindow.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="UCIConnector.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="MessageBox.cpp">
+      <Filter>Source Files\Gui\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiInputWindow.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -280,9 +280,6 @@
     <ClInclude Include="GuiMainMenu.h">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="GuiInputWindow.h">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
     <ClInclude Include="UCIConnector.hpp">
       <Filter>Source Files\Systems</Filter>
     </ClInclude>
@@ -294,6 +291,12 @@
     </ClInclude>
     <ClInclude Include="Math.hpp">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiInputWindow.h">
+      <Filter>Source Files\Gui\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiBotInput.hpp">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

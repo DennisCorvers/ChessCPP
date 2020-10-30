@@ -78,6 +78,8 @@ void MessageBox::setGuiWindow()
 	windowSize.y = Math::clamp(windowSize.y, MIN_Y_SIZE, MAX_Y_SIZE);
 
 	m_guiWindow->setSize(windowSize.x, windowSize.y);
+
+	m_guiWindow->setPosition((m_viewSize.x - m_guiWindow->getSize().x) / 2, (m_viewSize.y - m_guiWindow->getSize().y) / 2);
 }
 
 void MessageBox::setButtons()
@@ -113,6 +115,11 @@ void MessageBox::placeLabel() {
 	//Center Y
 	int yOffset = (mySize.y - m_label->getSize().y - m_buttons[0]->getSize().y - BUTTON_PAD) / 2;
 	m_label->setPosition(xOffset, yOffset);
+}
+
+void MessageBox::onAddedToContainer(const sf::View & containerView)
+{
+	m_viewSize = containerView.getSize();
 }
 
 unsigned char MessageBox::getButtonCount() const
@@ -236,5 +243,6 @@ void MessageBox::buttonClicked(int buttonID)
 	}
 	}
 
-	OnMessageBoxResult.invoke(*this);
+	OnMessageBoxResult.invoke(m_result);
+	close();
 }

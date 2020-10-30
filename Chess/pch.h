@@ -51,3 +51,5 @@ do { \
     } \
 } while(0)
 #endif
+
+#define UNUSED(x) (void)x;

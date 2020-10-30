@@ -34,7 +34,7 @@ public:
 		m_windowStatus(WindowStatus::NONE)
 	{
 		m_guiWindow = tgui::ChildWindow::create();
-		m_guiWindow->onEscapeKeyPressed.connect([this]() { this->onEscapePress(); });
+
 		m_guiWindow->onClose.connect([this]() { this->close(); });
 		m_renderer = m_guiWindow->getRenderer();
 	}
@@ -79,6 +79,7 @@ public:
 
 	void moveToFront() {
 		m_guiWindow->moveToFront();
+		m_guiWindow->setFocused(true);
 	}
 
 	void setVisible(bool state) {
@@ -90,7 +91,7 @@ public:
 	}
 
 	void setFocus(bool state) {
-		m_guiWindow->moveToFront();
+		m_guiWindow->setFocused(state);
 	}
 
 	bool isOnTop() const {
@@ -107,6 +108,10 @@ public:
 
 	bool isClosed() const {
 		return !m_container;
+	}
+
+	bool isFocussed() const {
+		return m_guiWindow->isFocused();
 	}
 
 	void setDebug() {

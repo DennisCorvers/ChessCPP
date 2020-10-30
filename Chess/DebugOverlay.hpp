@@ -49,9 +49,6 @@ public:
 			m_framecount = 0;
 		}
 
-		if (target.getView().getSize().x == 1920) {
-			int i = 456;
-		}
 		m_fpsLabel->draw(target, states);
 	}
 };

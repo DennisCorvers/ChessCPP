@@ -2,7 +2,7 @@
 #include "BaseState.hpp"
 #include "StateManager.h"
 #include "GuiContainer.hpp"
-#include "MessageBox.hpp"
+#include "GuiBotInput.hpp"
 
 class STest : public BaseState
 {
@@ -14,9 +14,9 @@ public:
 		BaseState(stateManager),
 		m_win(*stateManager.getContext().window)
 	{
-		auto mb = MessageBox::create(stateManager.getContext());
-		m_win.addWindow(mb);
-		mb->show("Hello!\n\nGoodbye...", "Message of the day.", MessageBoxButtons::OK);
+		auto mb = GuiBotInput::create(m_stateManager->getContext());
+		m_win.addShowDialog(mb);
+		mb->OnConfirm.connect([](int i) { std::cout << i << std::endl; });
 	}
 
 	virtual ~STest() {};

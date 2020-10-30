@@ -21,10 +21,9 @@ enum struct MessageBoxResult {
 	No = 7
 };
 
-
 class MessageBox : public GuiWindow {
 public:
-	Signal<const MessageBox&> OnMessageBoxResult;
+	Signal<const MessageBoxResult&> OnMessageBoxResult;
 
 private:
 	static constexpr unsigned int MAX_X_SIZE = 800;
@@ -46,6 +45,7 @@ private:
 	MessageBoxResult m_result;
 	Button m_buttons[MAX_BUTTONS];
 	Label m_label;
+	sf::Vector2f m_viewSize;
 
 public:
 
@@ -73,6 +73,8 @@ private:
 	void setGuiWindow();
 	void setButtons();
 	void placeLabel();
+
+	void onAddedToContainer(const sf::View& containerView) override;
 
 	unsigned char getButtonCount() const;
 	const std::vector<std::string> getButtonText() const;

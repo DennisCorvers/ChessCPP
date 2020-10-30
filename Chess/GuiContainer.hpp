@@ -17,6 +17,9 @@ public:
 	virtual ~GuiContainer();
 
 	void addWindow(std::shared_ptr<GuiWindow> window);
+	void addShow(std::shared_ptr<GuiWindow> window);
+	void addShowDialog(std::shared_ptr<GuiWindow> window);
+
 	bool removeWindow(GuiWindow& window);
 	bool removeWindow(int windowID);
 	void removeAllWindows();
@@ -34,14 +37,7 @@ public:
 	///@param event Event originating from the application's Window.
 	///@return Retruns false if the event was ignored by the Gui.
 	////
-	inline bool handleEvent(const sf::Event& event) {
-		if (event.type == sf::Event::Resized) {
-			if (m_maintainAspectRatio)
-				Graphics::applyResize(m_view, event);
-		}
-
-		return m_guiBase.handleEvent(event);
-	};
+	bool handleEvent(const sf::Event& event);
 
 	inline bool getMaintainAspectRatio() {
 		return m_maintainAspectRatio;
