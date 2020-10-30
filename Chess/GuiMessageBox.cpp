@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "MessageBox.hpp"
+#include "GuiMessageBox.hpp"
 
-MessageBox::MessageBox(const SharedContext & sharedContext) :
+GuiMessageBox::GuiMessageBox(const SharedContext & sharedContext) :
 	GuiWindow(sharedContext),
 	m_result(MessageBoxResult::None)
 {
 	initialize();
 }
 
-MessageBox::~MessageBox()
+GuiMessageBox::~GuiMessageBox()
 { }
 
-void MessageBox::initialize()
+void GuiMessageBox::initialize()
 {
 	SoundManager* soundManager = m_sharedContext.soundManager;
 
@@ -31,15 +31,15 @@ void MessageBox::initialize()
 }
 
 
-void MessageBox::show(const std::string & text) {
+void GuiMessageBox::show(const std::string & text) {
 	show(text, "Message");
 }
 
-void MessageBox::show(const std::string & text, const std::string & title) {
+void GuiMessageBox::show(const std::string & text, const std::string & title) {
 	show(text, title, MessageBoxButtons::OK);
 }
 
-void MessageBox::show(const std::string & text, const std::string & title, MessageBoxButtons buttons) {
+void GuiMessageBox::show(const std::string & text, const std::string & title, MessageBoxButtons buttons) {
 
 	//Setproperties first (for auto-sizing)
 	m_result = MessageBoxResult::None;
@@ -57,12 +57,12 @@ void MessageBox::show(const std::string & text, const std::string & title, Messa
 }
 
 
-MessageBoxResult MessageBox::getMessageBoxResult() const {
+MessageBoxResult GuiMessageBox::getMessageBoxResult() const {
 	return m_result;
 }
 
 
-void MessageBox::setGuiWindow()
+void GuiMessageBox::setGuiWindow()
 {
 	unsigned char buttonCount = getButtonCount();
 	const auto& buttonSize = m_buttons[0]->getSize();
@@ -82,7 +82,7 @@ void MessageBox::setGuiWindow()
 	m_guiWindow->setPosition((m_viewSize.x - m_guiWindow->getSize().x) / 2, (m_viewSize.y - m_guiWindow->getSize().y) / 2);
 }
 
-void MessageBox::setButtons()
+void GuiMessageBox::setButtons()
 {
 	unsigned char buttonCount = getButtonCount();
 	auto buttonTexts = getButtonText();
@@ -105,7 +105,7 @@ void MessageBox::setButtons()
 	}
 }
 
-void MessageBox::placeLabel() {
+void GuiMessageBox::placeLabel() {
 
 	//Center X
 	const auto& mySize = m_guiWindow->getSize();
@@ -117,12 +117,12 @@ void MessageBox::placeLabel() {
 	m_label->setPosition(xOffset, yOffset);
 }
 
-void MessageBox::onAddedToContainer(const sf::View & containerView)
+void GuiMessageBox::onAddedToContainer(const sf::View & containerView)
 {
 	m_viewSize = containerView.getSize();
 }
 
-unsigned char MessageBox::getButtonCount() const
+unsigned char GuiMessageBox::getButtonCount() const
 {
 	switch (m_setButtons) {
 	case MessageBoxButtons::OK:
@@ -144,7 +144,7 @@ unsigned char MessageBox::getButtonCount() const
 	return 0;
 }
 
-const std::vector<std::string> MessageBox::getButtonText() const
+const std::vector<std::string> GuiMessageBox::getButtonText() const
 {
 	auto buttonTexts = std::vector<std::string>();
 	buttonTexts.reserve(MAX_BUTTONS);
@@ -193,7 +193,7 @@ const std::vector<std::string> MessageBox::getButtonText() const
 	return buttonTexts;
 }
 
-void MessageBox::buttonClicked(int buttonID)
+void GuiMessageBox::buttonClicked(int buttonID)
 {
 	switch (m_setButtons) {
 	case MessageBoxButtons::OK:

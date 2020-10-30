@@ -26,5 +26,9 @@ private:
 	void initialize();
 
 	void onConfirmClick();
+
+	void onEscapePress() override {
+		close();
+	}
 };
 

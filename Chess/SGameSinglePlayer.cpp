@@ -4,6 +4,8 @@
 #include "UCIConnector.hpp"
 #include "BoardManager.h"
 #include "StateManager.h"
+#include "GuiBotInput.hpp"
+
 
 SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	BaseGame(stateManager, States::SinglePlayer),
@@ -11,6 +13,10 @@ SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 {
 	auto engineInfo = UCI::EngineInformation();
 	m_chessEngine = std::make_unique<UCI::UCIConnector>("stockfish.exe", engineInfo);
+	m_botLevelWindow = GuiBotInput::create(stateManager.getContext());
+	m_botLevelWindow->setText("10");
+	m_botLevelWindow->OnConfirm.connect(&SGameSinglePlayer::onBotLevelEntered, this);
+	m_gui->addWindow(m_botLevelWindow);
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
@@ -18,13 +24,19 @@ SGameSinglePlayer::~SGameSinglePlayer()
 
 }
 
-void SGameSinglePlayer::onCreate() {
-	m_boardManager->resetGame(m_myColour);
-	m_chessEngine->resetGame();
-	m_chessEngine->setSkillLevel(20);
+void SGameSinglePlayer::onBotLevelEntered(int level)
+{
+	m_chessEngine->setSkillLevel(level);
 
 	if (m_myColour == PieceColour::Black)
 		m_chessEngine->requestMove(m_boardManager->getFENFormat());
+}
+
+void SGameSinglePlayer::onCreate() {
+	m_boardManager->resetGame(m_myColour);
+	m_chessEngine->resetGame();
+
+	m_botLevelWindow->showDialog();
 }
 
 bool SGameSinglePlayer::update(float deltaTime)

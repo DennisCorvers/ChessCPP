@@ -95,4 +95,8 @@ void GuiPauseMenu::onExitGame()
 	OnExitGameEvent.invoke();
 }
 
+void GuiPauseMenu::onEscapePress() {
+	hide();
+}
+
 

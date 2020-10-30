@@ -95,14 +95,16 @@ bool GuiContainer::handleEvent(const sf::Event & event)
 		//Close foccused window...
 		for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
 		{
-			if ((**itr).isFocussed()) {
+			if ((**itr).m_windowStatus != WindowStatus::NONE) {
 				window = (*itr).get();
 				break;
 			}
 		}
 
-		if (window != nullptr)
+		if (window != nullptr) {
 			window->onEscapePress();
+			return true;
+		}
 	}
 
 	return m_guiBase.handleEvent(event);

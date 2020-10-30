@@ -1,5 +1,5 @@
 #include "GuiInputWindow.h"
-#include "MessageBox.hpp"
+#include "GuiMessageBox.hpp"
 
 class GuiBotInput : public GuiInputWindow
 {
@@ -29,7 +29,8 @@ private:
 		catch (const std::invalid_argument& ex) { UNUSED(ex); }
 
 		if (botLevel < 0 || botLevel > 20) {
-			auto win = MessageBox::create(m_sharedContext);
+
+			auto win = GuiMessageBox::create(m_sharedContext);
 			addChildWindow(win);
 			win->show("Bot level needs to be between 0 and 20.", "Error", MessageBoxButtons::OK);
 		}
@@ -40,6 +41,6 @@ private:
 	}
 
 	void onEscapePress() override {
-		close();
+		hide();
 	}
 };

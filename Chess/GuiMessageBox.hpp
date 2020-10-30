@@ -21,7 +21,7 @@ enum struct MessageBoxResult {
 	No = 7
 };
 
-class MessageBox : public GuiWindow {
+class GuiMessageBox : public GuiWindow {
 public:
 	Signal<const MessageBoxResult&> OnMessageBoxResult;
 
@@ -49,12 +49,12 @@ private:
 
 public:
 
-	MessageBox(const SharedContext& sharedContext);
+	GuiMessageBox(const SharedContext& sharedContext);
 
-	virtual ~MessageBox();
+	virtual ~GuiMessageBox();
 
-	static std::shared_ptr<MessageBox> create(const SharedContext& sharedContext) {
-		return std::make_shared<MessageBox>(sharedContext);
+	static std::shared_ptr<GuiMessageBox> create(const SharedContext& sharedContext) {
+		return std::make_shared<GuiMessageBox>(sharedContext);
 	}
 
 	void show(const std::string& text);

@@ -23,4 +23,6 @@ private:
 	void onNewGame();
 	void onSwapColour();
 	void onExitGame();
+
+	void onEscapePress() override;
 };

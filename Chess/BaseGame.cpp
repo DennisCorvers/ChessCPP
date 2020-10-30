@@ -60,15 +60,13 @@ bool BaseGame::handleEvent(const sf::Event & event)
 	if (event.type == sf::Event::Resized)
 		Graphics::applyResize(m_view, event);
 
-	if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		if (m_pauseMenu->isVisible())
-			m_pauseMenu->hide();
-		else
+	if (!m_gui->handleEvent(event)) {
+		if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
 			m_pauseMenu->show();
-	}
+		}
 
-	if (!m_gui->handleEvent(event))
 		return onEvent(event);
+	}
 
 	return false;
 }

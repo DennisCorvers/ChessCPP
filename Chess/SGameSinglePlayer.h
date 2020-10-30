@@ -2,13 +2,18 @@
 #include "BaseGame.h"
 
 namespace UCI { class UCIConnector; }
+
+class GuiBotInput;
 class EventArgs;
 class SGameSinglePlayer : public BaseGame
 {
 private:
 	std::unique_ptr<UCI::UCIConnector> m_chessEngine;
+	std::shared_ptr<GuiBotInput> m_botLevelWindow;
 
 	PieceColour m_myColour;
+
+	void onBotLevelEntered(int level);
 
 public:
 	SGameSinglePlayer(StateManager& stateManager);

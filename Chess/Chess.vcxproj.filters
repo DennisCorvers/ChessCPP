@@ -128,10 +128,10 @@
     <ClCompile Include="UCIConnector.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="MessageBox.cpp">
+    <ClCompile Include="GuiInputWindow.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
-    <ClCompile Include="GuiInputWindow.cpp">
+    <ClCompile Include="GuiMessageBox.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -286,9 +286,6 @@
     <ClInclude Include="Signal.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="MessageBox.hpp">
-      <Filter>Source Files\Gui\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Math.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
@@ -297,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="GuiBotInput.hpp">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiMessageBox.hpp">
+      <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
