@@ -60,18 +60,6 @@ bool BoardManager::inputMove(const ChessMove move, bool validateMove, bool anima
 		m_pieceManager->refreshBoard();
 	}
 
-	if (moveResult & ActionType::Checkmate)
-		std::cout << "Checkmate\n";
-
-	if (moveResult & ActionType::Check)
-		std::cout << "Check\n";
-
-	if (moveResult & ActionType::Stalemate)
-		std::cout << "Stalemate\n";
-
-	if (moveResult & ActionType::Draw)
-		std::cout << "Draw\n";
-
 	return true;
 }
 
@@ -135,6 +123,14 @@ void BoardManager::update(const float & deltaTime)
 void BoardManager::render(sf::RenderTarget& target)
 {
 	m_pieceManager->render(target);
+}
+
+PieceColour BoardManager::getPlayingColour() const {
+	return m_board->getPlayingColour();
+}
+
+ActionType BoardManager::getLastAction() const {
+	return m_board->getLastAction().actionType;
 }
 
 std::string BoardManager::getFENFormat() const {

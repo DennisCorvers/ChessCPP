@@ -5,10 +5,13 @@
 #include "GuiContainer.hpp"
 #include "EventManager.h"
 #include "ResourceManager.hpp"
+#include "GuiGameOver.h"
+
 
 BaseGame::BaseGame(StateManager& stateManager, States state) :
 	BaseState(stateManager),
-	m_gameState(state)
+	m_myState(state),
+	m_gameState(GameState::None)
 {
 	loadAssets();
 
@@ -22,13 +25,16 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 	m_view.setCenter(m_boardManager->getBoardCenter());
 
 	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
-	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext());
-	m_gui->addWindow(m_pauseMenu);
 
-	//Bind events
+	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext());
 	m_pauseMenu->OnNewGameEvent.connect(&BaseGame::onResetBoard, this);
 	m_pauseMenu->OnExitGameEvent.connect(&BaseGame::onQuitGame, this);
 	m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
+	m_gui->addWindow(m_pauseMenu);
+
+	m_gameOverScreen = std::make_shared<GuiGameOver>(stateManager.getContext());
+	m_gameOverScreen->OnContinue.connect([&m_pauseMenu = m_pauseMenu]() { m_pauseMenu->showDialog(); });
+	m_gui->addWindow(m_gameOverScreen);
 }
 
 BaseGame::~BaseGame()
@@ -37,8 +43,8 @@ BaseGame::~BaseGame()
 void BaseGame::loadAssets()
 {
 	auto* textureManager = m_stateManager->getContext().textureManager;
-	textureManager->requireResource(m_gameState, AssetNames::t_board);
-	textureManager->requireResource(m_gameState, AssetNames::t_pieces);
+	textureManager->requireResource(m_myState, AssetNames::t_board);
+	textureManager->requireResource(m_myState, AssetNames::t_pieces);
 }
 
 void BaseGame::render() {
@@ -62,15 +68,56 @@ bool BaseGame::handleEvent(const sf::Event & event)
 
 	if (!m_gui->handleEvent(event)) {
 		if (event.type == EType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-			m_pauseMenu->show();
+			m_pauseMenu->showDialog();
 		}
 
-		return onEvent(event);
+		if (!m_pauseMenu->isVisible())
+			return onEvent(event);
 	}
 
 	return false;
 }
 
+bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)
+{
+	bool succes = false;
+	succes = m_boardManager->inputMove(move, validateMove, animate);
 
+	ActionType lastAction = m_boardManager->getLastAction();
 
+	if (lastAction & ActionType::Checkmate) {
+		endGame(ActionType::Checkmate);
+	}
+
+	if (lastAction & ActionType::Stalemate) {
+		endGame(ActionType::Stalemate);
+	}
+
+	if (lastAction & ActionType::Draw) {
+		endGame(ActionType::Draw);
+	}
+
+	return succes;
+}
+
+void BaseGame::endGame(ActionType gameResult)
+{
+	m_gameState = GameState::GameOver;
+
+	m_gameOverScreen->setText("");
+	switch (gameResult) {
+	case ActionType::Checkmate: {
+
+	}
+	case ActionType::Stalemate: {
+
+	}
+	case ActionType::Draw: {
+
+	}
+	default: return;
+	}
+
+	m_gameOverScreen->showDialog();
+}
 

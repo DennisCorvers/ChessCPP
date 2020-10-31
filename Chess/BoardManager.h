@@ -59,6 +59,9 @@ public:
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget& target);
 
+	PieceColour getPlayingColour() const;
+	ActionType getLastAction() const;
+
 	std::string getFENFormat() const;
 };
 

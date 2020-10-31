@@ -134,6 +134,9 @@
     <ClCompile Include="GuiMessageBox.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
+    <ClCompile Include="GuiGameOver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -297,6 +300,9 @@
     </ClInclude>
     <ClInclude Include="GuiMessageBox.hpp">
       <Filter>Source Files\Gui\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiGameOver.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

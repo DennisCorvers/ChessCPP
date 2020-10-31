@@ -20,12 +20,12 @@ SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 }
 
 SGameSinglePlayer::~SGameSinglePlayer()
-{
-
-}
+{ }
 
 void SGameSinglePlayer::onBotLevelEntered(int level)
 {
+	m_gameState = GameState::Playing;
+
 	m_chessEngine->setSkillLevel(level);
 
 	if (m_myColour == PieceColour::Black)
@@ -49,7 +49,7 @@ bool SGameSinglePlayer::update(float deltaTime)
 		switch (message.messageType)
 		{
 		case UCI::EngineMessageType::BestMove:
-			m_boardManager->inputMove(ChessMove::fromChessNotation(message.message), false, true);
+			inputMove(ChessMove::fromChessNotation(message.message), false, true);
 			break;
 		default:
 			break;
@@ -60,6 +60,10 @@ bool SGameSinglePlayer::update(float deltaTime)
 
 bool SGameSinglePlayer::onEvent(const sf::Event & event)
 {
+	if (m_gameState != GameState::Playing) {
+		return false;
+	}
+
 	if (event.mouseButton.button == sf::Mouse::Left) {
 		sf::Vector2f mousePos = getWindow().mapPixelToCoords(sf::Mouse::getPosition(getWindow()), m_view);
 
@@ -69,7 +73,7 @@ bool SGameSinglePlayer::onEvent(const sf::Event & event)
 		if (event.type == sf::Event::MouseButtonReleased) {
 			ChessMove newMove;
 			if (m_boardManager->endSelection(mousePos, newMove)) {
-				if (m_boardManager->inputMove(newMove, false, false)) {
+				if (inputMove(newMove, false, false)) {
 					m_chessEngine->requestMove(m_boardManager->getFENFormat());
 				}
 			}
