@@ -3,6 +3,7 @@
 #include "StateManager.h"
 #include "GuiContainer.hpp"
 #include "GuiGameOver.h"
+#include "GuiJoinGame.hpp"
 
 class STest : public BaseState
 {
@@ -14,8 +15,8 @@ public:
 		BaseState(stateManager),
 		m_win(*stateManager.getContext().window)
 	{
-		auto mb = GuiGameOver::create(stateManager.getContext());
-		mb->setText("Game ended in a Draw.");
+		auto mb = GuiJoinGame::create(stateManager.getContext());
+		//mb->setText("Game ended in a Draw.");
 		m_win.addShowDialog(mb);
 	}
 

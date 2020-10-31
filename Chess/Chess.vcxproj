@@ -222,7 +222,9 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="Game.h" />
     <ClInclude Include="GuiBotInput.hpp" />
     <ClInclude Include="GuiGameOver.h" />
+    <ClInclude Include="GuiHostGame.hpp" />
     <ClInclude Include="GuiInputWindow.h" />
+    <ClInclude Include="GuiJoinGame.hpp" />
     <ClInclude Include="GuiMainMenu.h" />
     <ClInclude Include="GuiPauseMenu.h" />
     <ClInclude Include="GuiWindow.hpp" />
