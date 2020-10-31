@@ -17,6 +17,8 @@ public:
 
 	virtual ~GuiGameOver();
 
+	static std::shared_ptr<GuiGameOver> create(const SharedContext& sharedContext);
+
 	void setText(const std::string& text);
 	void setTitle(const std::string& title);
 

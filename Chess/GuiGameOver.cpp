@@ -19,8 +19,20 @@ GuiGameOver::~GuiGameOver()
 	m_sharedContext.themeManager->releaseResource(AssetNames::theme_default);
 }
 
+std::shared_ptr<GuiGameOver> GuiGameOver::create(const SharedContext & sharedContext) {
+	return std::make_shared<GuiGameOver>(sharedContext);
+}
+
 void GuiGameOver::setText(const std::string & text) {
 	m_text->setText(text);
+
+	const auto& mySize = m_guiWindow->getSize();
+	int xOffset = (mySize.x - m_text->getSize().x) / 2;
+	xOffset = Math::max<int>(xOffset, 20);
+
+	//Center Y
+	int yOffset = (mySize.y - m_text->getSize().y - 20) / 2;
+	m_text->setPosition(xOffset, yOffset);
 }
 
 void GuiGameOver::setTitle(const std::string & title) {
@@ -43,11 +55,7 @@ void GuiGameOver::initialize()
 
 	int screenXSize = 500;
 	int screenYSize = 200;
-	int butXSize = 200;
-	int butYSize = 30;
-	int butXOffset = 10;
-	int butYOffset = 20;
-	int butYPosition = screenYSize - butYSize - butYOffset;
+	int butYPosition = screenYSize - 50;
 
 	//Background
 	m_background->setSize(sf::Vector2f(screenXSize, screenYSize));
@@ -57,17 +65,19 @@ void GuiGameOver::initialize()
 	m_guiWindow->add(m_background);
 
 	//Cancel Button
-	m_continueButton->setSize(butXSize, butYSize);
-	m_continueButton->setPosition((screenXSize / 2) - butXSize - butXOffset, butYPosition);
+	m_continueButton->setSize(200, 30);
+	m_continueButton->setPosition((screenXSize - 200) / 2, butYPosition);
 	m_continueButton->setTextSize(20);
 	m_continueButton->setRenderer(defaultTheme.getRenderer("PauseButton"));
 	m_continueButton->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 	m_continueButton->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
+	m_continueButton->connect("pressed", &GuiGameOver::onContinueClick, this);
 	m_guiWindow->add(m_continueButton);
 
-	//Textbox
-	m_text->setSize(screenXSize - 80, butYSize);
+	//Text
 	m_text->setPosition((screenXSize - m_text->getSize().x) / 2, butYPosition - m_text->getSize().y - 30);
+	m_text->setRenderer(defaultTheme.getRenderer("PauseLabel"));
+	m_text->getRenderer()->setTextColor(tgui::Color::Black);
 	m_text->setTextSize(15);
 	m_guiWindow->add(m_text);
 

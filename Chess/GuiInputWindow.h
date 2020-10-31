@@ -27,6 +27,9 @@ private:
 
 	void onConfirmClick();
 
+	void onShow() override {
+		m_textField->setFocused(true);
+	}
 	void onEscapePress() override {
 		close();
 	}

@@ -33,7 +33,6 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 	m_gui->addWindow(m_pauseMenu);
 
 	m_gameOverScreen = std::make_shared<GuiGameOver>(stateManager.getContext());
-	m_gameOverScreen->OnContinue.connect([&m_pauseMenu = m_pauseMenu]() { m_pauseMenu->showDialog(); });
 	m_gui->addWindow(m_gameOverScreen);
 }
 
@@ -104,16 +103,20 @@ void BaseGame::endGame(ActionType gameResult)
 {
 	m_gameState = GameState::GameOver;
 
-	m_gameOverScreen->setText("");
+
 	switch (gameResult) {
 	case ActionType::Checkmate: {
-
+		std::string winningColour = m_boardManager->getPlayingColour() == PieceColour::Black ? "White" : "Black";
+		m_gameOverScreen->setText(winningColour + " won by Checkmate.");
+		break;
 	}
 	case ActionType::Stalemate: {
-
+		m_gameOverScreen->setText("Game ended in a Stalemate");
+		break;
 	}
 	case ActionType::Draw: {
-
+		m_gameOverScreen->setText("Game ended in a Draw.");
+		break;
 	}
 	default: return;
 	}
