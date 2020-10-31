@@ -8,7 +8,9 @@
 
 SGameSandbox::SGameSandbox(StateManager& stateManager)
 	:BaseGame(stateManager, States::Sandbox)
-{}
+{
+	m_gameState = GameState::Playing;
+}
 
 SGameSandbox::~SGameSandbox()
 {}
@@ -38,7 +40,6 @@ bool SGameSandbox::onEvent(const sf::Event & event)
 			ChessMove newMove;
 			if (m_boardManager->endSelection(mousePos, newMove)) {
 				m_boardManager->inputMove(newMove, false, false);
-				m_boardManager->getFENFormat();
 			}
 		}
 	}
