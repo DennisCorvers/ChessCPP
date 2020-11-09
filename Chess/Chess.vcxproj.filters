@@ -304,6 +304,9 @@
     <ClInclude Include="GuiGameOver.h">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
+    <ClInclude Include="NetServer.hpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chess.rc" />
