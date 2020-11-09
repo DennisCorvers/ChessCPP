@@ -56,6 +56,17 @@ public:
 	static ChessPosition distance(const ChessPosition& from, const ChessPosition& to) {
 		return ChessPosition(abs(from.m_x - to.m_x), abs(from.m_y - to.m_y));
 	}
+
+	void netSerialize(sf::Packet& packet, bool isWriting) {
+		if (isWriting) {
+			packet << m_x;
+			packet << m_y;
+		}
+		else {
+			packet >> m_x;
+			packet >> m_y;
+		}
+	}
 };
 
 

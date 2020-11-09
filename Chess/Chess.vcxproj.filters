@@ -135,7 +135,7 @@
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
     <ClCompile Include="GuiGameOver.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,7 +302,7 @@
       <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
     <ClInclude Include="GuiGameOver.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

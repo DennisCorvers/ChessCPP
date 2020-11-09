@@ -1,4 +1,5 @@
 #pragma once
+class Packet;
 
 enum struct PieceColour : char
 {
@@ -16,8 +17,6 @@ enum struct PieceType : unsigned char
 	Queen = 5,
 	King = 6
 };
-
-
 
 enum struct ActionType : unsigned short {
 	None = 0,
@@ -44,9 +43,17 @@ inline ActionType& operator|=(ActionType& a, ActionType b) {
 	a = a | b;	return a;
 }
 
-namespace Enums {
+enum struct PacketType : unsigned char {
+	Connect = 0,
+	Disconnect = 1,
+	NewMove = 10,
+	Snapshot = 11,
+	ResetBoard = 21,
+	SwapColour = 22
+};
 
-	const std::string EnumtoString(const PieceType pieceType);
+sf::Packet& operator <<(sf::Packet& packet, const ActionType& actionType);
+sf::Packet& operator >>(sf::Packet& packet, ActionType& actionType);
 
-	const std::string EnumtoString(const PieceColour pieceColour);
-}
+sf::Packet& operator <<(sf::Packet& packet, const PacketType& packetType);
+sf::Packet& operator >>(sf::Packet& packet, PacketType& packetType);

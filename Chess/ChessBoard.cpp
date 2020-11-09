@@ -171,6 +171,26 @@ std::string ChessBoard::getFENFormat() const
 	return FENString;
 }
 
+void ChessBoard::netSerialize(sf::Packet& packet, bool isWriting)
+{
+	for (auto chessPiece : m_board) {
+		chessPiece.netSerialize(packet, isWriting);
+	}
+
+	m_lastMove.netSerialize(packet, isWriting);
+	m_blackKing.netSerialize(packet, isWriting);
+	m_whiteKing.netSerialize(packet, isWriting);
+
+	if (isWriting) {
+		packet << m_moveNumber;
+		packet << m_drawMoves;
+	}
+	else {
+		packet >> m_moveNumber;
+		packet >> m_drawMoves;
+	}
+}
+
 bool ChessBoard::hasMoves(const PieceColour colour) const
 {
 	for (char y = 0; y < 8; y++)
