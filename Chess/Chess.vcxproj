@@ -167,7 +167,6 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="ChessPieceManager.cpp" />
     <ClCompile Include="ChessPieceEntity.cpp" />
     <ClCompile Include="ChessRules.cpp" />
-    <ClCompile Include="Client.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Enums.cpp" />
@@ -209,7 +208,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="ChessPieceEntity.h" />
     <ClInclude Include="ChessPosition.h" />
     <ClInclude Include="ChessRules.h" />
-    <ClInclude Include="Client.h" />
+    <ClInclude Include="ClientInfo.hpp" />
     <ClInclude Include="ConfigManager.hpp" />
     <ClInclude Include="ConfigProperty.hpp" />
     <ClInclude Include="Configuration.h" />
@@ -230,6 +229,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="GuiMessageBox.hpp" />
+    <ClInclude Include="NetClient.hpp" />
     <ClInclude Include="NetServer.hpp" />
     <ClInclude Include="NonCopyable.hpp" />
     <ClInclude Include="resource.h" />

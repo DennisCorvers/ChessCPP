@@ -1,22 +1,8 @@
 #pragma once
 #include "SFML/Network.hpp"
+#include "ClientInfo.hpp"
 #include <functional>
 #include <unordered_map>
-
-struct ClientInfo {
-private:
-	friend class NetServer;
-	int m_clientID;
-
-public:
-	ClientInfo(int clientID) :
-		m_clientID(clientID)
-	{ }
-
-	int getClientID() const {
-		return m_clientID;
-	}
-};
 
 struct ClientConnection final {
 private:
@@ -24,14 +10,17 @@ private:
 	std::unique_ptr<sf::TcpSocket> m_socket;
 	ClientInfo m_clientInfo;
 
-	ClientConnection(const ClientConnection&) = delete;
-	ClientConnection& operator=(const ClientConnection&) = delete;
-
 public:
 	ClientConnection(std::unique_ptr<sf::TcpSocket> socket, ClientInfo& clientInfo) :
 		m_socket(std::move(socket)),
 		m_clientInfo(clientInfo)
 	{ }
+
+	ClientConnection(const ClientConnection&) = delete;
+	ClientConnection& operator=(const ClientConnection&) = delete;
+
+	ClientConnection(ClientConnection&&) = default;
+	ClientConnection& operator = (ClientConnection&&) = default;
 
 	const ClientInfo& getClientInfo() const {
 		return m_clientInfo;
@@ -40,18 +29,20 @@ public:
 
 class NetServer {
 public:
-	using PacketHandler = std::function<void>(int clientID, sf::Packet& packet);
-	using DisconnectHandler = std::function<void>(int clientID);
+	using ClientID = int;
+	using PacketHandler = std::function<void(ClientID clientID, sf::Packet& packet)>;
+	using DisconnectHandler = std::function<void(ClientID clientID)>;
 
 private:
 	using SocketStatus = sf::Socket::Status;
-	using Clients = std::unordered_map<int, ClientConnection>;
+	using Clients = std::unordered_map<ClientID, ClientConnection>;
 
 	std::unique_ptr<sf::TcpSocket> m_pendingSock;
 	std::unique_ptr<sf::TcpListener> m_listener;
+	std::vector<int> m_removedClients;
 	Clients m_clients;
 
-	int m_lastID;
+	ClientID m_lastID;
 	unsigned short m_port;
 	unsigned short m_maxClients;
 
@@ -60,9 +51,9 @@ private:
 
 public:
 
-	NetServer(unsigned short port, unsigned short maxClients = 1) :
+	NetServer(unsigned short port) :
 		m_port(port),
-		m_maxClients(maxClients),
+		m_maxClients(0),
 		m_lastID(0)
 	{
 		m_clients.reserve(1);
@@ -79,18 +70,47 @@ public:
 	NetServer(const NetServer&) = delete;
 	NetServer& operator=(const NetServer&) = delete;
 
-	bool startListening() {
+	template<typename T>
+	void bindPacketHandler(void(T::*func)(ClientID, sf::Packet&), T* instance) {
+		m_packetHandler = std::bind(func, instance, std::placeholders::_1, std::placeholders::_2);
+	}
+
+	template<typename T>
+	void bindDisconnectHandler(void(T::*func)(ClientID), T* instance) {
+		m_disconnectHandler = std::bind(func, instance, std::placeholders::_1);
+	}
+
+	int getConnections() const {
+		return static_cast<int>(m_clients.size());
+	}
+
+	unsigned short getPort() const {
+		return m_listener->getLocalPort();
+	}
+
+	bool getClientInfo(ClientID clientID, ClientInfo& clientInfo) const {
+		auto itr = m_clients.find(clientID);
+		if (itr == m_clients.end())
+			return false;
+
+		clientInfo = itr->second.m_clientInfo;
+		return true;
+	}
+
+
+	bool startListening(unsigned short maxConnections = 1)
+	{
+		m_maxClients = maxConnections;
 		return m_listener->listen(m_port) == sf::Socket::Done;
 	}
 
-	int tryAccept() {
+	ClientID tryAccept() {
 		if (getConnections() < m_maxClients)
 			return -1;
 
 		if (m_listener->accept(*m_pendingSock)) {
 			m_pendingSock->setBlocking(false);
 
-			//First connection is never a spectator.
 			ClientInfo cInfo = ClientInfo(m_lastID);
 			m_clients.emplace(m_lastID, ClientConnection(std::move(m_pendingSock), cInfo));
 
@@ -110,16 +130,13 @@ public:
 
 			switch (clientStatus) {
 			case SocketStatus::Done: {
-				if (m_packetHandler)
-					m_packetHandler(itr->second.m_clientInfo.m_clientID, nextPacket);
+				m_packetHandler(itr->second.m_clientInfo.m_clientID, nextPacket);
 			}
 			case SocketStatus::Error: {
 				//Do something?
 			}
 			case SocketStatus::Disconnected: {
-				if (m_disconnectHandler)
-					m_disconnectHandler(itr->second.m_clientInfo.m_clientID);
-
+				m_removedClients.push_back(itr->second.m_clientInfo.m_clientID);
 				itr = m_clients.erase(itr);
 				continue;
 			}
@@ -127,46 +144,100 @@ public:
 
 			++itr;
 		}
+
+
+		//Handle disconnected clients...
+		for (auto clientID : m_removedClients) {
+			if (m_disconnectHandler)
+				m_disconnectHandler(clientID);
+		}
+
+		m_removedClients.clear();
 	}
 
-	bool getClientInfo(int clientID, ClientInfo& clientInfo) const {
+
+	void sendToAll(const sf::Packet& packet) {
+		for (auto& client : m_clients) {
+			sendToClient(packet, client.second);
+		}
+	}
+
+	bool sendToClient(const sf::Packet& packet, ClientID clientID) {
 		auto itr = m_clients.find(clientID);
 		if (itr == m_clients.end())
 			return false;
 
-		clientInfo = itr->second.m_clientInfo;
+		sendToClient(packet, itr->second);
 		return true;
 	}
 
-	bool disconnectClient(int clientID) {
+	void sendToClients(const sf::Packet& packet, const std::vector<ClientID>& clients) {
+		for (const auto& clientID : clients) {
+			auto itr = m_clients.find(clientID);
+			if (itr == m_clients.end())
+				continue;
+
+			sendToClient(packet, itr->second);
+		}
+	}
+
+
+	bool disconnectClient(ClientID clientID) {
 		auto itr = m_clients.find(clientID);
 		if (itr == m_clients.end())
 			return false;
 
-		(*itr).second.m_socket->disconnect();
+		disconnectClient(itr->second);
 		m_clients.erase(itr);
 
 		return true;
 	}
 
+	void disconnectClients(const std::vector<ClientID>& clients) {
+		for (const auto& clientID : clients) {
+			auto itr = m_clients.find(clientID);
+			if (itr == m_clients.end())
+				continue;
+
+			m_clients.erase(itr);
+			disconnectClient(itr->second);
+		}
+	}
+
 	void disconnectAll() {
 		for (auto& client : m_clients)
-			client.second.m_socket->disconnect();
+			disconnectClient(client.second);
 
 		m_clients.clear();
 	}
 
-	int getConnections() const {
-		return m_clients.size();
-	}
-
-	unsigned short getPort() const {
-		return m_listener->getLocalPort();
-	}
 
 	void closeServer() {
 		m_listener->close();
 
 		disconnectAll();
+	}
+
+private:
+	inline void sendToClient(const sf::Packet& packet, ClientConnection& client) {
+		size_t aodSent = 0;
+		size_t aodToSend = packet.getDataSize();
+		const char* data = (char*)packet.getData();
+
+		while (true) {
+			SocketStatus sendStatus = client.m_socket->send(data, aodToSend, aodSent);
+
+			aodToSend -= aodSent;
+			data += aodSent;
+			
+			if (sendStatus == SocketStatus::Partial)
+				continue;
+
+			break;
+		}
+	}
+
+	inline void disconnectClient(ClientConnection& client) {
+		client.m_socket->disconnect();
 	}
 };

@@ -53,9 +53,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Client.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -150,9 +147,6 @@
     </ClInclude>
     <ClInclude Include="ChessAction.h">
       <Filter>Source Files\Mechanics</Filter>
-    </ClInclude>
-    <ClInclude Include="Client.h">
-      <Filter>Source Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Source Files\Entities</Filter>
@@ -305,6 +299,12 @@
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
     <ClInclude Include="NetServer.hpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientInfo.hpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="NetClient.hpp">
       <Filter>Source Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
