@@ -109,8 +109,10 @@ public:
 	}
 
 	ClientID tryAccept() {
-		if (m_listener->accept(*m_pendingSock)) {
 
+		if (m_listener->accept(*m_pendingSock) == SocketStatus::Done) {
+
+			//Reject any more connections above the maximum allowed amount.
 			if (getConnections() >= m_maxClients) {
 				m_pendingSock->disconnect();
 				return -1;
