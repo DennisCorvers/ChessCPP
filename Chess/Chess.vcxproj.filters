@@ -307,6 +307,9 @@
     <ClInclude Include="NetClient.hpp">
       <Filter>Source Files\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="NetSettings.hpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chess.rc" />

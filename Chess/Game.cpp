@@ -22,15 +22,16 @@ Game::Game()
 	m_soundManager = std::make_unique<SoundManager>(*m_audioManager);
 	m_themeManager = std::make_unique<ThemeManager>();
 	m_debugOverlay = std::make_unique<DebugOverlay>();
+	m_netClient = std::make_unique<NetClient>();
 
 	initWindow();
-
 
 	m_context->window = m_window.get();
 	m_context->textureManager = m_textureManager.get();
 	m_context->fontManager = m_fontManager.get();
 	m_context->soundManager = m_soundManager.get();
 	m_context->themeManager = m_themeManager.get();
+	m_context->netClient = m_netClient.get();
 
 
 	initUI();
@@ -60,9 +61,7 @@ void Game::initWindow()
 		sf::ContextSettings(0, 0, 2));
 
 	m_window->setView(*m_defaultView);
-
-	m_window->setFramerateLimit(Graphics::FPS_LIMIT);
-	//m_window->setVerticalSyncEnabled(true);
+	m_window->setVerticalSyncEnabled(true);
 
 	sf::Image* icon = new sf::Image;
 	if (icon->loadFromFile("Assets//Sprites//icon.png"))
@@ -117,7 +116,8 @@ void Game::update()
 		}
 		case sf::Event::GainedFocus:
 		{
-			m_window->setFramerateLimit(Graphics::FPS_LIMIT);
+			m_window->setFramerateLimit(0);
+			m_window->setVerticalSyncEnabled(true);
 			continue;
 		}
 		}

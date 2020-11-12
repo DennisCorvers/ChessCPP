@@ -22,19 +22,9 @@ public:
 
 	virtual void onCreate() override
 	{
-		m_server.startListening(2);
-		m_client.connect(sf::IpAddress(127, 0, 0, 1), 1001);
-		m_newClient.connect(sf::IpAddress(127, 0, 0, 1), 1001);
 
-		m_client.bindPacketHandler(&STest::onClientPacket, this);
-		m_newClient.bindPacketHandler(&STest::onClientPacket, this);
 	};
 
-	void onClientPacket(sf::Packet& packet) {
-		int num = 0;
-		packet >> num;
-		std::cout << "Client received packet: " << num << std::endl;
-	}
 
 	virtual void onDestroy() override
 	{
@@ -55,13 +45,6 @@ public:
 
 	virtual bool update(float deltaTime) override
 	{
-		auto client = m_server.tryAccept();
-
-		std::cout << "Server sending... " << std::endl;
-		//m_server.sendToAll(sf::Packet() << deltaTime);
-		//m_client.receive();
-		m_newClient.receive();
-
 		return false;
 	};
 
