@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseGame.h"
+#include "Poller.hpp"
 
 class sf::Packet;
 class NetServer;
@@ -8,6 +9,9 @@ class SGameHost : public BaseGame
 private:
 	std::unique_ptr<NetServer> m_server;
 	int m_clientID;
+
+	ChessColour m_myColour;
+	Poller m_poller;
 
 public:
 	SGameHost(StateManager& stateManager);

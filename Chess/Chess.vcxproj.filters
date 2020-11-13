@@ -325,6 +325,9 @@
     <ClInclude Include="PacketType.hpp">
       <Filter>Source Files\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="Poller.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chess.rc" />

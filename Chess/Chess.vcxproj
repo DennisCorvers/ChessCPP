@@ -236,6 +236,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="NetServer.hpp" />
     <ClInclude Include="NetSettings.hpp" />
     <ClInclude Include="NonCopyable.hpp" />
+    <ClInclude Include="Poller.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="ResourceManagers.hpp" />

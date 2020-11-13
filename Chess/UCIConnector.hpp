@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-
+#include "Poller.hpp"
 #pragma warning( disable : 4267 ) 
 
 namespace UCI {
@@ -45,8 +45,8 @@ namespace UCI {
 		std::stack <EngineMessage> m_fromEngine;
 
 		unsigned int m_skillLevel;
-		float m_lastUpdate;
 		EngineInformation m_info;
+		Poller m_poller;
 
 	public:
 		void setSkillLevel(const unsigned int skillLevel);

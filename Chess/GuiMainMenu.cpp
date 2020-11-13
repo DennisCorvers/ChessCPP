@@ -45,8 +45,8 @@ void GuiMainMenu::initialize()
 
 	buttons[0]->connect("pressed", [this]() { OnSinglePlayerEvent(); });
 	buttons[1]->connect("pressed", [this]() { OnSandboxEvent(); });
-	buttons[2]->connect("pressed", &GuiMainMenu::onJoinGamePressed, this);
-	buttons[3]->connect("pressed", &GuiMainMenu::onHostGamePressed, this);
+	buttons[2]->connect("pressed", [this]() { OnJoinGameEvent(); });
+	buttons[3]->connect("pressed", [this]() { OnHostGameEvent(); });
 	buttons[4]->connect("pressed", [this]() { OnQuitEvent(); });
 
 	m_guiWindow->setSize(300, yOffset);
@@ -58,14 +58,4 @@ void GuiMainMenu::onAddedToContainer(const sf::View & containerView)
 	int xOffset = (containerView.getSize().x - size.x) / 2;
 	int yOffset = containerView.getSize().y / 4;
 	m_guiWindow->setPosition(xOffset, yOffset);
-}
-
-void GuiMainMenu::onJoinGamePressed()
-{
-	//Open IP Window...
-}
-
-void GuiMainMenu::onHostGamePressed()
-{
-	//Open Port Window...
 }

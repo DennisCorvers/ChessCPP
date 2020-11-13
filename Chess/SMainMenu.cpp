@@ -15,6 +15,9 @@ SMainMenu::SMainMenu(StateManager & stateManager) :
 	m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this);
 	m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this);
 	m_guiMainMenu->OnSinglePlayerEvent.connect(&SMainMenu::onSinglePlayerPressed, this);
+
+	m_guiMainMenu->OnHostGameEvent.connect(&SMainMenu::onHostGamePressed, this);
+	m_guiMainMenu->OnJoinGameEvent.connect(&SMainMenu::onJoinGamePressed, this);
 }
 
 SMainMenu::~SMainMenu()
@@ -62,6 +65,8 @@ void SMainMenu::onJoinGamePressed()
 
 void SMainMenu::onHostGamePressed()
 {
+	m_stateManager->switchState(States::MultiplayerHost);
+	m_stateManager->removeState(States::MainMenu);
 }
 
 void SMainMenu::onSandboxPressed() {
