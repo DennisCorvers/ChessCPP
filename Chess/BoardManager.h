@@ -17,6 +17,7 @@ namespace BoardSettings {
 	};
 }
 
+class sf::Packet;
 class TextureManager;
 class ChessPieceManager;
 class ChessBoard;
@@ -59,6 +60,8 @@ public:
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget& target);
+
+	void serializeBoard(sf::Packet& packet, bool isWriting);
 
 	PieceColour getPlayingColour() const;
 	ActionType getLastAction() const;

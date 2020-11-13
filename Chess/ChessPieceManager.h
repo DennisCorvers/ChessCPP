@@ -48,7 +48,7 @@ public:
 	}
 };
 
-struct MoveMarkerContainer {
+struct SelectionMarkerContainer {
 private:
 	sf::CircleShape m_moveMarkers[32];
 	int index = 0;
@@ -62,7 +62,7 @@ private:
 	}
 
 public:
-	MoveMarkerContainer(const sf::CircleShape& moveMarker) {
+	SelectionMarkerContainer(const sf::CircleShape& moveMarker) {
 		for (size_t i = 0; i < 32; i++)
 			m_moveMarkers[i] = moveMarker;
 	}
@@ -82,6 +82,49 @@ public:
 	}
 };
 
+struct MoveMarkerContainer {
+private:
+	sf::RectangleShape m_moveFromMarker;
+	sf::RectangleShape m_moveToMarker;
+	bool m_hasPastMove;
+
+public:
+	MoveMarkerContainer() {
+		m_hasPastMove = false;
+	}
+
+	void setup(const sf::Color& colour, const sf::Vector2f& size) {
+		m_moveFromMarker.setFillColor(colour);
+		m_moveFromMarker.setSize(size);
+
+		m_moveToMarker.setFillColor(colour);
+		m_moveToMarker.setSize(size);
+	}
+
+	void setMarkers(const sf::Vector2f& moveFrom, const sf::Vector2f moveTo) {
+		setMarker(m_moveFromMarker, moveFrom);
+		setMarker(m_moveToMarker, moveTo);
+
+		m_hasPastMove = true;
+	}
+
+	void reset() {
+		m_hasPastMove = false;
+	}
+
+	void render(sf::RenderTarget& target) {
+		if (m_hasPastMove) {
+			target.draw(m_moveFromMarker);
+			target.draw(m_moveToMarker);
+		}
+	}
+
+private:
+	void setMarker(sf::Shape& marker, const sf::Vector2f& position) {
+		marker.setPosition(position.x - marker.getGlobalBounds().width / 2.f, position.y - marker.getGlobalBounds().height / 2.f);
+	}
+};
+
 /**
 Handles all player interaction with the pieces on the board.
 */
@@ -98,29 +141,10 @@ private:
 	PieceColour m_viewOrientation;
 
 	std::unique_ptr<AnimatorSystem> m_animatorSystem;
-	std::unique_ptr<MoveMarkerContainer> m_markerContainer;
+	std::unique_ptr<SelectionMarkerContainer> m_markerContainer;
+	MoveMarkerContainer m_moveMarkers;
+
 	sf::RectangleShape m_selectionMarker;
-	sf::RectangleShape m_warningMarker;
-
-	void snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece);
-	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
-	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
-	ChessPieceEntity* getClickedPiece(const ChessPosition chessPosition) const;
-
-	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
-	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
-	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
-
-	inline sf::Vector2i transformVector(const sf::Vector2i position) const {
-		if (m_viewOrientation == PieceColour::Black)
-			return sf::Vector2i(7 - position.x, 7 - position.y);
-		return position;
-	}
-
-	void selectChessPiece(const MoveAction& moveData);
-	void initMarkers();
-
-	void animationCallback();
 
 public:
 	ChessPieceManager(TextureManager& textureManager, int pixelSize, PieceColour orientation);
@@ -140,5 +164,26 @@ public:
 	void refreshBoard();
 	void inputMove(const ChessBoard& board, bool animate = false);
 	void inputMove(const ChessAction& newAction, bool animate = false);
+
+private:
+	void snapPieceToBoard(const ChessPosition newPosition, ChessPieceEntity& piece);
+	void snapMarkerToBoard(const ChessPosition newPosition, sf::Shape& marker);
+	ChessPieceEntity* getClickedPiece(const sf::Vector2f clickPosition) const;
+	ChessPieceEntity* getClickedPiece(const ChessPosition chessPosition) const;
+
+	sf::Vector2i screenToBoard(const sf::Vector2f mousePosition) const;
+	sf::Vector2f boardToScreen(const sf::Vector2i boardPosition) const;
+	sf::Vector2f clampToBoard(const sf::Vector2f mousePosition) const;
+
+	inline sf::Vector2i transformVector(const sf::Vector2i position) const {
+		if (m_viewOrientation == PieceColour::Black)
+			return sf::Vector2i(7 - position.x, 7 - position.y);
+		return position;
+	}
+
+	void selectChessPiece(const MoveAction& moveData);
+	void initMarkers();
+
+	void animationCallback();
 };
 
