@@ -134,6 +134,12 @@
     <ClCompile Include="GuiGameOver.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="SGameHost.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="SGameClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -253,9 +259,6 @@
     <ClInclude Include="ConfigProperty.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigManager.hpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="NonCopyable.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
@@ -309,6 +312,15 @@
     </ClInclude>
     <ClInclude Include="NetSettings.hpp">
       <Filter>Source Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessColour.hpp">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="SGameHost.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SGameClient.h">
+      <Filter>Source Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

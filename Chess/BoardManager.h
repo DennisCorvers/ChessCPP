@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include "ChessMove.h"
 #include "assetNames.h"
+#include "ChessColour.hpp"
 
 namespace BoardSettings {
 	static const char DEFAULTBOARD[64]{

@@ -1,11 +1,7 @@
 #pragma once
-class Packet;
+#include "ChessColour.hpp"
 
-enum struct PieceColour : char
-{
-	White = 1,
-	Black = -1
-};
+namespace sf { class Packet; }
 
 enum struct PieceType : unsigned char
 {
@@ -57,3 +53,6 @@ sf::Packet& operator >>(sf::Packet& packet, ActionType& actionType);
 
 sf::Packet& operator <<(sf::Packet& packet, const PacketType& packetType);
 sf::Packet& operator >>(sf::Packet& packet, PacketType& packetType);
+
+sf::Packet& operator <<(sf::Packet& packet, const PieceColour& packetType);
+sf::Packet& operator >>(sf::Packet& packet, PieceColour& packetType);

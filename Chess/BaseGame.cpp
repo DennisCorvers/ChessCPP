@@ -26,7 +26,7 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 
 	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
 
-	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext());
+	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext(), state == States::MultiplayerClient);
 	m_pauseMenu->OnNewGameEvent.connect(&BaseGame::onResetBoard, this);
 	m_pauseMenu->OnExitGameEvent.connect(&BaseGame::onQuitGame, this);
 	m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
@@ -75,6 +75,12 @@ bool BaseGame::handleEvent(const sf::Event & event)
 	}
 
 	return false;
+}
+
+void BaseGame::onQuitGame()
+{
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(m_myState);
 }
 
 bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)

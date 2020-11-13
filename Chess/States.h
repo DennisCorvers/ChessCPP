@@ -4,6 +4,7 @@ enum struct States : int {
 	MainMenu,
 	SinglePlayer,
 	Sandbox,
-	Multiplayer,
+	MultiplayerHost,
+	MultiplayerClient,
 	Test
 };

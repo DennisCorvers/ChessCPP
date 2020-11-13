@@ -1,23 +1,16 @@
 #pragma once
 #include "BaseGame.h"
-#include "ChessColour.hpp"
 
-namespace UCI { class UCIConnector; }
-
-class GuiBotInput;
-class SGameSinglePlayer : public BaseGame
+class NetServer;
+class SGameHost : public BaseGame
 {
 private:
-	std::unique_ptr<UCI::UCIConnector> m_chessEngine;
-	std::shared_ptr<GuiBotInput> m_botLevelWindow;
-
-	ChessColour m_myColour;
-
-	void onBotLevelEntered(int level);
+	std::unique_ptr<NetServer> m_server;
+	int m_clientID;
 
 public:
-	SGameSinglePlayer(StateManager& stateManager);
-	virtual ~SGameSinglePlayer();
+	SGameHost(StateManager& stateManager);
+	virtual ~SGameHost();
 
 	virtual void onCreate() override;
 	virtual void onDestroy() override {};
@@ -31,4 +24,5 @@ public:
 	// Inherited via BaseGame
 	virtual void onResetBoard() override;
 	virtual void onSwitchBoard() override;
+	virtual void onQuitGame() override;
 };

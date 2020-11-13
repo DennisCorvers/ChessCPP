@@ -30,7 +30,7 @@ protected:
 
 	virtual void onResetBoard() = 0;
 	virtual void onSwitchBoard() = 0;
-	virtual void onQuitGame() = 0;
+	virtual void onQuitGame();
 	virtual bool onEvent(const sf::Event& event) = 0;
 
 	bool inputMove(const ChessMove& move, bool validateMove, bool animate);

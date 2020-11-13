@@ -26,6 +26,9 @@ void SGameSinglePlayer::onBotLevelEntered(int level)
 {
 	m_gameState = GameState::Playing;
 
+	if (level < 0)
+		level = m_chessEngine->getSkillLevel();
+
 	m_chessEngine->setSkillLevel(level);
 
 	if (m_myColour == PieceColour::Black)
@@ -36,6 +39,7 @@ void SGameSinglePlayer::onCreate() {
 	m_boardManager->resetGame(m_myColour);
 	m_chessEngine->resetGame();
 
+	m_botLevelWindow->setText(std::to_string(m_chessEngine->getSkillLevel()));
 	m_botLevelWindow->showDialog();
 }
 
@@ -88,13 +92,7 @@ void SGameSinglePlayer::onResetBoard() {
 }
 
 void SGameSinglePlayer::onSwitchBoard() {
-	m_myColour = m_myColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
+	m_myColour.swap();
 	onCreate();
 }
-
-void SGameSinglePlayer::onQuitGame() {
-	m_stateManager->switchState(States::MainMenu);
-	m_stateManager->removeState(States::SinglePlayer);
-}
-
 
