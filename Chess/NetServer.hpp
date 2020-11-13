@@ -28,13 +28,11 @@ public:
 };
 
 class NetServer {
-public:
+private:
+	using SocketStatus = sf::Socket::Status;
 	using ClientID = int;
 	using PacketHandler = std::function<void(ClientID clientID, sf::Packet& packet)>;
 	using DisconnectHandler = std::function<void(ClientID clientID)>;
-
-private:
-	using SocketStatus = sf::Socket::Status;
 
 	ClientID m_lastID;
 	unsigned short m_port;
@@ -81,6 +79,12 @@ public:
 	template<typename T>
 	void bindDisconnectHandler(void(T::*func)(ClientID), T* instance) {
 		m_disconnectHandler = std::bind(func, instance, std::placeholders::_1);
+	}
+
+	template<typename T>
+	void setup(void(T::*onPacket)(ClientID, sf::Packet&), void(T::*onDisconnect)(ClientID), T* instance) {
+		bindPacketHandler(onPacket, instance);
+		bindDisconnectHandler(onDisconnect, instance);
 	}
 
 
@@ -227,6 +231,11 @@ public:
 		m_listener->close();
 
 		disconnectAll();
+	}
+
+	void clearHandlers() {
+		m_packetHandler = nullptr;
+		m_disconnectHandler = nullptr;
 	}
 
 private:

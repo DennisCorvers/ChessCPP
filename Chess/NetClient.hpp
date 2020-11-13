@@ -3,12 +3,11 @@
 #include <functional>
 
 class NetClient {
-public:
-	using PacketHandler = std::function<void(sf::Packet& packet)>;
-	using DisconnectHandler = std::function<void()>;
 
 private:
 	using SocketStatus = sf::Socket::Status;
+	using PacketHandler = std::function<void(sf::Packet& packet)>;
+	using DisconnectHandler = std::function<void()>;
 
 	std::unique_ptr<sf::TcpSocket> m_clientSocket;
 
@@ -40,6 +39,12 @@ public:
 		m_disconnectHandler = std::bind(func, instance);
 	}
 
+	template<typename T>
+	void setup(void(T::*onPacket)(sf::Packet&), void(T::*onDisconnect)(), T* instance) {
+		bindPacketHandler(onPacket, instance);
+		bindDisconnectHandler(onDisconnect, instance);
+	}
+
 	bool isConnected() const {
 		return m_clientSocket->getRemoteAddress() != sf::IpAddress::None;
 	}
@@ -65,7 +70,10 @@ public:
 
 		switch (socketStatus) {
 		case SocketStatus::Done: {
-			m_packetHandler(nextPacket);
+
+			if (m_packetHandler)
+				m_packetHandler(nextPacket);
+
 			return true;
 		}
 		case SocketStatus::Error: {
@@ -76,6 +84,7 @@ public:
 
 			if (m_disconnectHandler)
 				m_disconnectHandler();
+
 			return true;
 		}
 		}
@@ -100,5 +109,10 @@ public:
 
 	void disconnect() {
 		m_clientSocket->disconnect();
+	}
+
+	void clearHandlers() {
+		m_packetHandler = nullptr;
+		m_disconnectHandler = nullptr;
 	}
 };
