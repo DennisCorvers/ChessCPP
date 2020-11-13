@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseGame.h"
 
+class sf::Packet;
 class NetServer;
 class SGameHost : public BaseGame
 {
@@ -25,4 +26,10 @@ public:
 	virtual void onResetBoard() override;
 	virtual void onSwitchBoard() override;
 	virtual void onQuitGame() override;
+
+private:
+	void onNetPacket(sf::Packet& packet);
+	void onDisconnect(int clientID);
+
+	void onRemoteInput(sf::Packet& packet);
 };

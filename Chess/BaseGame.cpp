@@ -85,8 +85,7 @@ void BaseGame::onQuitGame()
 
 bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)
 {
-	bool succes = false;
-	succes = m_boardManager->inputMove(move, validateMove, animate);
+	bool succes = m_boardManager->inputMove(move, validateMove, animate);
 
 	ActionType lastAction = m_boardManager->getLastAction();
 

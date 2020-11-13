@@ -14,19 +14,6 @@ sf::Packet& operator>>(sf::Packet& packet, ActionType& actionType)
 	return packet;
 }
 
-sf::Packet& operator<<(sf::Packet& packet, const PacketType& packetType)
-{
-	return packet << sf::Uint8(packetType);
-}
-
-sf::Packet& operator>>(sf::Packet& packet, PacketType& packetType)
-{
-	sf::Uint8 result = 0;
-	packet >> result;
-	packetType = static_cast<PacketType>(result);
-	return packet;
-}
-
 sf::Packet& operator<<(sf::Packet& packet, const PieceColour& pieceColour)
 {
 	return packet << sf::Uint8(pieceColour);

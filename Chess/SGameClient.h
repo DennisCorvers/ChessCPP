@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseGame.h"
+
+class sf::Packet;
 class NetClient;
 
 class SGameClient : public BaseGame

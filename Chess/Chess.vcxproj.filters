@@ -138,7 +138,7 @@
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="SGameClient.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +321,9 @@
     </ClInclude>
     <ClInclude Include="SGameClient.h">
       <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketType.hpp">
+      <Filter>Source Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

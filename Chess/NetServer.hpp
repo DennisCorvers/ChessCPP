@@ -171,10 +171,9 @@ public:
 	}
 
 
-	void sendToAll(sf::Packet& packet) {
-		for (auto& client : m_clients) {
+	void broadCast(sf::Packet& packet) {
+		for (auto& client : m_clients)
 			sendToClient(packet, client.second);
-		}
 	}
 
 	bool sendToClient(sf::Packet& packet, ClientID clientID) {

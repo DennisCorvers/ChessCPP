@@ -61,6 +61,10 @@ public:
 		if (isWriting) {
 			packet << m_x;
 			packet << m_y;
+
+			//Ensure valid value...
+			m_x = Math::min<unsigned char>(m_x, 7);
+			m_y = Math::min<unsigned char>(m_y, 7);
 		}
 		else {
 			packet >> m_x;

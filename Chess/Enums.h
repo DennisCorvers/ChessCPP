@@ -39,20 +39,9 @@ inline ActionType& operator|=(ActionType& a, ActionType b) {
 	a = a | b;	return a;
 }
 
-enum struct PacketType : unsigned char {
-	Connect = 0,
-	Disconnect = 1,
-	NewMove = 10,
-	Snapshot = 11,
-	ResetBoard = 21,
-	SwapColour = 22
-};
 
 sf::Packet& operator <<(sf::Packet& packet, const ActionType& actionType);
 sf::Packet& operator >>(sf::Packet& packet, ActionType& actionType);
-
-sf::Packet& operator <<(sf::Packet& packet, const PacketType& packetType);
-sf::Packet& operator >>(sf::Packet& packet, PacketType& packetType);
 
 sf::Packet& operator <<(sf::Packet& packet, const PieceColour& packetType);
 sf::Packet& operator >>(sf::Packet& packet, PieceColour& packetType);
