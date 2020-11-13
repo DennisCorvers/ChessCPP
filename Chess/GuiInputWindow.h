@@ -25,7 +25,8 @@ protected:
 private:
 	void initialize();
 
-	void onConfirmClick();
+	virtual void onConfirmClick();
+	virtual void onCancelClick();
 
 	void onShow() override {
 		m_textField->setFocused(true);
