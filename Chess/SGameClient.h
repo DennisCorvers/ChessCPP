@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseGame.h"
+#include "PacketHandler.hpp"
 
 class sf::Packet;
 class NetClient;
@@ -8,6 +9,9 @@ class SGameClient : public BaseGame
 {
 private:
 	NetClient& m_client;
+	ChessColour m_myColour;
+	PacketHandler m_packetHandler;
+	bool m_clientIsPlayer;
 
 public:
 	SGameClient(StateManager& stateManager);
@@ -23,7 +27,14 @@ public:
 	virtual bool onEvent(const sf::Event & event) override;
 
 	// Inherited via BaseGame
-	virtual void onResetBoard() override;
-	virtual void onSwitchBoard() override;
 	virtual void onQuitGame() override;
+
+private:
+	void onNetPacket(sf::Packet& packet);
+	void onDisconnect();
+
+	void onReset(sf::Packet& packet);
+	void onSnapshot(sf::Packet& packet);
+	void onRemoteInput(sf::Packet& packet);
+	void onConnectResponse(sf::Packet& packet);
 };

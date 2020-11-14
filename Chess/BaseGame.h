@@ -28,8 +28,8 @@ protected:
 
 	void loadAssets();
 
-	virtual void onResetBoard() = 0;
-	virtual void onSwitchBoard() = 0;
+	virtual void onResetBoard() {};
+	virtual void onSwitchBoard() {};
 	virtual void onQuitGame();
 	virtual bool onEvent(const sf::Event& event) = 0;
 

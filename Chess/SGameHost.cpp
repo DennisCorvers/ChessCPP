@@ -4,7 +4,7 @@
 #include "NetServer.hpp"
 #include "BoardManager.h"
 #include "StateManager.h"
-#include "PacketType.hpp"
+#include "PacketType.h"
 
 SGameHost::SGameHost(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerHost),
@@ -14,6 +14,7 @@ SGameHost::SGameHost(StateManager & stateManager) :
 {
 	//m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
 	m_server = std::make_unique<NetServer>(1001); //HACK Temp for testing...
+	m_server->setup(&SGameHost::onNetPacket, &SGameHost::onDisconnect, this);
 	m_gameState = GameState::None;
 }
 
@@ -26,22 +27,19 @@ void SGameHost::onCreate()
 	m_server->startListening(1);
 
 	m_boardManager->resetGame(m_myColour);
+
+	std::cout << "Waiting for player" << std::endl;
 }
 
 bool SGameHost::update(float deltaTime)
 {
-	if (m_poller.poll(deltaTime)) {
+	BaseGame::update(deltaTime);
 
+	if (m_poller.poll(deltaTime))
+	{
 		int id = m_server->tryAccept();
 		if (id > -1)
-		{
-			if (m_clientID == -1) {
-				m_clientID = id;
-				GameState::Playing;
-				//New player...
-			}
-			//New observer...
-		}
+			onConnect(id);
 	}
 
 	m_server->receive();
@@ -81,7 +79,7 @@ void SGameHost::onResetBoard()
 {
 	sf::Packet packet;
 	packet << PacketType::ResetBoard;
-
+	packet << m_myColour.opposite();
 	m_server->broadCast(packet);
 
 	onCreate();
@@ -89,13 +87,8 @@ void SGameHost::onResetBoard()
 
 void SGameHost::onSwitchBoard()
 {
-	sf::Packet packet;
-	packet << PacketType::SwapColour;
-
-	m_server->broadCast(packet);
-
 	m_myColour.swap();
-	onCreate();
+	onResetBoard();
 }
 
 void SGameHost::onQuitGame()
@@ -105,8 +98,13 @@ void SGameHost::onQuitGame()
 }
 
 
-void SGameHost::onNetPacket(sf::Packet& packet)
+void SGameHost::onNetPacket(int clientID, sf::Packet& packet)
 {
+	//Only accept messages from the remote player
+	if (clientID != m_clientID)
+		return;
+
+
 	PacketType pType;
 	if (!(packet >> pType))
 		return;
@@ -125,11 +123,37 @@ void SGameHost::onNetPacket(sf::Packet& packet)
 
 void SGameHost::onDisconnect(int clientID)
 {
-	if (clientID == m_clientID) {
-		//Display gameover screen and reset game for next client...
-
-		clientID = -1;
+	if (m_clientID == clientID) {
+		//TODO: Display gameover screen and reset game for next client...
+		m_boardManager->resetGame(m_myColour);
+		std::cout << "Player disconnected" << std::endl;
+		m_clientID = -1;
 	}
+}
+
+void SGameHost::onConnect(int clientID)
+{
+	sf::Packet connectPacket;
+	connectPacket << PacketType::Connect;
+
+	if (m_clientID == -1) {
+		m_clientID = clientID;
+		
+		m_gameState = GameState::Playing;
+		std::cout << "Player connected" << std::endl;
+
+		connectPacket << sf::Uint8(1);
+	}
+	else
+	{
+		connectPacket << sf::Uint8(0);
+		//Send observers a snapshot of the game in progress...
+	}
+
+	connectPacket << m_myColour.opposite();
+	m_server->sendToClient(connectPacket, m_clientID);
+
+	std::cout << "Client connected" << std::endl;
 }
 
 void SGameHost::onRemoteInput(sf::Packet& packet)
@@ -139,6 +163,7 @@ void SGameHost::onRemoteInput(sf::Packet& packet)
 
 	if (packet && inputMove(newMove, true, true)) {
 		//Boardcast valid moves to observers...
+		std::cout << "Valid input" << std::endl;
 	}
 	else
 	{
@@ -147,5 +172,6 @@ void SGameHost::onRemoteInput(sf::Packet& packet)
 
 		m_boardManager->serializeBoard(snapshot, true);
 		m_server->sendToClient(snapshot, m_clientID);
+		std::cout << "Invalid input" << std::endl;
 	}
 }

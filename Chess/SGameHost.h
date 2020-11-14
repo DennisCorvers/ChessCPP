@@ -32,8 +32,9 @@ public:
 	virtual void onQuitGame() override;
 
 private:
-	void onNetPacket(sf::Packet& packet);
+	void onNetPacket(int clientID, sf::Packet& packet);
 	void onDisconnect(int clientID);
+	void onConnect(int clientID);
 
 	void onRemoteInput(sf::Packet& packet);
 };

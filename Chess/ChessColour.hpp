@@ -19,6 +19,10 @@ public:
 		return m_pieceColour;
 	}
 
+	PieceColour opposite() {
+		return m_pieceColour == PieceColour::Black ? PieceColour::White : PieceColour::Black;
+	}
+
 	operator PieceColour() const {
 		return m_pieceColour;
 	}

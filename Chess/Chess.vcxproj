@@ -178,6 +178,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="GuiPauseMenu.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="GuiMessageBox.cpp" />
+    <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="SGameClient.cpp" />
     <ClCompile Include="SGameHost.cpp" />
     <ClCompile Include="SGameSandbox.cpp" />
@@ -232,7 +233,8 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="GuiMessageBox.hpp" />
     <ClInclude Include="NetClient.hpp" />
-    <ClInclude Include="PacketType.hpp" />
+    <ClInclude Include="PacketHandler.hpp" />
+    <ClInclude Include="PacketType.h" />
     <ClInclude Include="NetServer.hpp" />
     <ClInclude Include="NetSettings.hpp" />
     <ClInclude Include="NonCopyable.hpp" />

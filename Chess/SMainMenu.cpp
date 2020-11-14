@@ -61,6 +61,8 @@ void SMainMenu::onSinglePlayerPressed()
 
 void SMainMenu::onJoinGamePressed()
 {
+	m_stateManager->switchState(States::MultiplayerClient);
+	m_stateManager->removeState(States::MainMenu);
 }
 
 void SMainMenu::onHostGamePressed()
