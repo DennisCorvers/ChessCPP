@@ -63,6 +63,8 @@ void Game::initWindow()
 	m_window->setView(*m_defaultView);
 	m_window->setVerticalSyncEnabled(true);
 
+	//Adjust window size here to config?
+
 	sf::Image* icon = new sf::Image;
 	if (icon->loadFromFile("Assets//Sprites//icon.png"))
 		m_window->setIcon(icon->getSize().x, icon->getSize().y, icon->getPixelsPtr());

@@ -40,15 +40,13 @@ private:
 		}
 	}
 
-	void onHide() override {
-		OnConfirm(-1);
-	}
-
 	void onEscapePress() override {
+		OnConfirm(-1);
 		hide();
 	}
 
 	void onCancelClick() override {
+		OnConfirm(-1);
 		hide();
 	}
 };

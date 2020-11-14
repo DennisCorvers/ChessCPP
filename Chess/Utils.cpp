@@ -37,8 +37,8 @@ namespace Graphics {
 		auto& a = window;
 		sf::Vector2u newSize;
 
-		newSize.x = Math::min(window.getSize().x, minSize.x);
-		newSize.y = Math::min(window.getSize().y, minSize.y);
+		newSize.x = Math::max(window.getSize().x, minSize.x);
+		newSize.y = Math::max(window.getSize().y, minSize.y);
 
 		window.setSize(newSize);
 		return window.getSize();

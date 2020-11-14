@@ -13,7 +13,7 @@ SGameHost::SGameHost(StateManager & stateManager) :
 	m_poller(1)
 {
 	//m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
-	m_server = std::make_unique<NetServer>(1001);
+	m_server = std::make_unique<NetServer>(1001); //HACK Temp for testing...
 	m_gameState = GameState::None;
 }
 
@@ -42,7 +42,6 @@ bool SGameHost::update(float deltaTime)
 			}
 			//New observer...
 		}
-		std::cout << "Listening..." << std::endl;
 	}
 
 	m_server->receive();
