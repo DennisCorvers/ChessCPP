@@ -9,7 +9,7 @@
 SGameHost::SGameHost(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerHost),
 	m_myColour(PieceColour::White),
-	m_clientID(-1),
+	m_playerID(-1),
 	m_poller(1)
 {
 	//m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
@@ -101,7 +101,7 @@ void SGameHost::onQuitGame()
 void SGameHost::onNetPacket(int clientID, sf::Packet& packet)
 {
 	//Only accept messages from the remote player
-	if (clientID != m_clientID)
+	if (clientID != m_playerID)
 		return;
 
 
@@ -123,15 +123,15 @@ void SGameHost::onNetPacket(int clientID, sf::Packet& packet)
 
 void SGameHost::onDisconnect(int clientID)
 {
-	if (m_clientID == clientID) {
-		//TODO: Display gameover screen and reset game for next client...
-		m_boardManager->resetGame(m_myColour);
-		m_clientID = -1;
+	if (m_playerID == clientID) {
+		//TODO: Notify server of client disconnect and allow to reset game via menu
+		//TODO: Reset game for any potential observers after menu option...
+		m_playerID = -1;
 	}
 
 	auto itr = m_observers.begin();
 	while (itr != m_observers.end()) {
-		if ((*itr) == m_clientID) {
+		if ((*itr) == clientID) {
 			m_observers.erase(itr);
 			return;
 		}
@@ -144,8 +144,8 @@ void SGameHost::onConnect(int clientID)
 	sf::Packet connectPacket;
 	connectPacket << PacketType::Connect;
 
-	if (m_clientID == -1) {
-		m_clientID = clientID;
+	if (m_playerID == -1) {
+		m_playerID = clientID;
 
 		m_gameState = GameState::Playing;
 
@@ -160,7 +160,7 @@ void SGameHost::onConnect(int clientID)
 	}
 
 	connectPacket << m_myColour.opposite();
-	m_server->sendToClient(connectPacket, m_clientID);
+	m_server->sendToClient(connectPacket, clientID);
 }
 
 void SGameHost::onRemoteInput(sf::Packet& packet)
@@ -177,7 +177,6 @@ void SGameHost::onRemoteInput(sf::Packet& packet)
 		snapshot << PacketType::Snapshot;
 
 		m_boardManager->serializeBoard(snapshot, true);
-		m_server->sendToClient(snapshot, m_clientID);
-		std::cout << "Invalid input" << std::endl;
+		m_server->sendToClient(snapshot, m_playerID);
 	}
 }

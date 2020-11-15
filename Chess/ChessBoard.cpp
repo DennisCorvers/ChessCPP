@@ -173,7 +173,7 @@ std::string ChessBoard::getFENFormat() const
 
 void ChessBoard::netSerialize(sf::Packet& packet, bool isWriting)
 {
-	for (auto chessPiece : m_board) {
+	for (auto& chessPiece : m_board) {
 		chessPiece.netSerialize(packet, isWriting);
 	}
 

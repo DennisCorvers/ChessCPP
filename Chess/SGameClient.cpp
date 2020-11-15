@@ -71,6 +71,8 @@ void SGameClient::onQuitGame()
 	m_client.disconnect();
 	m_client.clearHandlers();
 	m_packetHandler.clearHandles();
+
+	BaseGame::onQuitGame();
 }
 
 void SGameClient::onNetPacket(sf::Packet & packet)
@@ -94,13 +96,16 @@ void SGameClient::onReset(sf::Packet& packet)
 	if (!(packet >> newColour))
 		return;
 
-	m_myColour = newColour;
-	m_boardManager->resetGame(m_myColour);
-
-	if (m_clientIsPlayer)
+	if (m_clientIsPlayer) {
 		m_gameState = GameState::Playing;
-	else
+		m_myColour = newColour;
+	}
+	else {
+		m_myColour = PieceColour::White;
 		m_gameState = GameState::None;
+	}
+
+	m_boardManager->resetGame(m_myColour);
 }
 
 void SGameClient::onSnapshot(sf::Packet& packet)
@@ -131,7 +136,9 @@ void SGameClient::onConnectResponse(sf::Packet& packet)
 		packet >> myColour;
 		m_myColour = myColour;
 
+		m_boardManager->resetGame(m_myColour);
 		m_gameState = GameState::Playing;
+
 	}
 	else
 	{
@@ -140,6 +147,4 @@ void SGameClient::onConnectResponse(sf::Packet& packet)
 
 		m_gameState = GameState::None;
 	}
-
-	m_boardManager->resetGame(m_myColour);
 }

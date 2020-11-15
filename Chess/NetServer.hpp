@@ -144,14 +144,14 @@ public:
 
 			switch (clientStatus) {
 			case SocketStatus::Done: {
-				m_packetHandler(itr->second.m_clientInfo.m_clientID, nextPacket);
+				m_packetHandler(itr->second.m_clientInfo.m_playerID, nextPacket);
 				break;
 			}
 			case SocketStatus::Error: {
 				//Do something?
 			}
 			case SocketStatus::Disconnected: {
-				m_removedClients.push_back(itr->second.m_clientInfo.m_clientID);
+				m_removedClients.push_back(itr->second.m_clientInfo.m_playerID);
 				itr = m_clients.erase(itr);
 				continue;
 			}
