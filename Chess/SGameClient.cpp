@@ -84,8 +84,8 @@ void SGameClient::onNetPacket(sf::Packet & packet)
 
 void SGameClient::onDisconnect()
 {
-	//Server disconnected... End game
-	std::cout << "Server quit" << std::endl;
+	m_gameState = GameState::None;
+	//TODO: Server disconnected... End game
 }
 
 void SGameClient::onReset(sf::Packet& packet)
@@ -96,12 +96,16 @@ void SGameClient::onReset(sf::Packet& packet)
 
 	m_myColour = newColour;
 	m_boardManager->resetGame(m_myColour);
-	m_gameState = GameState::Playing;
+
+	if (m_clientIsPlayer)
+		m_gameState = GameState::Playing;
+	else
+		m_gameState = GameState::None;
 }
 
 void SGameClient::onSnapshot(sf::Packet& packet)
 {
-	//Apply snapshot
+	m_boardManager->serializeBoard(packet, false);
 }
 
 void SGameClient::onRemoteInput(sf::Packet& packet)
@@ -126,13 +130,16 @@ void SGameClient::onConnectResponse(sf::Packet& packet)
 		PieceColour myColour;
 		packet >> myColour;
 		m_myColour = myColour;
+
+		m_gameState = GameState::Playing;
 	}
 	else
 	{
 		m_myColour = PieceColour::White;
 		onSnapshot(packet);
+
+		m_gameState = GameState::None;
 	}
 
 	m_boardManager->resetGame(m_myColour);
-	m_gameState = GameState::Playing;
 }

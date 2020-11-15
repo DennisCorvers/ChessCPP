@@ -127,6 +127,7 @@ void BoardManager::render(sf::RenderTarget& target)
 
 void BoardManager::serializeBoard(sf::Packet & packet, bool isWriting) {
 	m_board->netSerialize(packet, isWriting);
+	m_pieceManager->refreshBoard(*m_board);
 }
 
 PieceColour BoardManager::getPlayingColour() const {

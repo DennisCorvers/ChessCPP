@@ -108,8 +108,16 @@ void ChessPieceManager::refreshBoard()
 	for (; pieceCount < PIECECOUNT; pieceCount++)
 		m_chessPieces[pieceCount]->setActive(false);
 
-	if (m_board->getMoveNumber() == 0)
+
+	if (m_board->getMoveNumber() == 0) {
 		m_moveMarkers.reset();
+	}
+	else {
+		const ChessAction& lastMove = m_board->getLastAction();
+		sf::Vector2i moveFrom(lastMove.moveFrom.x(), lastMove.moveFrom.y());
+		sf::Vector2i moveTo(lastMove.moveTo.x(), lastMove.moveTo.y());
+		m_moveMarkers.setMarkers(boardToScreen(moveFrom), boardToScreen(moveTo));
+	}
 }
 
 
@@ -149,10 +157,6 @@ void ChessPieceManager::inputMove(const ChessAction& newAction, bool animate)
 	else {
 		animationCallback();
 	}
-
-	sf::Vector2i moveFrom(newAction.moveFrom.x(), newAction.moveFrom.y());
-	sf::Vector2i moveTo(newAction.moveTo.x(), newAction.moveTo.y());
-	m_moveMarkers.setMarkers(boardToScreen(moveFrom), boardToScreen(moveTo));
 }
 
 void ChessPieceManager::initMarkers()

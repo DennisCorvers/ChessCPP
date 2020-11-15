@@ -9,6 +9,7 @@ class SGameHost : public BaseGame
 private:
 	std::unique_ptr<NetServer> m_server;
 	int m_clientID;
+	std::vector<int> m_observers;
 
 	ChessColour m_myColour;
 	Poller m_poller;

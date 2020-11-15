@@ -23,11 +23,11 @@ SGameHost::~SGameHost()
 
 void SGameHost::onCreate()
 {
-	//Only allow one player...
-	m_server->startListening(1);
+	m_server->startListening(10);
 
 	m_boardManager->resetGame(m_myColour);
 
+	//TODO Banner show waiting for player
 	std::cout << "Waiting for player" << std::endl;
 }
 
@@ -126,8 +126,16 @@ void SGameHost::onDisconnect(int clientID)
 	if (m_clientID == clientID) {
 		//TODO: Display gameover screen and reset game for next client...
 		m_boardManager->resetGame(m_myColour);
-		std::cout << "Player disconnected" << std::endl;
 		m_clientID = -1;
+	}
+
+	auto itr = m_observers.begin();
+	while (itr != m_observers.end()) {
+		if ((*itr) == m_clientID) {
+			m_observers.erase(itr);
+			return;
+		}
+		++itr;
 	}
 }
 
@@ -138,22 +146,21 @@ void SGameHost::onConnect(int clientID)
 
 	if (m_clientID == -1) {
 		m_clientID = clientID;
-		
+
 		m_gameState = GameState::Playing;
-		std::cout << "Player connected" << std::endl;
 
 		connectPacket << sf::Uint8(1);
 	}
 	else
 	{
+		m_observers.push_back(clientID);
+
 		connectPacket << sf::Uint8(0);
-		//Send observers a snapshot of the game in progress...
+		m_boardManager->serializeBoard(connectPacket, true);
 	}
 
 	connectPacket << m_myColour.opposite();
 	m_server->sendToClient(connectPacket, m_clientID);
-
-	std::cout << "Client connected" << std::endl;
 }
 
 void SGameHost::onRemoteInput(sf::Packet& packet)
@@ -162,8 +169,7 @@ void SGameHost::onRemoteInput(sf::Packet& packet)
 	newMove.netSerialize(packet, false);
 
 	if (packet && inputMove(newMove, true, true)) {
-		//Boardcast valid moves to observers...
-		std::cout << "Valid input" << std::endl;
+		m_server->sendToClients(packet, m_observers);
 	}
 	else
 	{
