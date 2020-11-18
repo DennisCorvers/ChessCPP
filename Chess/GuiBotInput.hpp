@@ -1,3 +1,4 @@
+#pragma once
 #include "GuiInputWindow.h"
 #include "GuiMessageBox.hpp"
 
@@ -20,7 +21,7 @@ public:
 
 private:
 
-	virtual void validateInput(const std::string & input) override {
+	void validateInput(const std::string & input) override {
 		int botLevel = -1;
 		try {
 			botLevel = std::stoi(input);
@@ -41,8 +42,7 @@ private:
 	}
 
 	void onEscapePress() override {
-		OnConfirm(-1);
-		hide();
+		onCancelClick();
 	}
 
 	void onCancelClick() override {

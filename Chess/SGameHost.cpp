@@ -12,9 +12,10 @@ SGameHost::SGameHost(StateManager & stateManager) :
 	m_playerID(-1),
 	m_poller(1)
 {
-	//m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
-	m_server = std::make_unique<NetServer>(1001); //HACK Temp for testing...
+	m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
 	m_server->setup(&SGameHost::onNetPacket, &SGameHost::onDisconnect, this);
+	m_server->startListening(10);
+
 	m_gameState = GameState::None;
 }
 
@@ -23,12 +24,13 @@ SGameHost::~SGameHost()
 
 void SGameHost::onCreate()
 {
-	m_server->startListening(10);
-
 	m_boardManager->resetGame(m_myColour);
 
 	//TODO Banner show waiting for player
-	std::cout << "Waiting for player" << std::endl;
+	if (m_playerID == -1) {
+		m_server->pauseListening(false);
+		std::cout << "Waiting for player" << std::endl;
+	}
 }
 
 bool SGameHost::update(float deltaTime)
@@ -124,9 +126,10 @@ void SGameHost::onNetPacket(int clientID, sf::Packet& packet)
 void SGameHost::onDisconnect(int clientID)
 {
 	if (m_playerID == clientID) {
-		//TODO: Notify server of client disconnect and allow to reset game via menu
-		//TODO: Reset game for any potential observers after menu option...
+		endGame("Player disconnected.");
+		m_server->pauseListening(true);
 		m_playerID = -1;
+		return;
 	}
 
 	auto itr = m_observers.begin();

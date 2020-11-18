@@ -70,4 +70,6 @@ private:
 	void innerShow(GuiWindow& window);
 
 	bool hasWindow(int windowID);
+
+	GuiWindow* getTopWindow() const;
 };

@@ -131,9 +131,6 @@
     <ClCompile Include="GuiMessageBox.cpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClCompile>
-    <ClCompile Include="GuiGameOver.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="SGameHost.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
@@ -142,6 +139,12 @@
     </ClCompile>
     <ClCompile Include="PacketType.cpp">
       <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiGameMessage.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiInfoBanner.cpp">
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,9 +304,6 @@
     <ClInclude Include="GuiMessageBox.hpp">
       <Filter>Source Files\Gui\Base</Filter>
     </ClInclude>
-    <ClInclude Include="GuiGameOver.h">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
     <ClInclude Include="NetServer.hpp">
       <Filter>Source Files\Networking</Filter>
     </ClInclude>
@@ -333,6 +333,15 @@
     </ClInclude>
     <ClInclude Include="PacketType.h">
       <Filter>Source Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiHostStart.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiGameMessage.h">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiInfoBanner.h">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

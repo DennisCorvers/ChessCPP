@@ -125,6 +125,7 @@ protected:
 	virtual void onShow() {};
 
 	virtual void onEscapePress() {};
+	virtual void onReturnPress() {};
 
 	virtual void onClose() {};
 

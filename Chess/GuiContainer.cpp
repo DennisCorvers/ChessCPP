@@ -89,21 +89,22 @@ bool GuiContainer::handleEvent(const sf::Event & event)
 			Graphics::applyResize(m_view, event);
 	}
 
-	if (event.type == sf::Event::EventType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		GuiWindow* window = nullptr;
-
-		//Close foccused window...
-		for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	if (event.type == sf::Event::EventType::KeyReleased)
+	{
+		switch (event.key.code)
 		{
-			if ((**itr).m_windowStatus != WindowStatus::NONE) {
-				window = (*itr).get();
-				break;
-			}
+		case sf::Keyboard::Escape: {
+			auto window = getTopWindow();
+			if (window != nullptr)
+				window->onEscapePress();
+			break;
 		}
-
-		if (window != nullptr) {
-			window->onEscapePress();
-			return true;
+		case sf::Keyboard::Return: {
+			auto window = getTopWindow();
+			if (window != nullptr)
+				window->onReturnPress();
+			break;
+		}
 		}
 	}
 
@@ -204,4 +205,18 @@ bool GuiContainer::hasWindow(int windowID)
 	}
 
 	return false;
+}
+
+GuiWindow* GuiContainer::getTopWindow() const
+{
+	GuiWindow* window = nullptr;
+	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	{
+		if ((**itr).m_windowStatus != WindowStatus::NONE) {
+			window = (*itr).get();
+			break;
+		}
+	}
+
+	return window;
 }

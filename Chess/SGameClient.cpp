@@ -4,6 +4,7 @@
 #include "BoardManager.h"
 #include "StateManager.h"
 #include "PacketType.h"
+#include "GuiGameMessage.h"
 
 SGameClient::SGameClient(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerClient),
@@ -25,7 +26,11 @@ SGameClient::~SGameClient()
 void SGameClient::onCreate()
 {
 	m_client.setup(&SGameClient::onNetPacket, &SGameClient::onDisconnect, this);
-	m_client.connect(sf::IpAddress(127, 0, 0, 1), 1001);
+	auto& netSettings = m_stateManager->getContext().netSettings;
+	netSettings.IpAddress = sf::IpAddress("chester.fun");
+	m_client.connect(netSettings.IpAddress, netSettings.Port);
+
+	//TODO Timeout connection...
 }
 
 bool SGameClient::update(float deltaTime)
@@ -75,6 +80,12 @@ void SGameClient::onQuitGame()
 	BaseGame::onQuitGame();
 }
 
+void SGameClient::endGame(ActionType gameResult)
+{
+	BaseGame::endGame(gameResult);
+	//TODO Set banner...
+}
+
 void SGameClient::onNetPacket(sf::Packet & packet)
 {
 	PacketType pType;
@@ -87,7 +98,19 @@ void SGameClient::onNetPacket(sf::Packet & packet)
 void SGameClient::onDisconnect()
 {
 	m_gameState = GameState::None;
-	//TODO: Server disconnected... End game
+	m_isConnected = false;
+	if (m_isConnected)
+		BaseGame::endGame("Connection to server was lost.");
+	else
+	{
+		//auto messageGui = GuiGameOver::create(m_stateManager->getContext());
+		//messageGui->setText("Unable to connect to remote host.");
+		//messageGui->s
+		//	"Connection Error", "Unable to connect to remote host.");
+		//	messageGui->setButton("Ok");
+		//m_gui->addShowDialog(messageGui);
+	}
+	//TODO Banner: Not connected
 }
 
 void SGameClient::onReset(sf::Packet& packet)
@@ -127,6 +150,8 @@ void SGameClient::onRemoteInput(sf::Packet& packet)
 
 void SGameClient::onConnectResponse(sf::Packet& packet)
 {
+	m_isConnected = true;
+
 	sf::Uint8 myRole;
 	packet >> myRole;
 

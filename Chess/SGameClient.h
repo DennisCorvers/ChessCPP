@@ -13,6 +13,9 @@ private:
 	PacketHandler m_packetHandler;
 	bool m_clientIsPlayer;
 
+	float m_connectionTimeout = 15;
+	bool m_isConnected = false;
+
 public:
 	SGameClient(StateManager& stateManager);
 	virtual ~SGameClient();
@@ -28,6 +31,7 @@ public:
 
 	// Inherited via BaseGame
 	virtual void onQuitGame() override;
+	virtual void endGame(ActionType gameResult) override;
 
 private:
 	void onNetPacket(sf::Packet& packet);
