@@ -37,6 +37,7 @@ private:
 	ClientID m_lastID;
 	unsigned short m_port;
 	unsigned short m_maxClients;
+	bool m_pauseListening;
 
 	PacketHandler m_packetHandler;
 	DisconnectHandler m_disconnectHandler;
@@ -105,11 +106,20 @@ public:
 		return true;
 	}
 
+	int getMaxConnections() const {
+		return m_maxClients;
+	}
+
 
 	bool startListening(unsigned short maxConnections = 1)
 	{
+		m_pauseListening = false;
 		m_maxClients = maxConnections;
 		return m_listener->listen(m_port) == sf::Socket::Done;
+	}
+
+	void pauseListening(bool pause) {
+		m_pauseListening = true;
 	}
 
 	ClientID tryAccept() {
@@ -117,7 +127,7 @@ public:
 		if (m_listener->accept(*m_pendingSock) == SocketStatus::Done) {
 
 			//Reject any more connections above the maximum allowed amount.
-			if (getConnections() >= m_maxClients) {
+			if (getConnections() >= m_maxClients || m_pauseListening) {
 				m_pendingSock->disconnect();
 				return -1;
 			}
