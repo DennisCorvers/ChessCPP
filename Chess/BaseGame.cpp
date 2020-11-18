@@ -5,7 +5,7 @@
 #include "GuiContainer.hpp"
 #include "EventManager.h"
 #include "ResourceManager.hpp"
-#include "GuiGameOver.h"
+#include "GuiGameMessage.h"
 
 
 BaseGame::BaseGame(StateManager& stateManager, States state) :
@@ -32,7 +32,7 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 	m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
 	m_gui->addWindow(m_pauseMenu);
 
-	m_gameOverScreen = std::make_shared<GuiGameOver>(stateManager.getContext());
+	m_gameOverScreen = std::make_shared<GuiGameMessage>(stateManager.getContext());
 	m_gui->addWindow(m_gameOverScreen);
 }
 
@@ -60,6 +60,7 @@ bool BaseGame::update(float deltaTime)
 	return true;
 }
 
+
 bool BaseGame::handleEvent(const sf::Event & event)
 {
 	if (event.type == sf::Event::Resized)
@@ -76,6 +77,8 @@ bool BaseGame::handleEvent(const sf::Event & event)
 
 	return false;
 }
+
+
 
 void BaseGame::onQuitGame()
 {
@@ -106,26 +109,38 @@ bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)
 
 void BaseGame::endGame(ActionType gameResult)
 {
-	m_gameState = GameState::GameOver;
-
-
 	switch (gameResult) {
 	case ActionType::Checkmate: {
 		std::string winningColour = m_boardManager->getPlayingColour() == PieceColour::Black ? "White" : "Black";
-		m_gameOverScreen->setText(winningColour + " won by Checkmate.");
+		endGame(winningColour + " won by Checkmate.");
 		break;
 	}
 	case ActionType::Stalemate: {
-		m_gameOverScreen->setText("Game ended in a Stalemate");
+		endGame("Game ended in a Stalemate");
 		break;
 	}
 	case ActionType::Draw: {
-		m_gameOverScreen->setText("Game ended in a Draw.");
+		endGame("Game ended in a Draw.");
 		break;
 	}
 	default: return;
 	}
+}
+
+void BaseGame::endGame(const std::string& reason)
+{
+	m_gameState = GameState::GameOver;
+
+	displayMessage("Game Over", reason, "Confirm");
+}
+
+void BaseGame::displayMessage(const std::string & title, const std::string & text, const std::string & button)
+{
+	m_gameOverScreen->setTitle(title);
+	m_gameOverScreen->setText(text);
+	m_gameOverScreen->setButton(button);
 
 	m_gameOverScreen->showDialog();
 }
+
 

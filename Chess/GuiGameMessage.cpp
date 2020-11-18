@@ -1,29 +1,29 @@
 #include "pch.h"
-#include "GuiGameOver.h"
+#include "GuiGameMessage.h"
 
 
-GuiGameOver::GuiGameOver(const SharedContext & sharedContext) :
+GuiGameMessage::GuiGameMessage(const SharedContext & sharedContext) :
 	GuiWindowBlank(sharedContext)
 {
 	m_continueButton = tgui::Button::create("Confirm");
 	m_text = tgui::Label::create();
-	m_title = tgui::Label::create();
+	m_title = tgui::Label::create("Title");
 	m_background = tgui::Panel::create();
 
 	initialize();
 }
 
-GuiGameOver::~GuiGameOver()
+GuiGameMessage::~GuiGameMessage()
 {
 	m_sharedContext.fontManager->releaseResource(AssetNames::f_opensans_reg);
 	m_sharedContext.themeManager->releaseResource(AssetNames::theme_default);
 }
 
-std::shared_ptr<GuiGameOver> GuiGameOver::create(const SharedContext & sharedContext) {
-	return std::make_shared<GuiGameOver>(sharedContext);
+std::shared_ptr<GuiGameMessage> GuiGameMessage::create(const SharedContext & sharedContext) {
+	return std::make_shared<GuiGameMessage>(sharedContext);
 }
 
-void GuiGameOver::setText(const std::string & text) {
+void GuiGameMessage::setText(const std::string & text) {
 	m_text->setText(text);
 
 	const auto& mySize = m_guiWindow->getSize();
@@ -35,11 +35,15 @@ void GuiGameOver::setText(const std::string & text) {
 	m_text->setPosition(xOffset, yOffset);
 }
 
-void GuiGameOver::setTitle(const std::string & title) {
+void GuiGameMessage::setTitle(const std::string & title) {
 	m_title->setText(title);
 }
 
-void GuiGameOver::initialize()
+void GuiGameMessage::setButton(const std::string & text) {
+	m_continueButton->setText(text);
+}
+
+void GuiGameMessage::initialize()
 {
 	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
@@ -71,7 +75,7 @@ void GuiGameOver::initialize()
 	m_continueButton->setRenderer(defaultTheme.getRenderer("PauseButton"));
 	m_continueButton->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 	m_continueButton->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
-	m_continueButton->connect("pressed", &GuiGameOver::onContinueClick, this);
+	m_continueButton->connect("pressed", &GuiGameMessage::onContinueClick, this);
 	m_guiWindow->add(m_continueButton);
 
 	//Text
@@ -92,24 +96,23 @@ void GuiGameOver::initialize()
 	//Header label
 	m_title->setPosition(10, 2);
 	m_title->setTextSize(20);
-	m_title->setText("Game Over");
 	m_title->setRenderer(defaultTheme.getRenderer("PauseLabel"));
 	m_guiWindow->add(m_title);
 
 	m_guiWindow->setSize(m_background->getSize());
 }
 
-void GuiGameOver::onContinueClick() {
+void GuiGameMessage::onContinueClick() {
 	hide();
 	OnContinue();
 }
 
-void GuiGameOver::onEscapePress() {
+void GuiGameMessage::onEscapePress() {
 	hide();
 	OnContinue();
 }
 
-void GuiGameOver::onAddedToContainer(const sf::View & containerView)
+void GuiGameMessage::onAddedToContainer(const sf::View & containerView)
 {
 	m_guiWindow->setPosition(sf::Vector2f(
 		(containerView.getSize().x - m_guiWindow->getSize().x) / 2,

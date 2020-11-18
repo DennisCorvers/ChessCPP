@@ -11,13 +11,13 @@ struct ChessMove;
 class BoardManager;
 class GuiContainer;
 class GuiPauseMenu;
-class GuiGameOver;
+class GuiGameMessage;
 class BaseGame : public BaseState
 {
 private:
 	States m_myState;
 	std::shared_ptr<GuiPauseMenu> m_pauseMenu;
-	std::shared_ptr<GuiGameOver> m_gameOverScreen;
+	std::shared_ptr<GuiGameMessage> m_gameOverScreen;
 
 protected:
 	using EType = sf::Event::EventType;
@@ -48,7 +48,12 @@ public:
 	virtual void render();
 	virtual bool update(float deltaTime) override;
 
+protected:
+	virtual void endGame(ActionType gameResult);
+	void endGame(const std::string& reason);
+
+	void displayMessage(const std::string& title, const std::string& text, const std::string& button);
+
 private:
 	bool handleEvent(const sf::Event & event) override;
-	void endGame(ActionType gameResult);
 };
