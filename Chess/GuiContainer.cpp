@@ -93,16 +93,12 @@ bool GuiContainer::handleEvent(const sf::Event & event)
 	{
 		switch (event.key.code)
 		{
-		case sf::Keyboard::Escape: {
-			auto window = getTopWindow();
-			if (window != nullptr)
-				window->onEscapePress();
-			break;
-		}
+		case sf::Keyboard::Escape:
 		case sf::Keyboard::Return: {
 			auto window = getTopWindow();
 			if (window != nullptr)
-				window->onReturnPress();
+				if (handleWindowEvent(*window, event.key))
+					return true;
 			break;
 		}
 		}
@@ -219,4 +215,24 @@ GuiWindow* GuiContainer::getTopWindow() const
 	}
 
 	return window;
+}
+
+bool GuiContainer::handleWindowEvent(GuiWindow& window, const sf::Event::KeyEvent keyEvent) const
+{
+	//Always consume from Dialog Windows
+	bool consumeEvent = window.m_windowStatus == WindowStatus::DIALOG;
+
+	switch (keyEvent.code)
+	{
+	case sf::Keyboard::Escape: {
+		window.onEscapePress();
+		consumeEvent = true;
+	}
+	case sf::Keyboard::Return: {
+		window.onReturnPress();
+		consumeEvent = true;
+	}
+	}
+
+	return consumeEvent;
 }

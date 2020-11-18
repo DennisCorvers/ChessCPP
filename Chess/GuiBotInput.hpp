@@ -41,10 +41,6 @@ private:
 		}
 	}
 
-	void onEscapePress() override {
-		onCancelClick();
-	}
-
 	void onCancelClick() override {
 		OnConfirm(-1);
 		hide();

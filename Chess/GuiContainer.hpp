@@ -72,4 +72,6 @@ private:
 	bool hasWindow(int windowID);
 
 	GuiWindow* getTopWindow() const;
+
+	bool handleWindowEvent(GuiWindow& window, const sf::Event::KeyEvent keyEvent) const;
 };

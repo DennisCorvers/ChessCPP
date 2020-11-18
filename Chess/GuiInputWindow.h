@@ -32,7 +32,10 @@ private:
 		m_textField->setFocused(true);
 	}
 	void onEscapePress() override {
-		close();
+		onCancelClick();
+	}
+	void onReturnPress() override {
+		onConfirmClick();
 	}
 };
 
