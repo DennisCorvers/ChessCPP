@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "BaseGame.h"
 #include "BoardManager.h"
-#include "GuiPauseMenu.h"
-#include "GuiContainer.hpp"
 #include "EventManager.h"
 #include "ResourceManager.hpp"
+
+#include "GuiPauseMenu.h"
+#include "GuiContainer.hpp"
 #include "GuiGameMessage.h"
+#include "GuiInfoBox.h"
 
 
 BaseGame::BaseGame(StateManager& stateManager, States state) :
@@ -32,8 +34,11 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 	m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
 	m_gui->addWindow(m_pauseMenu);
 
-	m_gameOverScreen = std::make_shared<GuiGameMessage>(stateManager.getContext());
-	m_gui->addWindow(m_gameOverScreen);
+	m_gameMessageScreen = GuiGameMessage::create(stateManager.getContext());
+	m_gui->addWindow(m_gameMessageScreen);
+
+	m_gameWaitScreen = GuiInfoBox::create(stateManager.getContext());
+	m_gui->addWindow(m_gameWaitScreen);
 }
 
 BaseGame::~BaseGame()
@@ -49,6 +54,7 @@ void BaseGame::loadAssets()
 void BaseGame::render() {
 	m_boardManager->render(getWindow());
 	m_gui->render();
+	m_gameWaitScreen->render(getWindow());
 }
 
 bool BaseGame::update(float deltaTime)
@@ -57,6 +63,8 @@ bool BaseGame::update(float deltaTime)
 	m_boardManager->updateMousePosition(position);
 
 	m_boardManager->update(deltaTime);
+
+	m_gameWaitScreen->update(deltaTime);
 	return true;
 }
 
@@ -77,7 +85,6 @@ bool BaseGame::handleEvent(const sf::Event & event)
 
 	return false;
 }
-
 
 
 void BaseGame::onQuitGame()
@@ -136,11 +143,20 @@ void BaseGame::endGame(const std::string& reason)
 
 void BaseGame::displayMessage(const std::string & title, const std::string & text, const std::string & button)
 {
-	m_gameOverScreen->setTitle(title);
-	m_gameOverScreen->setText(text);
-	m_gameOverScreen->setButton(button);
+	m_gameMessageScreen->setTitle(title);
+	m_gameMessageScreen->setText(text);
+	m_gameMessageScreen->setButton(button);
 
-	m_gameOverScreen->showDialog();
+	m_gameMessageScreen->showDialog();
+}
+
+void BaseGame::guiLoadShow(const std::string & title) {
+	m_gameWaitScreen->setText(title);
+	m_gameWaitScreen->show();
+}
+
+void BaseGame::guiLoadHide() {
+	m_gameWaitScreen->hide();
 }
 
 

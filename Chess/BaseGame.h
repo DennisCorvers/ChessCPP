@@ -12,12 +12,14 @@ class BoardManager;
 class GuiContainer;
 class GuiPauseMenu;
 class GuiGameMessage;
+class GuiInfoBox;
 class BaseGame : public BaseState
 {
 private:
 	States m_myState;
 	std::shared_ptr<GuiPauseMenu> m_pauseMenu;
-	std::shared_ptr<GuiGameMessage> m_gameOverScreen;
+	std::shared_ptr<GuiGameMessage> m_gameMessageScreen;
+	std::shared_ptr<GuiInfoBox> m_gameWaitScreen;
 
 protected:
 	using EType = sf::Event::EventType;
@@ -53,6 +55,9 @@ protected:
 	void endGame(const std::string& reason);
 
 	void displayMessage(const std::string& title, const std::string& text, const std::string& button);
+
+	void guiLoadShow(const std::string& title);
+	void guiLoadHide();
 
 private:
 	bool handleEvent(const sf::Event & event) override;

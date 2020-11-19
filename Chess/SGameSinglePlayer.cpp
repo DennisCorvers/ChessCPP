@@ -12,7 +12,7 @@ SGameSinglePlayer::SGameSinglePlayer(StateManager & stateManager) :
 	m_myColour(PieceColour::White)
 {
 	auto engineInfo = UCI::EngineInformation();
-	m_chessEngine = std::make_unique<UCI::UCIConnector>("stockfish.exe", engineInfo);
+	m_chessEngine = std::make_unique<UCI::UCIConnector>("chessengine.exe", engineInfo);
 	m_botLevelWindow = GuiBotInput::create(stateManager.getContext());
 	m_botLevelWindow->setText("10");
 	m_botLevelWindow->OnConfirm.connect(&SGameSinglePlayer::onBotLevelEntered, this);

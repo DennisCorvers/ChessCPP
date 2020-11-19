@@ -4,11 +4,9 @@
 
 class sf::Packet;
 class NetServer;
-class GuiInfoBanner;
 class SGameHost : public BaseGame
 {
 private:
-	std::shared_ptr<GuiInfoBanner> m_infoBanner;
 	std::unique_ptr<NetServer> m_server;
 	int m_playerID;
 	std::vector<int> m_observers;
@@ -27,7 +25,7 @@ public:
 	virtual void deactivate() override {};
 
 	virtual bool update(float deltaTime) override;
-	virtual bool onEvent(const sf::Event & event) override;
+	virtual bool onEvent(const sf::Event& event) override;
 
 	// Inherited via BaseGame
 	virtual void onResetBoard() override;
