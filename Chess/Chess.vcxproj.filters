@@ -143,7 +143,7 @@
     <ClCompile Include="GuiGameMessage.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="GuiInfoBanner.cpp">
+    <ClCompile Include="GuiInfoBox.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -340,7 +340,7 @@
     <ClInclude Include="GuiGameMessage.h">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="GuiInfoBanner.h">
+    <ClInclude Include="GuiInfoBox.h">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>

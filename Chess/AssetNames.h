@@ -5,6 +5,7 @@ enum struct AssetNames : unsigned int {
 	t_pieces,
 	t_board,
 	t_background,
+	t_loadspinner,
 
 
 	//SOUNDS
