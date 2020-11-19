@@ -5,6 +5,7 @@
 #include "BoardManager.h"
 #include "StateManager.h"
 #include "PacketType.h"
+#include "GuiInfoBanner.h"
 
 SGameHost::SGameHost(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerHost),
@@ -12,6 +13,9 @@ SGameHost::SGameHost(StateManager & stateManager) :
 	m_playerID(-1),
 	m_poller(1)
 {
+	m_infoBanner = std::make_unique<GuiInfoBanner>(stateManager.getContext());
+	m_gui->addWindow(m_infoBanner);
+
 	m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
 	m_server->setup(&SGameHost::onNetPacket, &SGameHost::onDisconnect, this);
 	m_server->startListening(10);
@@ -26,10 +30,14 @@ void SGameHost::onCreate()
 {
 	m_boardManager->resetGame(m_myColour);
 
-	//TODO Banner show waiting for player
 	if (m_playerID == -1) {
 		m_server->pauseListening(false);
-		std::cout << "Waiting for player" << std::endl;
+		m_infoBanner->setText("Waiting for player...");
+		m_infoBanner->show();
+	}
+	else {
+		m_gameState = GameState::Playing;
+		m_infoBanner->hide();
 	}
 }
 
@@ -127,6 +135,10 @@ void SGameHost::onDisconnect(int clientID)
 {
 	if (m_playerID == clientID) {
 		endGame("Player disconnected.");
+
+		m_infoBanner->setText("Start a new game from the menu.");
+		m_infoBanner->show();
+
 		m_server->pauseListening(true);
 		m_playerID = -1;
 		return;
@@ -151,6 +163,7 @@ void SGameHost::onConnect(int clientID)
 		m_playerID = clientID;
 
 		m_gameState = GameState::Playing;
+		m_infoBanner->hide();
 
 		connectPacket << sf::Uint8(1);
 	}

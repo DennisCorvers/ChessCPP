@@ -27,8 +27,8 @@ void SGameClient::onCreate()
 {
 	m_client.setup(&SGameClient::onNetPacket, &SGameClient::onDisconnect, this);
 	auto& netSettings = m_stateManager->getContext().netSettings;
-	netSettings.IpAddress = sf::IpAddress("chester.fun");
-	m_client.connect(netSettings.IpAddress, netSettings.Port);
+	netSettings.IpAddress = sf::IpAddress("127.0.0.1");
+	m_client.connect(sf::IpAddress(127,0,0,1), 1001);
 
 	//TODO Timeout connection...
 }
@@ -80,12 +80,6 @@ void SGameClient::onQuitGame()
 	BaseGame::onQuitGame();
 }
 
-void SGameClient::endGame(ActionType gameResult)
-{
-	BaseGame::endGame(gameResult);
-	//TODO Set banner...
-}
-
 void SGameClient::onNetPacket(sf::Packet & packet)
 {
 	PacketType pType;
@@ -98,7 +92,7 @@ void SGameClient::onNetPacket(sf::Packet & packet)
 void SGameClient::onDisconnect()
 {
 	m_gameState = GameState::None;
-	m_isConnected = false;
+
 	if (m_isConnected)
 		BaseGame::endGame("Connection to server was lost.");
 	else
@@ -111,6 +105,8 @@ void SGameClient::onDisconnect()
 		//m_gui->addShowDialog(messageGui);
 	}
 	//TODO Banner: Not connected
+
+	m_isConnected = false;
 }
 
 void SGameClient::onReset(sf::Packet& packet)

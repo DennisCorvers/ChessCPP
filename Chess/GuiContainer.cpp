@@ -226,11 +226,9 @@ bool GuiContainer::handleWindowEvent(GuiWindow& window, const sf::Event::KeyEven
 	{
 	case sf::Keyboard::Escape: {
 		window.onEscapePress();
-		consumeEvent = true;
 	}
 	case sf::Keyboard::Return: {
 		window.onReturnPress();
-		consumeEvent = true;
 	}
 	}
 

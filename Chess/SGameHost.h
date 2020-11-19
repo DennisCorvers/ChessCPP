@@ -4,9 +4,11 @@
 
 class sf::Packet;
 class NetServer;
+class GuiInfoBanner;
 class SGameHost : public BaseGame
 {
 private:
+	std::shared_ptr<GuiInfoBanner> m_infoBanner;
 	std::unique_ptr<NetServer> m_server;
 	int m_playerID;
 	std::vector<int> m_observers;

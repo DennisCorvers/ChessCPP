@@ -49,7 +49,7 @@ public:
 	virtual bool update(float deltaTime) override;
 
 protected:
-	virtual void endGame(ActionType gameResult);
+	void endGame(ActionType gameResult);
 	void endGame(const std::string& reason);
 
 	void displayMessage(const std::string& title, const std::string& text, const std::string& button);

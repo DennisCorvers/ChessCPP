@@ -119,7 +119,7 @@ public:
 	}
 
 	void pauseListening(bool pause) {
-		m_pauseListening = true;
+		m_pauseListening = pause;
 	}
 
 	ClientID tryAccept() {

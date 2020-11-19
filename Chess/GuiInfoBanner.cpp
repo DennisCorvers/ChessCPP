@@ -28,12 +28,13 @@ void GuiInfoBanner::setText(const std::string & text) {
 	xOffset = Math::max<int>(xOffset, 20);
 
 	//Center Y
-	int yOffset = (mySize.y - m_text->getSize().y - 20) / 2;
+	int yOffset = (mySize.y - m_text->getSize().y) / 2;
 	m_text->setPosition(xOffset, yOffset);
 }
 
 void GuiInfoBanner::initialize()
 {
+	//TODO Update layout to be in the middle of the screen?
 	FontManager* fontManager = m_sharedContext.fontManager;
 	sf::Font& openSans = *fontManager->requireAndGet(AssetNames::f_opensans_reg);
 	FontManager::setSmoothing(openSans, 20, false);
@@ -46,7 +47,7 @@ void GuiInfoBanner::initialize()
 	m_guiWindow->setInheritedFont(openSans);
 
 	int screenXSize = 500;
-	int screenYSize = 200;
+	int screenYSize = 30;
 
 	//Background
 	m_background->setSize(sf::Vector2f(screenXSize, screenYSize));
@@ -56,7 +57,7 @@ void GuiInfoBanner::initialize()
 	m_guiWindow->add(m_background);
 
 	//Text
-	m_text->setPosition((screenXSize - m_text->getSize().x) / 2, m_text->getSize().y - 30);
+	m_text->setPosition((screenXSize - m_text->getSize().x) / 2, screenYSize - m_text->getSize().y);
 	m_text->setRenderer(defaultTheme.getRenderer("PauseLabel"));
 	m_text->getRenderer()->setTextColor(tgui::Color::Black);
 	m_text->setTextSize(15);
@@ -68,9 +69,7 @@ void GuiInfoBanner::initialize()
 
 void GuiInfoBanner::onAddedToContainer(const sf::View & containerView)
 {
-	//TODO Align top
+	float top = Math::max<float>(20, containerView.getSize().y / 30);
 	m_guiWindow->setPosition(sf::Vector2f(
-		(containerView.getSize().x - m_guiWindow->getSize().x) / 2,
-		(containerView.getSize().y - m_guiWindow->getSize().y) / 2
-	));
+		(containerView.getSize().x - m_guiWindow->getSize().x) / 2, top));
 }

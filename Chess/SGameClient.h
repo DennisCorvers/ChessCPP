@@ -31,7 +31,6 @@ public:
 
 	// Inherited via BaseGame
 	virtual void onQuitGame() override;
-	virtual void endGame(ActionType gameResult) override;
 
 private:
 	void onNetPacket(sf::Packet& packet);
