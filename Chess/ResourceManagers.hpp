@@ -21,9 +21,10 @@ public:
 	MyTextureManager(bool autoSmooth = false)
 		: TextureManager(autoSmooth)
 	{
-		this->registerPath(AssetNames::t_background, "Assets\\Sprites\\backdrop.jpg");
+		this->registerPath(AssetNames::t_background, "Assets\\Sprites\\backdrop.png");
 		this->registerPath(AssetNames::t_board, "Assets\\Sprites\\board.png");
 		this->registerPath(AssetNames::t_pieces, "Assets\\Sprites\\pieces.png");
+		this->registerPath(AssetNames::t_loadspinner, "Assets\\Sprites\\loadspinner.png");
 	}
 };
 

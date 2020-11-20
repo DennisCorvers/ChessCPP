@@ -23,6 +23,7 @@
 #include "SFML/Audio.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Window.hpp"
+#include "SFML/Network.hpp"
 
 //TGUI
 #include "TGUI/TGUI.hpp"
@@ -34,7 +35,6 @@
 #include "Bitmask.hpp"
 #include "NonCopyable.hpp"
 #include "Signal.hpp"
-
 
 
 #ifdef NDEBUG

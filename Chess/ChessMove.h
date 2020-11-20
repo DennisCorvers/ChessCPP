@@ -27,12 +27,6 @@ public:
 		return ChessPosition::distance(m_positionFrom, m_positionTo);
 	}
 
-	float vectorDistance() const {
-		return std::sqrt(
-			std::pow(static_cast<float>(m_positionFrom.x() - m_positionTo.x()), 2) +
-			std::pow(static_cast<float>(m_positionFrom.y() - m_positionTo.y()), 2));
-	}
-
 	bool operator==(const ChessMove& rhs) const {
 		return m_positionFrom == rhs.m_positionFrom && m_positionTo == rhs.m_positionTo;
 	}
@@ -53,6 +47,11 @@ public:
 	}
 	friend std::ostream& operator<<(std::ostream& output, const ChessMove& cp) {
 		return output << cp.toChessNotation();
+	}
+
+	void netSerialize(sf::Packet& packet, bool isWriting) {
+		m_positionFrom.netSerialize(packet, isWriting);
+		m_positionTo.netSerialize(packet, isWriting);
 	}
 };
 

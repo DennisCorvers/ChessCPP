@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseState.hpp"
 
+class sf::IpAddress;
 class GuiMainMenu;
 class GuiContainer;
 class SMainMenu : public BaseState
@@ -35,5 +36,8 @@ private:
 	void onJoinGamePressed();
 	void onHostGamePressed();
 	void onSandboxPressed();
+
+	void onHostPort(unsigned short port);
+	void onClientConnect(const std::string& ip, unsigned short port);
 };
 

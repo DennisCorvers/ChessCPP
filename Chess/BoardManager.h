@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include "ChessMove.h"
 #include "assetNames.h"
+#include "ChessColour.hpp"
 
 namespace BoardSettings {
 	static const char DEFAULTBOARD[64]{
@@ -16,6 +17,7 @@ namespace BoardSettings {
 	};
 }
 
+class sf::Packet;
 class TextureManager;
 class ChessPieceManager;
 class ChessBoard;
@@ -58,6 +60,8 @@ public:
 
 	void update(const float& deltaTime);
 	void render(sf::RenderTarget& target);
+
+	void serializeBoard(sf::Packet& packet, bool isWriting);
 
 	PieceColour getPlayingColour() const;
 	ActionType getLastAction() const;

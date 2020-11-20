@@ -74,7 +74,7 @@ void GuiInputWindow::initialize()
 	m_cancelButton->setRenderer(defaultTheme.getRenderer("PauseButton"));
 	m_cancelButton->connect("mouseentered", [soundManager]() {soundManager->playSound(AssetNames::s_button_hover); });
 	m_cancelButton->connect("pressed", [soundManager]() {soundManager->playSound(AssetNames::s_button_click); });
-	m_cancelButton->connect("pressed", [&, this]() {close();});
+	m_cancelButton->connect("pressed", &GuiInputWindow::onCancelClick, this);
 	m_guiWindow->add(m_confirmButton);
 
 	//Textbox
@@ -105,6 +105,10 @@ void GuiInputWindow::initialize()
 
 void GuiInputWindow::onConfirmClick() {
 	validateInput(m_textField->getText());
+}
+
+void GuiInputWindow::onCancelClick() {
+	close();
 }
 
 void GuiInputWindow::onAddedToContainer(const sf::View & containerView)

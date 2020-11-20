@@ -1,17 +1,17 @@
 #pragma once
 #include "BaseGame.h"
+#include "ChessColour.hpp"
 
 namespace UCI { class UCIConnector; }
 
 class GuiBotInput;
-class EventArgs;
 class SGameSinglePlayer : public BaseGame
 {
 private:
 	std::unique_ptr<UCI::UCIConnector> m_chessEngine;
 	std::shared_ptr<GuiBotInput> m_botLevelWindow;
 
-	PieceColour m_myColour;
+	ChessColour m_myColour;
 
 	void onBotLevelEntered(int level);
 
@@ -31,5 +31,4 @@ public:
 	// Inherited via BaseGame
 	virtual void onResetBoard() override;
 	virtual void onSwitchBoard() override;
-	virtual void onQuitGame() override;
 };

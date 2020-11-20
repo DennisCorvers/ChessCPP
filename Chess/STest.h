@@ -1,23 +1,21 @@
 #pragma once
 #include "BaseState.hpp"
 #include "StateManager.h"
-#include "GuiContainer.hpp"
-#include "GuiGameOver.h"
-#include "GuiJoinGame.hpp"
+#include "NetServer.hpp"
+#include "NetClient.hpp"
 
 class STest : public BaseState
 {
 private:
-	GuiContainer m_win;
+	NetServer m_server;
+	NetClient m_client;
+	NetClient m_newClient;
 
 public:
 	STest(StateManager& stateManager) :
-		BaseState(stateManager),
-		m_win(*stateManager.getContext().window)
+		BaseState(stateManager), m_server(1001)
 	{
-		auto mb = GuiJoinGame::create(stateManager.getContext());
-		//mb->setText("Game ended in a Draw.");
-		m_win.addShowDialog(mb);
+
 	}
 
 	virtual ~STest() {};
@@ -26,6 +24,7 @@ public:
 	{
 
 	};
+
 
 	virtual void onDestroy() override
 	{
@@ -41,7 +40,7 @@ public:
 
 	virtual void render() override
 	{
-		m_win.render();
+
 	};
 
 	virtual bool update(float deltaTime) override
@@ -51,7 +50,7 @@ public:
 
 	virtual bool handleEvent(const sf::Event & event) override
 	{
-		return m_win.handleEvent(event);
+		return false;
 	};
 
 };

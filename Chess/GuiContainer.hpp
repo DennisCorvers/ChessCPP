@@ -70,4 +70,8 @@ private:
 	void innerShow(GuiWindow& window);
 
 	bool hasWindow(int windowID);
+
+	GuiWindow* getTopWindow() const;
+
+	bool handleWindowEvent(GuiWindow& window, const sf::Event::KeyEvent keyEvent) const;
 };

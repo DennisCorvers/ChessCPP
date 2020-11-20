@@ -89,21 +89,18 @@ bool GuiContainer::handleEvent(const sf::Event & event)
 			Graphics::applyResize(m_view, event);
 	}
 
-	if (event.type == sf::Event::EventType::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-		GuiWindow* window = nullptr;
-
-		//Close foccused window...
-		for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	if (event.type == sf::Event::EventType::KeyReleased)
+	{
+		switch (event.key.code)
 		{
-			if ((**itr).m_windowStatus != WindowStatus::NONE) {
-				window = (*itr).get();
-				break;
-			}
+		case sf::Keyboard::Escape:
+		case sf::Keyboard::Return: {
+			auto window = getTopWindow();
+			if (window != nullptr)
+				if (handleWindowEvent(*window, event.key))
+					return true;
+			break;
 		}
-
-		if (window != nullptr) {
-			window->onEscapePress();
-			return true;
 		}
 	}
 
@@ -204,4 +201,36 @@ bool GuiContainer::hasWindow(int windowID)
 	}
 
 	return false;
+}
+
+GuiWindow* GuiContainer::getTopWindow() const
+{
+	GuiWindow* window = nullptr;
+	for (auto itr = m_childWindows.rbegin(); itr != m_childWindows.rend(); ++itr)
+	{
+		if ((**itr).m_windowStatus != WindowStatus::NONE) {
+			window = (*itr).get();
+			break;
+		}
+	}
+
+	return window;
+}
+
+bool GuiContainer::handleWindowEvent(GuiWindow& window, const sf::Event::KeyEvent keyEvent) const
+{
+	//Always consume from Dialog Windows
+	bool consumeEvent = window.m_windowStatus == WindowStatus::DIALOG;
+
+	switch (keyEvent.code)
+	{
+	case sf::Keyboard::Escape: {
+		window.onEscapePress();
+	}
+	case sf::Keyboard::Return: {
+		window.onReturnPress();
+	}
+	}
+
+	return consumeEvent;
 }

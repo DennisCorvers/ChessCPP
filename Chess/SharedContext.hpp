@@ -1,9 +1,11 @@
 #pragma once
 #include "ResourceManagers.hpp"
 #include "SoundManager.hpp"
+#include "NetSettings.hpp"
 
 class AudioManager;
 class EventManager;
+class NetClient;
 
 struct SharedContext {
 
@@ -12,6 +14,9 @@ struct SharedContext {
 	FontManager* fontManager;
 	SoundManager* soundManager;
 	ThemeManager* themeManager;
+	NetClient* netClient;
+
+	NetSettings netSettings;
 
 	void changeState(States state) const {
 		soundManager->switchState(state);

@@ -11,6 +11,8 @@ class SoundManager;
 class EventManager;
 class ThemeManager;
 
+class NetClient;
+
 class DebugOverlay;
 
 class Game {
@@ -31,6 +33,9 @@ private:
 	std::unique_ptr<MyAudioManager> m_audioManager;
 	std::unique_ptr<SoundManager> m_soundManager;
 	std::unique_ptr<ThemeManager> m_themeManager;
+
+	//NET
+	std::unique_ptr<NetClient> m_netClient;
 
 
 	void initWindow();

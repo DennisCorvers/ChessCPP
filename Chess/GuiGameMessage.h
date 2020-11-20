@@ -1,7 +1,7 @@
 #pragma once
 #include "GuiWindowBlank.hpp"
 
-class GuiGameOver : public GuiWindowBlank
+class GuiGameMessage : public GuiWindowBlank
 {
 public:
 	Signal<> OnContinue;
@@ -13,14 +13,15 @@ protected:
 	tgui::Panel::Ptr m_background;
 
 public:
-	GuiGameOver(const SharedContext & sharedContext);
+	GuiGameMessage(const SharedContext & sharedContext);
 
-	virtual ~GuiGameOver();
+	virtual ~GuiGameMessage();
 
-	static std::shared_ptr<GuiGameOver> create(const SharedContext& sharedContext);
+	static std::shared_ptr<GuiGameMessage> create(const SharedContext& sharedContext);
 
 	void setText(const std::string& text);
 	void setTitle(const std::string& title);
+	void setButton(const std::string& text);
 
 protected:
 	void onAddedToContainer(const sf::View& containerView) override;

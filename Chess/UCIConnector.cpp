@@ -8,7 +8,7 @@ namespace UCI {
 
 	UCIConnector::UCIConnector(const std::string & path, EngineInformation & engineInfo) :
 		hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL),
-		m_info(engineInfo), m_isWorking(false), m_workTime(0)
+		m_info(engineInfo), m_isWorking(false), m_workTime(0), m_poller(engineInfo.pollInterval)
 	{
 		char* writable = new char[path.size() + 1];
 		std::copy(path.begin(), path.end(), writable);
@@ -51,8 +51,6 @@ namespace UCI {
 
 	void UCIConnector::runEngine(float deltaTime)
 	{
-		m_lastUpdate += deltaTime;
-
 		if (m_isWorking) {
 			m_workTime += deltaTime;
 			if (m_workTime > m_info.maxEngineTime) {
@@ -62,16 +60,8 @@ namespace UCI {
 			}
 		}
 
-		if (m_lastUpdate < m_info.pollInterval)
+		if (!m_poller.poll(deltaTime))
 			return;
-
-		m_lastUpdate = 0;
-
-		//Process ToEngine messages
-		//while (m_toEngine.size() > 0) {
-		//	sendCommand(m_toEngine.top());
-		//	m_toEngine.pop();
-		//}
 
 		while (pollEngineRead())
 			readEngine();

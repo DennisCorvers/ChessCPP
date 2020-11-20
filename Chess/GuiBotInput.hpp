@@ -21,7 +21,7 @@ public:
 
 private:
 
-	virtual void validateInput(const std::string & input) override {
+	void validateInput(const std::string & input) override {
 		int botLevel = -1;
 		try {
 			botLevel = std::stoi(input);
@@ -41,7 +41,8 @@ private:
 		}
 	}
 
-	void onEscapePress() override {
+	void onCancelClick() override {
+		OnConfirm(-1);
 		hide();
 	}
 };

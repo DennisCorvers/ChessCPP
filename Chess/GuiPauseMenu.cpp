@@ -32,6 +32,8 @@ void GuiPauseMenu::initialize()
 
 	tgui::Panel::Ptr background = tgui::Panel::create();
 	background->setRenderer(defaultTheme.getRenderer("PauseBackground"));
+	background->getRenderer()->setBorders(tgui::Borders::Outline(1));
+	background->getRenderer()->setBorderColor(tgui::Color::Black);
 	m_guiWindow->add(background);
 
 	std::vector<tgui::Button::Ptr> buttons;

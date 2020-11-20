@@ -19,15 +19,6 @@ void SGameSandbox::onCreate() {
 	m_boardManager->resetGame();
 }
 
-void SGameSandbox::onDestroy() {
-}
-
-void SGameSandbox::activate() {
-}
-
-void SGameSandbox::deactivate() {
-}
-
 bool SGameSandbox::onEvent(const sf::Event & event)
 {
 	if (event.mouseButton.button == sf::Mouse::Left) {
@@ -53,10 +44,5 @@ void SGameSandbox::onResetBoard() {
 
 void SGameSandbox::onSwitchBoard() {
 	m_boardManager->flipBoard();
-}
-
-void SGameSandbox::onQuitGame() {
-	m_stateManager->switchState(States::MainMenu);
-	m_stateManager->removeState(States::Sandbox);
 }
 

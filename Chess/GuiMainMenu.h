@@ -8,14 +8,14 @@ public:
 	Signal<> OnSinglePlayerEvent;
 	Signal<> OnSandboxEvent;
 
+	Signal<> OnJoinGameEvent;
+	Signal<> OnHostGameEvent;
+
 	GuiMainMenu(const SharedContext & sharedContext);
 	virtual ~GuiMainMenu();
 
 private:
 	void initialize();
 	void onAddedToContainer(const sf::View& containerView) override;
-
-	void onJoinGamePressed();
-	void onHostGamePressed();
 };
 

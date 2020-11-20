@@ -34,6 +34,18 @@ public:
 	inline bool isValidMove() {
 		return actionType != ActionType::None;
 	}
+
+	void netSerialize(sf::Packet& packet, bool isWriting) {
+		if (isWriting)
+			packet << actionType;
+		else
+			packet >> actionType;
+
+		moveFrom.netSerialize(packet, isWriting);
+		moveTo.netSerialize(packet, isWriting);
+		pieceFrom.netSerialize(packet, isWriting);
+		pieceTo.netSerialize(packet, isWriting);
+	}
 };
 
 

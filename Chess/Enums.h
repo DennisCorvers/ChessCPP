@@ -1,10 +1,7 @@
 #pragma once
+#include "ChessColour.hpp"
 
-enum struct PieceColour : char
-{
-	White = 1,
-	Black = -1
-};
+namespace sf { class Packet; }
 
 enum struct PieceType : unsigned char
 {
@@ -16,8 +13,6 @@ enum struct PieceType : unsigned char
 	Queen = 5,
 	King = 6
 };
-
-
 
 enum struct ActionType : unsigned short {
 	None = 0,
@@ -44,9 +39,9 @@ inline ActionType& operator|=(ActionType& a, ActionType b) {
 	a = a | b;	return a;
 }
 
-namespace Enums {
 
-	const std::string EnumtoString(const PieceType pieceType);
+sf::Packet& operator <<(sf::Packet& packet, const ActionType& actionType);
+sf::Packet& operator >>(sf::Packet& packet, ActionType& actionType);
 
-	const std::string EnumtoString(const PieceColour pieceColour);
-}
+sf::Packet& operator <<(sf::Packet& packet, const PieceColour& packetType);
+sf::Packet& operator >>(sf::Packet& packet, PieceColour& packetType);

@@ -3,6 +3,10 @@
 #include "GuiMainMenu.h"
 #include "GuiContainer.hpp"
 #include "StateManager.h"
+#include "GuiHostStart.hpp"
+#include "GuiBotInput.hpp"
+#include "GuiClientStart.hpp"
+
 
 SMainMenu::SMainMenu(StateManager & stateManager) :
 	BaseState(stateManager)
@@ -15,6 +19,9 @@ SMainMenu::SMainMenu(StateManager & stateManager) :
 	m_guiMainMenu->OnQuitEvent.connect(&SMainMenu::onQuitPressed, this);
 	m_guiMainMenu->OnSandboxEvent.connect(&SMainMenu::onSandboxPressed, this);
 	m_guiMainMenu->OnSinglePlayerEvent.connect(&SMainMenu::onSinglePlayerPressed, this);
+
+	m_guiMainMenu->OnHostGameEvent.connect(&SMainMenu::onHostGamePressed, this);
+	m_guiMainMenu->OnJoinGameEvent.connect(&SMainMenu::onJoinGamePressed, this);
 }
 
 SMainMenu::~SMainMenu()
@@ -58,13 +65,40 @@ void SMainMenu::onSinglePlayerPressed()
 
 void SMainMenu::onJoinGamePressed()
 {
+	auto joinGameUI = GuiClientStart::create(m_stateManager->getContext());
+	joinGameUI->setText(m_stateManager->getContext().netSettings.toString());
+	joinGameUI->OnConfirm.connect(&SMainMenu::onClientConnect, this);
+
+	m_gui->addShowDialog(joinGameUI);
 }
 
 void SMainMenu::onHostGamePressed()
 {
+	auto hostGameUI = GuiHostStart::create(m_stateManager->getContext());
+	hostGameUI->setText(std::to_string(m_stateManager->getContext().netSettings.getPort()));
+	hostGameUI->OnConfirm.connect(&SMainMenu::onHostPort, this);
+
+	m_gui->addShowDialog(hostGameUI);
 }
 
 void SMainMenu::onSandboxPressed() {
 	m_stateManager->switchState(States::Sandbox);
+	m_stateManager->removeState(States::MainMenu);
+}
+
+void SMainMenu::onHostPort(unsigned short port)
+{
+	m_stateManager->getContext().netSettings.setPort(port);
+	m_stateManager->switchState(States::MultiplayerHost);
+	m_stateManager->removeState(States::MainMenu);
+}
+
+void SMainMenu::onClientConnect(const std::string& ip, unsigned short port)
+{
+	auto& netSettings = m_stateManager->getContext().netSettings;
+	netSettings.IpAddress = ip;
+	netSettings.setPort(port);
+
+	m_stateManager->switchState(States::MultiplayerClient);
 	m_stateManager->removeState(States::MainMenu);
 }

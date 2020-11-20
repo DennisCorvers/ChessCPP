@@ -68,13 +68,13 @@ public:
 		if (requireResource(asset))
 			return getResource(asset);
 
-		return nullptr;
+		throw std::exception("Resource could not be loaded.");
 	}
 	std::shared_ptr<T> requireAndGet(const States state, const AssetNames asset) {
 		if (requireResource(state, asset))
 			return getResource(asset);
 
-		return nullptr;
+		throw std::exception("Resource could not be loaded.");
 	}
 
 	bool releaseResource(const AssetNames asset) {

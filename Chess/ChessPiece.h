@@ -45,8 +45,15 @@ public:
 	{
 		return static_cast<PieceType>(m_pieceData & type_mask);
 	}
-	
+
 	char getFEN() const;
+
+	void netSerialize(sf::Packet& packet, bool isWriting) {
+		if (isWriting)
+			packet << m_pieceData;
+		else
+			packet >> m_pieceData;
+	}
 };
 
 

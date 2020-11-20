@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "BaseGame.h"
 #include "BoardManager.h"
-#include "GuiPauseMenu.h"
-#include "GuiContainer.hpp"
 #include "EventManager.h"
 #include "ResourceManager.hpp"
-#include "GuiGameOver.h"
+
+#include "GuiPauseMenu.h"
+#include "GuiContainer.hpp"
+#include "GuiGameMessage.h"
+#include "GuiInfoBox.h"
 
 
 BaseGame::BaseGame(StateManager& stateManager, States state) :
@@ -26,14 +28,17 @@ BaseGame::BaseGame(StateManager& stateManager, States state) :
 
 	m_gui = std::make_unique<GuiContainer>(*stateManager.getContext().window);
 
-	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext());
+	m_pauseMenu = std::make_shared<GuiPauseMenu>(stateManager.getContext(), state == States::MultiplayerClient);
 	m_pauseMenu->OnNewGameEvent.connect(&BaseGame::onResetBoard, this);
 	m_pauseMenu->OnExitGameEvent.connect(&BaseGame::onQuitGame, this);
 	m_pauseMenu->OnSwapColourEvent.connect(&BaseGame::onSwitchBoard, this);
 	m_gui->addWindow(m_pauseMenu);
 
-	m_gameOverScreen = std::make_shared<GuiGameOver>(stateManager.getContext());
-	m_gui->addWindow(m_gameOverScreen);
+	m_gameMessageScreen = GuiGameMessage::create(stateManager.getContext());
+	m_gui->addWindow(m_gameMessageScreen);
+
+	m_gameWaitScreen = GuiInfoBox::create(stateManager.getContext());
+	m_gui->addWindow(m_gameWaitScreen);
 }
 
 BaseGame::~BaseGame()
@@ -49,6 +54,7 @@ void BaseGame::loadAssets()
 void BaseGame::render() {
 	m_boardManager->render(getWindow());
 	m_gui->render();
+	m_gameWaitScreen->render(getWindow());
 }
 
 bool BaseGame::update(float deltaTime)
@@ -57,8 +63,11 @@ bool BaseGame::update(float deltaTime)
 	m_boardManager->updateMousePosition(position);
 
 	m_boardManager->update(deltaTime);
+
+	m_gameWaitScreen->update(deltaTime);
 	return true;
 }
+
 
 bool BaseGame::handleEvent(const sf::Event & event)
 {
@@ -77,10 +86,16 @@ bool BaseGame::handleEvent(const sf::Event & event)
 	return false;
 }
 
+
+void BaseGame::onQuitGame()
+{
+	m_stateManager->switchState(States::MainMenu);
+	m_stateManager->removeState(m_myState);
+}
+
 bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)
 {
-	bool succes = false;
-	succes = m_boardManager->inputMove(move, validateMove, animate);
+	bool succes = m_boardManager->inputMove(move, validateMove, animate);
 
 	ActionType lastAction = m_boardManager->getLastAction();
 
@@ -101,26 +116,47 @@ bool BaseGame::inputMove(const ChessMove& move, bool validateMove, bool animate)
 
 void BaseGame::endGame(ActionType gameResult)
 {
-	m_gameState = GameState::GameOver;
-
-
 	switch (gameResult) {
 	case ActionType::Checkmate: {
 		std::string winningColour = m_boardManager->getPlayingColour() == PieceColour::Black ? "White" : "Black";
-		m_gameOverScreen->setText(winningColour + " won by Checkmate.");
+		endGame(winningColour + " won by Checkmate.");
 		break;
 	}
 	case ActionType::Stalemate: {
-		m_gameOverScreen->setText("Game ended in a Stalemate");
+		endGame("Game ended in a Stalemate");
 		break;
 	}
 	case ActionType::Draw: {
-		m_gameOverScreen->setText("Game ended in a Draw.");
+		endGame("Game ended in a Draw.");
 		break;
 	}
 	default: return;
 	}
-
-	m_gameOverScreen->showDialog();
 }
+
+void BaseGame::endGame(const std::string& reason)
+{
+	m_gameState = GameState::GameOver;
+
+	displayMessage("Game Over", reason, "Confirm");
+}
+
+void BaseGame::displayMessage(const std::string & title, const std::string & text, const std::string & button)
+{
+	m_gameMessageScreen->setTitle(title);
+	m_gameMessageScreen->setText(text);
+	m_gameMessageScreen->setButton(button);
+
+	m_gameMessageScreen->showDialog();
+}
+
+void BaseGame::guiLoadShow(const std::string & title) {
+	m_gameWaitScreen->setText(title);
+	m_gameWaitScreen->show();
+}
+
+void BaseGame::guiLoadHide() {
+	m_gameWaitScreen->hide();
+}
+
 

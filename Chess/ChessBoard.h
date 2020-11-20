@@ -58,6 +58,7 @@ public:
 		return getPiece(position.x(), position.y());
 	}
 
+
 	inline const ChessAction& getLastAction() const {
 		return m_lastMove;
 	}
@@ -65,6 +66,11 @@ public:
 	inline const PieceColour getPlayingColour() const {
 		return m_moveNumber % 2 == 0 ? PieceColour::White : PieceColour::Black;
 	}
+
+	unsigned short getMoveNumber() const {
+		return m_moveNumber;
+	}
+
 
 	ActionType simulateMove(ChessBoard& nextState, const ChessMove& newMove, bool validateBoardState = false) const;
 	void resetBoard(const char(&boardData)[BOARDSIZE]);
@@ -76,5 +82,7 @@ public:
 	ActionType getBoardState(const PieceColour colour) const;
 
 	std::string getFENFormat() const;
+
+	void netSerialize(sf::Packet& packet, bool isWriting);
 };
 
