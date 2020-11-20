@@ -172,6 +172,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GuiClientStart.cpp" />
     <ClCompile Include="GuiGameMessage.cpp" />
     <ClCompile Include="GuiInfoBox.cpp" />
     <ClCompile Include="GuiInputWindow.cpp" />
@@ -224,6 +225,7 @@ xcopy "$(ProjectDir)Lib" "$(TargetDir)" /e /y /i /r /d
     <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GuiBotInput.hpp" />
+    <ClInclude Include="GuiClientStart.hpp" />
     <ClInclude Include="GuiGameMessage.h" />
     <ClInclude Include="GuiHostStart.hpp" />
     <ClInclude Include="GuiInfoBox.h" />

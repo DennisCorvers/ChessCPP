@@ -27,7 +27,7 @@ void SGameClient::onCreate()
 {
 	m_client.setup(&SGameClient::onNetPacket, &SGameClient::onDisconnect, this);
 	auto& netSettings = m_stateManager->getContext().netSettings;
-	netSettings.IpAddress = sf::IpAddress("127.0.0.1");
+	netSettings.IpAddress = sf::IpAddress("127.0.0.1").toString();
 	m_client.connect(sf::IpAddress(127,0,0,1), 1001);
 
 	//TODO Timeout connection...

@@ -38,6 +38,6 @@ private:
 	void onSandboxPressed();
 
 	void onHostPort(unsigned short port);
-	void onClientConnect(const sf::IpAddress& ip, unsigned short port);
+	void onClientConnect(const std::string& ip, unsigned short port);
 };
 

@@ -5,6 +5,7 @@
 #include "StateManager.h"
 #include "GuiHostStart.hpp"
 #include "GuiBotInput.hpp"
+#include "GuiClientStart.hpp"
 
 
 SMainMenu::SMainMenu(StateManager & stateManager) :
@@ -64,17 +65,19 @@ void SMainMenu::onSinglePlayerPressed()
 
 void SMainMenu::onJoinGamePressed()
 {
-	//TODO Open client join ui
-	m_stateManager->switchState(States::MultiplayerClient);
-	m_stateManager->removeState(States::MainMenu);
+	auto joinGameUI = GuiClientStart::create(m_stateManager->getContext());
+	joinGameUI->setText(m_stateManager->getContext().netSettings.toString());
+	joinGameUI->OnConfirm.connect(&SMainMenu::onClientConnect, this);
+
+	m_gui->addShowDialog(joinGameUI);
 }
 
 void SMainMenu::onHostGamePressed()
 {
 	auto hostGameUI = GuiHostStart::create(m_stateManager->getContext());
-	hostGameUI->setText(std::to_string(m_stateManager->getContext().netSettings.Port));
+	hostGameUI->setText(std::to_string(m_stateManager->getContext().netSettings.getPort()));
 	hostGameUI->OnConfirm.connect(&SMainMenu::onHostPort, this);
-	
+
 	m_gui->addShowDialog(hostGameUI);
 }
 
@@ -85,16 +88,16 @@ void SMainMenu::onSandboxPressed() {
 
 void SMainMenu::onHostPort(unsigned short port)
 {
-	m_stateManager->getContext().netSettings.Port = port;
+	m_stateManager->getContext().netSettings.setPort(port);
 	m_stateManager->switchState(States::MultiplayerHost);
 	m_stateManager->removeState(States::MainMenu);
 }
 
-void SMainMenu::onClientConnect(const sf::IpAddress& ip, unsigned short port)
+void SMainMenu::onClientConnect(const std::string& ip, unsigned short port)
 {
 	auto& netSettings = m_stateManager->getContext().netSettings;
 	netSettings.IpAddress = ip;
-	netSettings.Port = port;
+	netSettings.setPort(port);
 
 	m_stateManager->switchState(States::MultiplayerClient);
 	m_stateManager->removeState(States::MainMenu);

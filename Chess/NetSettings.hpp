@@ -4,15 +4,32 @@
 struct NetSettings {
 	static const unsigned short DEFAULT_PORT = 1001;
 
-	sf::IpAddress IpAddress;
+private:
 	unsigned short Port;
 
-	NetSettings() : IpAddress(0, 0, 0, 0), Port(DEFAULT_PORT) { }
+public:
+	std::string IpAddress;
+
+	NetSettings() : Port(0) { }
 
 	std::string toString() const {
-		if (Port != DEFAULT_PORT)
-			return IpAddress.toString() + ":" + std::to_string(Port);
+		if (IpAddress.length() < 1)
+			return "";
+
+		if (Port != 0)
+			return IpAddress + ":" + std::to_string(Port);
 		else
-			return IpAddress.toString();
+			return IpAddress;
+	}
+
+	unsigned short getPort()  const {
+		if (Port == 0)
+			return DEFAULT_PORT;
+		else
+			return Port;
+	}
+
+	void setPort(unsigned short port) {
+		Port = port;
 	}
 };

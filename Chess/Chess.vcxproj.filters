@@ -146,6 +146,9 @@
     <ClCompile Include="GuiInfoBox.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="GuiClientStart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessPosition.h">
@@ -341,6 +344,9 @@
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
     <ClInclude Include="GuiInfoBox.h">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiClientStart.hpp">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>

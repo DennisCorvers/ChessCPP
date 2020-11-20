@@ -20,7 +20,6 @@ public:
 	}
 
 private:
-
 	void validateInput(const std::string & input) override {
 		int port = 0;
 		try {
@@ -39,13 +38,5 @@ private:
 			OnConfirm(static_cast<unsigned short>(port));
 			close();
 		}
-	}
-
-	void onEscapePress() override {
-		onCancelClick();
-	}
-
-	void onCancelClick() override {
-		close();
 	}
 };

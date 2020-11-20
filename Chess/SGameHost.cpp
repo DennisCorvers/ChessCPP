@@ -13,7 +13,7 @@ SGameHost::SGameHost(StateManager & stateManager) :
 	m_playerID(-1),
 	m_poller(1)
 {
-	m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.Port);
+	m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.getPort());
 	m_server->setup(&SGameHost::onNetPacket, &SGameHost::onDisconnect, this);
 	m_server->startListening(10);
 
