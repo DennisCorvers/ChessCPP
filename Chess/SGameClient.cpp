@@ -10,7 +10,9 @@ SGameClient::SGameClient(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerClient),
 	m_client(*stateManager.getContext().netClient),
 	m_myColour(PieceColour::Black),
-	m_clientIsPlayer(false)
+	m_clientIsPlayer(false),
+	m_connectionTimeout(CONNECT_TIMEOUT),
+	m_connectionState(ConnectionState::None)
 {
 	m_gameState = GameState::None;
 
@@ -27,10 +29,9 @@ void SGameClient::onCreate()
 {
 	m_client.setup(&SGameClient::onNetPacket, &SGameClient::onDisconnect, this);
 	auto& netSettings = m_stateManager->getContext().netSettings;
-	netSettings.IpAddress = sf::IpAddress("127.0.0.1").toString();
-	m_client.connect(sf::IpAddress(127,0,0,1), 1001);
+	m_client.connect(sf::IpAddress(netSettings.IpAddress), netSettings.getPort());
 
-	//TODO Timeout connection...
+	guiLoadShow("Connecting to server");
 }
 
 bool SGameClient::update(float deltaTime)
@@ -38,6 +39,12 @@ bool SGameClient::update(float deltaTime)
 	BaseGame::update(deltaTime);
 
 	m_client.receive();
+
+	if (m_connectionState == ConnectionState::None) {
+		m_connectionTimeout -= deltaTime;
+		if (m_connectionTimeout <= 0)
+			onConnectFailed();
+	}
 
 	return false;
 }
@@ -93,20 +100,16 @@ void SGameClient::onDisconnect()
 {
 	m_gameState = GameState::None;
 
-	if (m_isConnected)
+	if (m_connectionState == ConnectionState::Connected)
 		BaseGame::endGame("Connection to server was lost.");
 	else
 	{
-		//auto messageGui = GuiGameOver::create(m_stateManager->getContext());
-		//messageGui->setText("Unable to connect to remote host.");
-		//messageGui->s
-		//	"Connection Error", "Unable to connect to remote host.");
-		//	messageGui->setButton("Ok");
-		//m_gui->addShowDialog(messageGui);
+		//Connection rejected
+		guiLoadHide();
+		displayMessage("Error", "Unable to connect to server.", "Ok");
 	}
-	//TODO Banner: Not connected
 
-	m_isConnected = false;
+	m_connectionState = ConnectionState::Disconnected;
 }
 
 void SGameClient::onReset(sf::Packet& packet)
@@ -146,7 +149,8 @@ void SGameClient::onRemoteInput(sf::Packet& packet)
 
 void SGameClient::onConnectResponse(sf::Packet& packet)
 {
-	m_isConnected = true;
+	m_connectionState = ConnectionState::Connected;
+	guiLoadHide();
 
 	sf::Uint8 myRole;
 	packet >> myRole;
@@ -163,9 +167,19 @@ void SGameClient::onConnectResponse(sf::Packet& packet)
 	}
 	else
 	{
+		displayMessage("Joined Server", "You joined as a spectator.", "Continue");
 		m_myColour = PieceColour::White;
 		onSnapshot(packet);
 
 		m_gameState = GameState::None;
 	}
+}
+
+void SGameClient::onConnectFailed()
+{
+	guiLoadHide();
+	displayMessage("Error", "Server connection timeout", "Ok");
+	m_client.disconnect();
+	m_connectionState = ConnectionState::Failed;
+	m_connectionTimeout = CONNECT_TIMEOUT;
 }

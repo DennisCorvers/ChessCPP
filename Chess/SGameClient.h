@@ -8,13 +8,16 @@ class NetClient;
 class SGameClient : public BaseGame
 {
 private:
+	enum struct ConnectionState{ Connected, None, Failed, Disconnected };
+	static const int CONNECT_TIMEOUT = 15;
+
 	NetClient& m_client;
 	ChessColour m_myColour;
 	PacketHandler m_packetHandler;
 	bool m_clientIsPlayer;
 
-	float m_connectionTimeout = 15;
-	bool m_isConnected = false;
+	float m_connectionTimeout = CONNECT_TIMEOUT;
+	ConnectionState m_connectionState = ConnectionState::None;
 
 public:
 	SGameClient(StateManager& stateManager);
@@ -40,4 +43,6 @@ private:
 	void onSnapshot(sf::Packet& packet);
 	void onRemoteInput(sf::Packet& packet);
 	void onConnectResponse(sf::Packet& packet);
+
+	void onConnectFailed();
 };
