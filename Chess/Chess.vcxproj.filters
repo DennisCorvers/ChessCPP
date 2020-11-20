@@ -147,7 +147,7 @@
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
     <ClCompile Include="GuiClientStart.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

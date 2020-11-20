@@ -2,7 +2,7 @@
 #include "SFML/Network/IpAddress.hpp"
 
 struct NetSettings {
-	static const unsigned short DEFAULT_PORT = 1001;
+	static const unsigned short DEFAULT_PORT = 54820;
 
 private:
 	unsigned short Port;
