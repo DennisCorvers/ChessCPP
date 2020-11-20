@@ -10,12 +10,14 @@
 SGameHost::SGameHost(StateManager & stateManager) :
 	BaseGame(stateManager, States::MultiplayerHost),
 	m_myColour(PieceColour::White),
-	m_playerID(-1),
-	m_poller(1)
+	m_playerID(-1), m_poller(1)
 {
 	m_server = std::make_unique<NetServer>(stateManager.getContext().netSettings.getPort());
 	m_server->setup(&SGameHost::onNetPacket, &SGameHost::onDisconnect, this);
-	m_server->startListening(10);
+
+	m_hasBoundPort = m_server->startListening(10);
+	if (!m_hasBoundPort)
+		displayMessage("Error", "Unable to bind TCP Port: " + std::to_string(m_server->getPort()), "Ok");
 
 	m_gameState = GameState::None;
 }
@@ -26,6 +28,9 @@ SGameHost::~SGameHost()
 void SGameHost::onCreate()
 {
 	m_boardManager->resetGame(m_myColour);
+
+	if (!m_hasBoundPort)
+		return;
 
 	if (m_playerID == -1) {
 		m_server->pauseListening(false);

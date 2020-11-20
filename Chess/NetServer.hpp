@@ -94,7 +94,7 @@ public:
 	}
 
 	unsigned short getPort() const {
-		return m_listener->getLocalPort();
+		return m_port;
 	}
 
 	bool getClientInfo(ClientID clientID, ClientInfo& clientInfo) const {

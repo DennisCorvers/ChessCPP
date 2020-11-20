@@ -8,6 +8,7 @@ class SGameHost : public BaseGame
 {
 private:
 	std::unique_ptr<NetServer> m_server;
+	bool m_hasBoundPort;
 	int m_playerID;
 	std::vector<int> m_observers;
 
