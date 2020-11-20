@@ -1,22 +1,17 @@
 #pragma once
 #include "BaseState.hpp"
-#include "StateManager.h"
-#include "NetServer.hpp"
-#include "NetClient.hpp"
+
+
 
 class STest : public BaseState
 {
 private:
-	NetServer m_server;
-	NetClient m_client;
-	NetClient m_newClient;
+
 
 public:
 	STest(StateManager& stateManager) :
-		BaseState(stateManager), m_server(1001)
-	{
-
-	}
+		BaseState(stateManager)
+	{ }
 
 	virtual ~STest() {};
 
