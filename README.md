@@ -16,17 +16,17 @@ This project was a motivation to use C++ in a game development setting. The proj
 - In-game Menu
 - Customizable UI themes
 - Chess Engine integration
-
-### ToDo
-
 - Client-Host multiplayer
 - Client validation/rollback of inputs
+- Spectator mode
 
 ## Application Preview 
 
 ![Main Screen](https://i.imgur.com/xWQN6Rg.png)
 
-![Game Screen](https://i.imgur.com/58oPpwx.png)
+![Game Screen](https://i.imgur.com/IAh9PlA.png)
+
+![Multiplayer Screen](https://i.imgur.com/xPLTJXJ.png)
 
 ## Extra Notes
 In order to structurize the project/files better, post-build events are used.
@@ -46,7 +46,7 @@ loadFromFile("Assets\\Sprites\\Board.png")
 
 Disabling the Console Window on release builds:
 
-Go to Configuration Properties > Linker > System > SybSystem
+Go to Configuration Properties > Linker > System > SubSystem
 ```
 Windows (/SUBSYSTEM:WINDOWS)
 ```
