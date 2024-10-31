@@ -8,7 +8,7 @@ namespace UCI {
 
 	UCIConnector::UCIConnector(const std::string & path, EngineInformation & engineInfo) :
 		hWritePipeIn(NULL), hReadPipeIn(NULL), hWritePipeOut(NULL), hReadPipeOut(NULL),
-		m_info(engineInfo), m_isWorking(false), m_workTime(0), m_poller(engineInfo.pollInterval)
+		m_info(engineInfo), m_isWorking(false), m_workTime(0), m_poller(engineInfo.pollInterval), m_skillLevel(5)
 	{
 		char* writable = new char[path.size() + 1];
 		std::copy(path.begin(), path.end(), writable);

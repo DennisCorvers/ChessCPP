@@ -83,6 +83,7 @@ void GuiInputWindow::initialize()
 	m_textField->setTextSize(15);
 	m_textField->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 	m_textField->setMaximumCharacters(30);
+	m_textField->setText("");
 	m_guiWindow->add(m_textField);
 
 	//Header
