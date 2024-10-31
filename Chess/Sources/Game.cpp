@@ -32,7 +32,7 @@ Game::Game()
 	m_context->soundManager = m_soundManager.get();
 	m_context->themeManager = m_themeManager.get();
 	m_context->netClient = m_netClient.get();
-
+	m_deltaTime = 0;
 
 	initUI();
 
