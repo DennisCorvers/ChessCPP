@@ -1,0 +1,37 @@
+MenuButton {
+	BackgroundColor = rgba(0, 0, 0, 140);
+	BackgroundColorHover = rgba(255, 255, 255, 140);
+	BackgroundColorDown = rgba(255, 255, 255, 100);
+	TextColor = rgba(255, 255, 255, 235);
+	TextColorHover = rgba(0, 0, 0, 235);
+	TextColorDown = rgba(0, 0, 0, 235);
+}
+
+MenuHeader {
+	BackgroundColor = rgba(0, 0, 0, 140);
+}
+
+MenuLabel {
+	TextColor = rgba(255, 255, 255, 255);
+}
+
+PauseButton {
+	BackgroundColor = rgba(20, 120, 200, 255);
+	BackgroundColorHover = rgba(15, 91, 153, 255);
+	BackgroundColorDown = rgba(15, 91, 153, 255);
+	TextColor = rgba(255, 255, 255, 255);
+	TextColorHover = rgba(255, 255, 255, 255);
+	TextColorDown = rgba(255, 255, 255, 255);
+}
+
+PauseBackground {
+	BackgroundColor = rgba(255, 255, 255, 250);
+}
+
+PauseHeader {
+	BackgroundColor = rgba(20, 120, 200, 255);
+}
+
+PauseLabel {
+	TextColor = rgba(255, 255, 255, 255);
+}

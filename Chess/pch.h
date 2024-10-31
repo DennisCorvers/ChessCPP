@@ -20,21 +20,21 @@
 #include <unordered_map>
 
 //SFML
-#include "SFML/Audio.hpp"
-#include "SFML/Graphics.hpp"
-#include "SFML/Window.hpp"
-#include "SFML/Network.hpp"
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Network.hpp>
 
 //TGUI
-#include "TGUI/TGUI.hpp"
+#include <TGUI/TGUI.hpp>
 
 //Self
-#include "Math.hpp"
-#include "Utils.h"
-#include "Enums.h"
-#include "Bitmask.hpp"
-#include "NonCopyable.hpp"
-#include "Signal.hpp"
+#include "Utils/Math.hpp"
+#include "Utils/Utils.h"
+#include "Utils/Enums.h"
+#include "Utils/Bitmask.hpp"
+#include "Utils/NonCopyable.hpp"
+#include "Utils/Signal.hpp"
 
 
 #ifdef NDEBUG
